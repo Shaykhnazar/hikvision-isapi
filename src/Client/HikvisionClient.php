@@ -30,6 +30,15 @@ class HikvisionClient
             throw new HikvisionException('Device configuration not found');
         }
 
+        // Validate required configuration
+        if (empty($device['username'])) {
+            throw new HikvisionException('Username is required in device configuration');
+        }
+
+        if (empty($device['password'])) {
+            throw new HikvisionException('Password is required in device configuration. Please set HIKVISION_PASSWORD in your .env file');
+        }
+
         $this->baseUrl = sprintf(
             '%s://%s:%s',
             $device['protocol'],
