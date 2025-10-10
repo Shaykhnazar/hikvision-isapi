@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         failOnRisky="true"
+         failOnWarning="true"
+         cacheDirectory=".phpunit.cache">
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory>tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>src</directory>
+        </include>
+    </source>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="HIKVISION_IP" value="192.168.1.100"/>
+        <env name="HIKVISION_PORT" value="80"/>
+        <env name="HIKVISION_USERNAME" value="admin"/>
+        <env name="HIKVISION_PASSWORD" value="password"/>
+        <env name="HIKVISION_PROTOCOL" value="http"/>
+        <env name="HIKVISION_TIMEOUT" value="30"/>
+        <env name="HIKVISION_VERIFY_SSL" value="false"/>
+    </php>
+</phpunit>
