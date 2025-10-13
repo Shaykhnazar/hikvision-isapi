@@ -95,7 +95,7 @@ class PersonServiceTest extends TestCase
 
         $this->mockClient
             ->shouldReceive('put')
-            ->with('/ISAPI/AccessControl/UserInfoDetail/Delete', Mockery::type('array'))
+            ->with('/ISAPI/AccessControl/UserInfo/Delete', Mockery::type('array'))
             ->once()
             ->andReturn(['statusCode' => 1]);
 

@@ -15,7 +15,7 @@ class PersonService
     private const ENDPOINT_RECORD = '/ISAPI/AccessControl/UserInfo/Record';
     private const ENDPOINT_MODIFY = '/ISAPI/AccessControl/UserInfo/Modify';
     private const ENDPOINT_SETUP = '/ISAPI/AccessControl/UserInfo/SetUp';
-    private const ENDPOINT_DELETE = '/ISAPI/AccessControl/UserInfoDetail/Delete';
+    private const ENDPOINT_DELETE = '/ISAPI/AccessControl/UserInfo/Delete';
 
     public function __construct(
         private readonly HikvisionClient $client
@@ -72,23 +72,11 @@ class PersonService
     public function delete(array $employeeNos): array
     {
         $data = [
-            'UserInfoDetail' => [
-                'mode' => 'byEmployeeNo',
+            'UserInfoDelCond' => [
                 'EmployeeNoList' => array_map(
                     fn($no) => ['employeeNo' => $no],
                     $employeeNos
                 ),
-            ],
-        ];
-
-        return $this->client->put(self::ENDPOINT_DELETE, $data);
-    }
-
-    public function deleteAll(): array
-    {
-        $data = [
-            'UserInfoDetail' => [
-                'mode' => 'all',
             ],
         ];
 

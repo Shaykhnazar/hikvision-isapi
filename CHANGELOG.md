@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-10-13
+
+### Added
+- **FaceService**: New `searchFace()` method for searching face data with pagination support
+- **FaceService**: New `deleteFaceSearch()` method for deleting face search data by FDID
+- **FaceService**: New `uploadFaceDataRecord()` method for uploading face images with multipart/form-data
+- **HttpClient**: Added `postMultipart()` method to support file uploads
+- **HttpClientInterface**: Extended interface with `postMultipart()` method
+- **HikvisionClient**: Added `postMultipart()` wrapper method for multipart form data requests
+
+### Changed
+- **PersonService**: Updated delete endpoint from `/ISAPI/AccessControl/UserInfoDetail/Delete` to `/ISAPI/AccessControl/UserInfo/Delete` to match official ISAPI specification
+- **PersonService**: Updated delete request body structure from `UserInfoDetail` to `UserInfoDelCond` for better alignment with Hikvision API
+- **PersonService**: Removed `deleteAll()` method (users should use `delete()` with appropriate parameters)
+
+### Fixed
+- **HikvisionClient**: Added validation to ensure username and password are provided in configuration
+- **HikvisionClient**: Now throws clear error message when `HIKVISION_PASSWORD` is not set in environment
+- **Tests**: Updated PersonServiceTest to match new delete endpoint
+
+### Documentation
+- Updated README.md with new FaceService methods and usage examples
+- Added comprehensive examples for face data search and management
+- Updated CLAUDE.md with new implementation details
+- Improved troubleshooting section in README
+
 ## [1.0.0] - 2025-10-09
 
 ### Added

@@ -40,6 +40,12 @@ class HttpClient implements HttpClientInterface
         return $this->request('DELETE', $uri, $options);
     }
 
+    public function postMultipart(string $uri, array $multipart = [], array $options = []): array
+    {
+        $options['multipart'] = $multipart;
+        return $this->request('POST', $uri, $options);
+    }
+
     private function request(string $method, string $uri, array $options): array
     {
         try {

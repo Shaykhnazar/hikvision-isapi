@@ -140,6 +140,35 @@ $imageBase64 = base64_encode($imageData);
 $response = $faceService->uploadFace('EMP001', $imageBase64, 1);
 ```
 
+### Search and Manage Face Data
+
+```php
+use Shaykhnazar\HikvisionIsapi\Services\FaceService;
+
+$faceService = app(FaceService::class);
+
+// Search face data with pagination
+$results = $faceService->searchFace(
+    page: 0,
+    maxResults: 30,
+    faceLibType: 'blackFD',
+    fdid: 1,
+    fpid: '31903791410044'
+);
+
+// Upload face data record with image file
+$imageContent = file_get_contents('face.jpg');
+$response = $faceService->uploadFaceDataRecord(
+    fdid: 1,
+    fpid: '31903791410044',
+    imageContent: $imageContent,
+    faceLibType: 'blackFD'
+);
+
+// Delete face search data
+$faceService->deleteFaceSearch(fdid: 1, faceLibType: 'blackFD');
+```
+
 ### Search Persons
 
 ```php
@@ -242,7 +271,6 @@ $personService->update(Person $person);           // Update person
 $personService->apply(Person $person);            // Apply person changes
 $personService->search(int $page, int $maxResults); // Search persons
 $personService->delete(array $employeeNos);       // Delete persons
-$personService->deleteAll();                      // Delete all persons
 $personService->count();                          // Count persons
 $personService->getCapabilities();                // Get capabilities
 ```
@@ -268,6 +296,9 @@ $faceService = app(FaceService::class);
 
 $faceService->uploadFace(string $employeeNo, string $imageBase64, int $fdid);
 $faceService->deleteFace(int $fdid, int $fpid);
+$faceService->searchFace(int $page, int $maxResults, string $faceLibType, ?int $fdid, ?string $fpid);
+$faceService->deleteFaceSearch(int $fdid, string $faceLibType);
+$faceService->uploadFaceDataRecord(int $fdid, string $fpid, string $imageContent, string $faceLibType);
 $faceService->getLibraries();
 $faceService->createLibrary(array $data);
 $faceService->getCapabilities();
