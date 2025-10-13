@@ -7,6 +7,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2025-10-13
+
+### Added
+- **DeviceProviderInterface**: New contract for universal device configuration loading
+- **ConfigDeviceProvider**: Default provider for config-based devices (backward compatible)
+- **DatabaseDeviceProvider**: Load terminals from database tables with caching
+- **CallbackDeviceProvider**: Maximum flexibility - load devices from any source (API, Redis, etc.)
+- **Multi-Tenant Support**: Device providers support tenant-scoped device loading
+- **Runtime Device Registration**: Register devices dynamically with `registerDevice()`
+- **Provider Switching**: Change device provider at runtime with `setProvider()`
+- **Device Reloading**: Reload devices from source with `reload()` method
+- **Cache Management**: Built-in caching for database providers with TTL support
+
+### Changed
+- **DeviceManager**: Now accepts `DeviceProviderInterface` instead of raw config array
+- **Service Provider**: Auto-detects custom device provider via binding `hikvision.device.provider`
+- **Architecture**: Implements Strategy Pattern for device loading
+
+### Features
+- 🗄️ **Database-driven terminals**: Load terminals from database dynamically
+- 🏢 **Multi-tenant ready**: Scope terminals by tenant/company
+- 🔄 **Hot reload**: Update terminals in DB and reload without restart
+- 🎯 **Flexible providers**: Config, Database, Callback, or custom implementations
+- ⚡ **Performance**: Built-in caching with configurable TTL
+- 🔒 **Backward compatible**: Existing config-based setup works without changes
+
+### Documentation
+- Added comprehensive "Loading Devices from Database" section to README.md
+- Added multi-tenant support examples
+- Added Eloquent model integration examples
+- Documented provider switching and runtime registration
+- Updated architecture documentation in CLAUDE.md
+
+## [1.2.0] - 2025-10-13
+
+### Added
+- **DeviceManager**: New class for managing multiple Hikvision devices simultaneously
+- **Hikvision Facade**: New facade (`Shaykhnazar\HikvisionIsapi\Facades\Hikvision`) for multi-device access
+- **Multi-Device Support**: Configure and manage unlimited Hikvision devices via configuration
+- **Device Discovery**: Added `availableDevices()` method to list all configured devices
+- **Device Validation**: Added `hasDevice()` method to check if device exists in configuration
+- **Client Caching**: Device-specific client instances are cached for performance
+- **Environment Variables**: Support for device-specific environment variables pattern (e.g., `HIKVISION_ENTRANCE_IP`)
+
+### Changed
+- **Service Provider**: Updated to register `DeviceManager` as singleton
+- **Configuration**: Enhanced `hikvision.php` config with multi-device examples and documentation
+- **HikvisionClient**: Now resolves from `DeviceManager::default()` for backward compatibility
+
+### Documentation
+- Added comprehensive multi-device support section to README.md
+- Added usage examples for syncing employees to multiple devices
+- Updated CLAUDE.md with DeviceManager architecture details
+- Added environment variable patterns documentation
+- Documented backward compatibility approach
+
+### Backward Compatibility
+- ✅ **100% backward compatible** - Existing single-device code works without changes
+- Default device behavior preserved for apps using single device
+- Services continue to work with dependency injection as before
+
 ## [1.1.0] - 2025-10-13
 
 ### Added

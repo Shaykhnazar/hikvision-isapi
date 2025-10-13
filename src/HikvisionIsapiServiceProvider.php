@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Shaykhnazar\HikvisionIsapi\Authentication\Contracts\AuthenticatorInterface;
 use Shaykhnazar\HikvisionIsapi\Authentication\DigestAuthenticator;
 use Shaykhnazar\HikvisionIsapi\Client\Contracts\HttpClientInterface;
+use Shaykhnazar\HikvisionIsapi\Client\DeviceManager;
 use Shaykhnazar\HikvisionIsapi\Client\HttpClient;
 use Shaykhnazar\HikvisionIsapi\Client\HikvisionClient;
 
@@ -24,13 +25,26 @@ class HikvisionIsapiServiceProvider extends ServiceProvider
         $this->app->bind(AuthenticatorInterface::class, DigestAuthenticator::class);
         $this->app->bind(HttpClientInterface::class, HttpClient::class);
 
-        // Register main client as singleton
-        $this->app->singleton(HikvisionClient::class, function ($app) {
-            return new HikvisionClient(
+        // Register Device Manager as singleton (for multi-device support)
+        $this->app->singleton(DeviceManager::class, function ($app) {
+            // Check if custom device provider is bound
+            if ($app->bound('hikvision.device.provider')) {
+                $provider = $app->make('hikvision.device.provider');
+            } else {
+                // Use config by default (backward compatibility)
+                $provider = config('hikvision');
+            }
+
+            return new DeviceManager(
                 $app->make(HttpClientInterface::class),
                 $app->make(AuthenticatorInterface::class),
-                config('hikvision')
+                $provider
             );
+        });
+
+        // Register main client as singleton (uses default device for backward compatibility)
+        $this->app->singleton(HikvisionClient::class, function ($app) {
+            return $app->make(DeviceManager::class)->default();
         });
 
         // Register services

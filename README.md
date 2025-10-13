@@ -446,6 +446,444 @@ try {
 }
 ```
 
+## Multi-Device Support
+
+The package supports managing multiple Hikvision devices simultaneously. This is useful when you have multiple terminals at different locations (entrance, exit, canteen, etc.).
+
+**Device Sources Supported:**
+- ✅ Config files (default)
+- ✅ Database tables
+- ✅ Custom callbacks (API, Redis, cache, etc.)
+- ✅ Runtime registration
+
+### Configuration from Config Files (Default)
+
+Configure multiple devices in `config/hikvision.php`:
+
+```php
+return [
+    'default' => env('HIKVISION_DEFAULT_DEVICE', 'primary'),
+
+    'devices' => [
+        'primary' => [
+            'ip' => env('HIKVISION_IP', '192.168.1.100'),
+            'port' => env('HIKVISION_PORT', 80),
+            'username' => env('HIKVISION_USERNAME', 'admin'),
+            'password' => env('HIKVISION_PASSWORD'),
+            'protocol' => env('HIKVISION_PROTOCOL', 'http'),
+            'timeout' => env('HIKVISION_TIMEOUT', 30),
+            'verify_ssl' => env('HIKVISION_VERIFY_SSL', false),
+        ],
+
+        'entrance' => [
+            'ip' => env('HIKVISION_ENTRANCE_IP', '192.168.1.101'),
+            'port' => env('HIKVISION_ENTRANCE_PORT', 80),
+            'username' => env('HIKVISION_ENTRANCE_USERNAME', 'admin'),
+            'password' => env('HIKVISION_ENTRANCE_PASSWORD'),
+            'protocol' => env('HIKVISION_ENTRANCE_PROTOCOL', 'http'),
+            'timeout' => env('HIKVISION_ENTRANCE_TIMEOUT', 30),
+            'verify_ssl' => env('HIKVISION_ENTRANCE_VERIFY_SSL', false),
+        ],
+
+        'exit' => [
+            'ip' => env('HIKVISION_EXIT_IP', '192.168.1.102'),
+            'port' => env('HIKVISION_EXIT_PORT', 80),
+            'username' => env('HIKVISION_EXIT_USERNAME', 'admin'),
+            'password' => env('HIKVISION_EXIT_PASSWORD'),
+            'protocol' => env('HIKVISION_EXIT_PROTOCOL', 'http'),
+            'timeout' => env('HIKVISION_EXIT_TIMEOUT', 30),
+            'verify_ssl' => env('HIKVISION_EXIT_VERIFY_SSL', false),
+        ],
+
+        'canteen' => [
+            'ip' => env('HIKVISION_CANTEEN_IP', '192.168.1.103'),
+            'port' => env('HIKVISION_CANTEEN_PORT', 80),
+            'username' => env('HIKVISION_CANTEEN_USERNAME', 'admin'),
+            'password' => env('HIKVISION_CANTEEN_PASSWORD'),
+            'protocol' => env('HIKVISION_CANTEEN_PROTOCOL', 'http'),
+            'timeout' => env('HIKVISION_CANTEEN_TIMEOUT', 30),
+            'verify_ssl' => env('HIKVISION_CANTEEN_VERIFY_SSL', false),
+        ],
+    ],
+];
+```
+
+### Environment Variables
+
+Add device-specific environment variables to `.env`:
+
+```env
+# Primary Device (Default)
+HIKVISION_DEFAULT_DEVICE=primary
+HIKVISION_IP=192.168.1.100
+HIKVISION_PORT=80
+HIKVISION_USERNAME=admin
+HIKVISION_PASSWORD=your_password
+
+# Entrance Device
+HIKVISION_ENTRANCE_IP=192.168.1.101
+HIKVISION_ENTRANCE_PORT=80
+HIKVISION_ENTRANCE_USERNAME=admin
+HIKVISION_ENTRANCE_PASSWORD=entrance_password
+
+# Exit Device
+HIKVISION_EXIT_IP=192.168.1.102
+HIKVISION_EXIT_PORT=80
+HIKVISION_EXIT_USERNAME=admin
+HIKVISION_EXIT_PASSWORD=exit_password
+
+# Canteen Device
+HIKVISION_CANTEEN_IP=192.168.1.103
+HIKVISION_CANTEEN_PORT=80
+HIKVISION_CANTEEN_USERNAME=admin
+HIKVISION_CANTEEN_PASSWORD=canteen_password
+```
+
+### Using Multiple Devices with Facade
+
+```php
+use Shaykhnazar\HikvisionIsapi\Facades\Hikvision;
+
+// Use default device
+$defaultClient = Hikvision::default();
+$info = $defaultClient->get('/ISAPI/System/deviceInfo');
+
+// Use specific devices
+$entranceClient = Hikvision::device('entrance');
+$exitClient = Hikvision::device('exit');
+$canteenClient = Hikvision::device('canteen');
+
+// Get device information from each terminal
+$entranceInfo = $entranceClient->get('/ISAPI/System/deviceInfo');
+$exitInfo = $exitClient->get('/ISAPI/System/deviceInfo');
+$canteenInfo = $canteenClient->get('/ISAPI/System/deviceInfo');
+
+// List all available devices
+$devices = Hikvision::availableDevices();
+// Returns: ['primary', 'entrance', 'exit', 'canteen']
+
+// Check if device exists
+if (Hikvision::hasDevice('entrance')) {
+    // Work with entrance device
+}
+```
+
+### Using Multiple Devices with Services
+
+```php
+use Shaykhnazar\HikvisionIsapi\Facades\Hikvision;
+use Shaykhnazar\HikvisionIsapi\Services\PersonService;
+use Shaykhnazar\HikvisionIsapi\DTOs\Person;
+use Shaykhnazar\HikvisionIsapi\Enums\UserType;
+
+// Create person DTO
+$person = new Person(
+    employeeNo: 'EMP001',
+    name: 'John Doe',
+    userType: UserType::NORMAL,
+    validEnabled: true,
+    beginTime: now()->toISOString(),
+    endTime: now()->addYear()->toISOString()
+);
+
+// Get device-specific clients
+$entranceClient = Hikvision::device('entrance');
+$exitClient = Hikvision::device('exit');
+$canteenClient = Hikvision::device('canteen');
+
+// Create person service for each device
+$entrancePersonService = new PersonService($entranceClient);
+$exitPersonService = new PersonService($exitClient);
+$canteenPersonService = new PersonService($canteenClient);
+
+// Add person to all devices
+$entrancePersonService->add($person);
+$exitPersonService->add($person);
+$canteenPersonService->add($person);
+```
+
+### Syncing Employee to Multiple Devices
+
+```php
+use Shaykhnazar\HikvisionIsapi\Facades\Hikvision;
+use Shaykhnazar\HikvisionIsapi\Services\PersonService;
+use Shaykhnazar\HikvisionIsapi\Services\FaceService;
+use Shaykhnazar\HikvisionIsapi\DTOs\Person;
+
+class EmployeeSyncService
+{
+    public function syncToAllDevices(Person $person, string $faceImagePath): array
+    {
+        $results = [];
+        $devices = Hikvision::availableDevices();
+
+        foreach ($devices as $deviceName) {
+            try {
+                // Get device client
+                $client = Hikvision::device($deviceName);
+
+                // Create services for this device
+                $personService = new PersonService($client);
+                $faceService = new FaceService($client);
+
+                // Add person
+                $personService->add($person);
+
+                // Upload face
+                $imageData = file_get_contents($faceImagePath);
+                $imageBase64 = base64_encode($imageData);
+                $faceService->uploadFace($person->employeeNo, $imageBase64, 1);
+
+                $results[$deviceName] = [
+                    'success' => true,
+                    'message' => 'Synced successfully',
+                ];
+            } catch (\Exception $e) {
+                $results[$deviceName] = [
+                    'success' => false,
+                    'error' => $e->getMessage(),
+                ];
+            }
+        }
+
+        return $results;
+    }
+}
+```
+
+### Device Manager Methods
+
+The `DeviceManager` provides the following methods:
+
+```php
+use Shaykhnazar\HikvisionIsapi\Facades\Hikvision;
+
+// Get client for specific device (or default if null)
+$client = Hikvision::device('entrance');
+$client = Hikvision::device(); // Uses default device
+
+// Get default device client
+$defaultClient = Hikvision::default();
+
+// Get all available device names
+$devices = Hikvision::availableDevices();
+// Returns: ['primary', 'entrance', 'exit', 'canteen']
+
+// Check if device exists in configuration
+$exists = Hikvision::hasDevice('entrance'); // true or false
+
+// Clear cached clients (useful for testing)
+Hikvision::clearClients();
+```
+
+### Backward Compatibility
+
+The package maintains **100% backward compatibility**. If you're using the default device setup, your existing code will work without any changes:
+
+```php
+use Shaykhnazar\HikvisionIsapi\Services\PersonService;
+
+// This still works - uses default device
+$personService = app(PersonService::class);
+$person = $personService->add($newPerson);
+```
+
+### Loading Devices from Database
+
+For applications that store terminal configurations in database (multi-tenant, dynamic terminals, etc.), use the `DatabaseDeviceProvider`:
+
+#### Step 1: Create Terminals Table
+
+```php
+// Migration: create_terminals_table.php
+Schema::create('terminals', function (Blueprint $table) {
+    $table->id();
+    $table->string('name')->unique(); // Device identifier
+    $table->string('ip');
+    $table->integer('port')->default(80);
+    $table->string('username');
+    $table->string('password');
+    $table->string('protocol')->default('http');
+    $table->integer('timeout')->default(30);
+    $table->boolean('verify_ssl')->default(false);
+    $table->boolean('is_active')->default(true);
+    $table->timestamps();
+});
+```
+
+#### Step 2: Register Database Provider
+
+In your `AppServiceProvider` or custom service provider:
+
+```php
+use Shaykhnazar\HikvisionIsapi\Client\Providers\DatabaseDeviceProvider;
+
+public function register(): void
+{
+    // Bind custom device provider
+    $this->app->singleton('hikvision.device.provider', function ($app) {
+        return new DatabaseDeviceProvider(
+            table: 'terminals',
+            nameColumn: 'name',
+            configColumns: [
+                'ip' => 'ip',
+                'port' => 'port',
+                'username' => 'username',
+                'password' => 'password',
+                'protocol' => 'protocol',
+                'timeout' => 'timeout',
+                'verify_ssl' => 'verify_ssl',
+            ],
+            defaultDevice: 'primary',
+            whereConditions: ['is_active' => true], // Only load active terminals
+            cache: true, // Enable caching
+            cacheTtl: 3600 // Cache for 1 hour
+        );
+    });
+}
+```
+
+#### Step 3: Use Terminals from Database
+
+```php
+use Shaykhnazar\HikvisionIsapi\Facades\Hikvision;
+use Shaykhnazar\HikvisionIsapi\Services\PersonService;
+
+// Get all available terminals from database
+$terminals = Hikvision::availableDevices();
+// Returns: ['entrance', 'exit', 'canteen', 'office'] - loaded from DB
+
+// Use specific terminal
+$entranceClient = Hikvision::device('entrance');
+$personService = new PersonService($entranceClient);
+
+// Add person to entrance terminal
+$personService->add($person);
+```
+
+#### Step 4: Reload Devices When Database Changes
+
+```php
+use Shaykhnazar\HikvisionIsapi\Facades\Hikvision;
+
+// After adding/updating terminals in database
+Hikvision::reload(); // Clears cache and reloads from DB
+```
+
+### Using Eloquent Models with CallbackProvider
+
+For more complex scenarios with Eloquent relationships:
+
+```php
+use Shaykhnazar\HikvisionIsapi\Client\Providers\CallbackDeviceProvider;
+use App\Models\Terminal;
+
+// In your service provider
+$this->app->singleton('hikvision.device.provider', function ($app) {
+    return CallbackDeviceProvider::fromEloquent(
+        query: Terminal::where('status', 'active')
+                      ->where('company_id', auth()->user()->company_id),
+        nameColumn: 'slug',
+        configMap: [
+            'ip' => 'ip_address',
+            'port' => 'port',
+            'username' => 'username',
+            'password' => 'password',
+            'protocol' => 'protocol',
+            'timeout' => 'connection_timeout',
+            'verify_ssl' => 'ssl_enabled',
+        ]
+    );
+});
+```
+
+### Multi-Tenant Support Example
+
+For multi-tenant applications where each tenant has their own terminals:
+
+```php
+use Shaykhnazar\HikvisionIsapi\Client\Providers\CallbackDeviceProvider;
+use App\Models\Terminal;
+
+// In AppServiceProvider
+$this->app->singleton('hikvision.device.provider', function ($app) {
+    return new CallbackDeviceProvider(
+        deviceNamesCallback: function () {
+            // Only load terminals for current tenant
+            $tenantId = auth()->user()->tenant_id;
+            return Terminal::where('tenant_id', $tenantId)
+                          ->where('is_active', true)
+                          ->pluck('name')
+                          ->toArray();
+        },
+        deviceConfigCallback: function (string $deviceName) {
+            $tenantId = auth()->user()->tenant_id;
+            $terminal = Terminal::where('tenant_id', $tenantId)
+                               ->where('name', $deviceName)
+                               ->first();
+
+            if (!$terminal) {
+                return null;
+            }
+
+            return [
+                'ip' => $terminal->ip,
+                'port' => $terminal->port,
+                'username' => $terminal->username,
+                'password' => decrypt($terminal->password), // Decrypt if encrypted
+                'protocol' => $terminal->protocol,
+                'timeout' => $terminal->timeout,
+                'verify_ssl' => $terminal->verify_ssl,
+            ];
+        },
+        defaultDevice: 'primary'
+    );
+});
+```
+
+### Runtime Device Registration
+
+Register devices dynamically at runtime:
+
+```php
+use Shaykhnazar\HikvisionIsapi\Facades\Hikvision;
+
+// Register a temporary device
+Hikvision::registerDevice('temp_device', [
+    'ip' => '192.168.1.150',
+    'port' => 80,
+    'username' => 'admin',
+    'password' => 'password',
+    'protocol' => 'http',
+    'timeout' => 30,
+    'verify_ssl' => false,
+]);
+
+// Use the temporary device
+$client = Hikvision::device('temp_device');
+```
+
+### Switching Providers at Runtime
+
+Change device provider dynamically:
+
+```php
+use Shaykhnazar\HikvisionIsapi\Facades\Hikvision;
+use Shaykhnazar\HikvisionIsapi\Client\Providers\DatabaseDeviceProvider;
+use Shaykhnazar\HikvisionIsapi\Client\Providers\ConfigDeviceProvider;
+
+// Switch to database provider
+$dbProvider = new DatabaseDeviceProvider(table: 'terminals');
+Hikvision::setProvider($dbProvider);
+
+// Now all devices are loaded from database
+$devices = Hikvision::availableDevices();
+
+// Switch back to config provider
+$configProvider = new ConfigDeviceProvider(config('hikvision'));
+Hikvision::setProvider($configProvider);
+```
+
 ## Advanced Usage
 
 ### Batch Operations
