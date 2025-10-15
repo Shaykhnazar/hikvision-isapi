@@ -25,15 +25,20 @@ final readonly class Person
 
     public function toArray(): array
     {
+        // Build Valid object - all fields are required
+        $valid = ['enable' => $this->validEnabled];
+        if ($this->beginTime !== null) {
+            $valid['beginTime'] = $this->beginTime;
+        }
+        if ($this->endTime !== null) {
+            $valid['endTime'] = $this->endTime;
+        }
+
         $userInfo = [
             'employeeNo' => $this->employeeNo,
             'name' => $this->name,
             'userType' => $this->userType->value,
-            'Valid' => array_filter([
-                'enable' => $this->validEnabled,
-                'beginTime' => $this->beginTime,
-                'endTime' => $this->endTime,
-            ], fn($value) => $value !== null),
+            'Valid' => $valid,
         ];
 
         // Add optional fields only if they have values
