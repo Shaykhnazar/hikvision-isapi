@@ -25,24 +25,43 @@ final readonly class Person
 
     public function toArray(): array
     {
-        return [
-            'UserInfo' => [
-                'employeeNo' => $this->employeeNo,
-                'name' => $this->name,
-                'userType' => $this->userType->value,
-                'Valid' => [
-                    'enable' => $this->validEnabled,
-                    'beginTime' => $this->beginTime,
-                    'endTime' => $this->endTime,
-                ],
-                'doorRight' => $this->doorRight,
-                'RightPlan' => $this->rightPlan,
-                'email' => $this->email,
-                'phoneNumber' => $this->phoneNumber,
-                'organizationId' => $this->organizationId,
-                'belongGroup' => $this->belongGroup,
-            ],
+        $userInfo = [
+            'employeeNo' => $this->employeeNo,
+            'name' => $this->name,
+            'userType' => $this->userType->value,
+            'Valid' => array_filter([
+                'enable' => $this->validEnabled,
+                'beginTime' => $this->beginTime,
+                'endTime' => $this->endTime,
+            ], fn($value) => $value !== null),
         ];
+
+        // Add optional fields only if they have values
+        if ($this->doorRight !== null) {
+            $userInfo['doorRight'] = $this->doorRight;
+        }
+
+        if (!empty($this->rightPlan)) {
+            $userInfo['RightPlan'] = $this->rightPlan;
+        }
+
+        if ($this->email !== null) {
+            $userInfo['email'] = $this->email;
+        }
+
+        if ($this->phoneNumber !== null) {
+            $userInfo['phoneNumber'] = $this->phoneNumber;
+        }
+
+        if ($this->organizationId !== null) {
+            $userInfo['organizationId'] = $this->organizationId;
+        }
+
+        if ($this->belongGroup !== null) {
+            $userInfo['belongGroup'] = $this->belongGroup;
+        }
+
+        return ['UserInfo' => $userInfo];
     }
 
     public static function fromArray(array $data): self

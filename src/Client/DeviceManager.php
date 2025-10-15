@@ -179,4 +179,30 @@ class DeviceManager
             $this->provider->clearCache();
         }
     }
+
+    /**
+     * Alias for reload() - clear cache
+     */
+    public function clearCache(): void
+    {
+        $this->reload();
+    }
+
+    /**
+     * Switch to a specific device and return its client
+     *
+     * This is a convenience method that combines hasDevice check and device retrieval
+     *
+     * @param string $deviceName
+     * @return HikvisionClient
+     * @throws HikvisionException if device not found
+     */
+    public function switchDevice(string $deviceName): HikvisionClient
+    {
+        if (!$this->hasDevice($deviceName)) {
+            throw new HikvisionException("Cannot switch to device '{$deviceName}': device not found");
+        }
+
+        return $this->device($deviceName);
+    }
 }
