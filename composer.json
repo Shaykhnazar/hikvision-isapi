@@ -15,7 +15,8 @@
     "illuminate/support": "^11.0|^12.0",
     "guzzlehttp/guzzle": "^7.8",
     "ext-curl": "*",
-    "ext-json": "*"
+    "ext-json": "*",
+    "ext-simplexml": "*"
   },
   "require-dev": {
     "orchestra/testbench": "^9.0|^10.0",
