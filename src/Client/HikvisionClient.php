@@ -63,13 +63,17 @@ class HikvisionClient
     public function post(string $endpoint, array $data = [], array $queryParams = []): array
     {
         $uri = $this->buildUri($endpoint, $queryParams);
-        return $this->httpClient->post($uri, $data, $this->buildOptions());
+        $options = $this->buildOptions();
+        $options['_format'] = $this->format; // Pass format to HttpClient
+        return $this->httpClient->post($uri, $data, $options);
     }
 
     public function put(string $endpoint, array $data = [], array $queryParams = []): array
     {
         $uri = $this->buildUri($endpoint, $queryParams);
-        return $this->httpClient->put($uri, $data, $this->buildOptions());
+        $options = $this->buildOptions();
+        $options['_format'] = $this->format; // Pass format to HttpClient
+        return $this->httpClient->put($uri, $data, $options);
     }
 
     public function delete(string $endpoint, array $queryParams = []): array
@@ -96,12 +100,15 @@ class HikvisionClient
     {
         $device = $this->config['devices'][$this->config['default']];
 
+        $contentType = $this->format === 'xml' ? 'application/xml' : 'application/json';
+        $accept = $this->format === 'xml' ? 'application/xml' : 'application/json';
+
         return array_merge($this->authOptions, [
             'timeout' => $device['timeout'],
             'verify' => $device['verify_ssl'],
             'headers' => [
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
+                'Accept' => $accept,
+                'Content-Type' => $contentType,
             ],
         ]);
     }
