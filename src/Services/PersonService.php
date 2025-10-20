@@ -29,7 +29,7 @@ class PersonService
     public function count(): int
     {
         $response = $this->client->get(self::ENDPOINT_COUNT);
-        return $response['UserInfo']['userNumber'] ?? 0;
+        return $response['UserInfoCount']['userNumber'] ?? 0;
     }
 
     public function search(int $page = 0, int $maxResults = 30): array
