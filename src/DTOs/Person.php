@@ -73,6 +73,17 @@ final readonly class Person
     {
         $userInfo = $data['UserInfo'] ?? $data;
 
+        // Handle belongGroup - API might return string or array
+        $belongGroup = null;
+        if (isset($userInfo['belongGroup'])) {
+            if (is_array($userInfo['belongGroup'])) {
+                $belongGroup = $userInfo['belongGroup'];
+            } elseif (is_string($userInfo['belongGroup']) && !empty($userInfo['belongGroup'])) {
+                // Convert string to array (might be comma-separated or single value)
+                $belongGroup = [$userInfo['belongGroup']];
+            }
+        }
+
         return new self(
             employeeNo: $userInfo['employeeNo'] ?? '',
             name: $userInfo['name'] ?? '',
@@ -85,7 +96,7 @@ final readonly class Person
             email: $userInfo['email'] ?? null,
             phoneNumber: $userInfo['phoneNumber'] ?? null,
             organizationId: $userInfo['organizationId'] ?? null,
-            belongGroup: $userInfo['belongGroup'] ?? null
+            belongGroup: $belongGroup
         );
     }
 }
