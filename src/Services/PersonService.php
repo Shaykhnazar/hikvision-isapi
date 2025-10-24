@@ -82,4 +82,34 @@ class PersonService
 
         return $this->client->put(self::ENDPOINT_DELETE, $data);
     }
+
+    /**
+     * Upload face image for a person using multipart form-data
+     * For Access Control devices that support face recognition
+     *
+     * @param string $employeeNo Employee number
+     * @param string $imageData Binary image data (JPEG)
+     * @return array Response from device
+     */
+    public function uploadFace(string $employeeNo, string $imageData): array
+    {
+        $multipart = [
+            [
+                'name' => 'UserInfo',
+                'contents' => json_encode([
+                    'employeeNo' => $employeeNo,
+                ]),
+            ],
+            [
+                'name' => 'FaceImage',
+                'contents' => $imageData,
+                'filename' => 'face.jpg',
+                'headers' => [
+                    'Content-Type' => 'image/jpeg',
+                ],
+            ],
+        ];
+
+        return $this->client->postMultipart(self::ENDPOINT_MODIFY, $multipart);
+    }
 }
