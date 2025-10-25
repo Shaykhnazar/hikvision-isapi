@@ -62,6 +62,12 @@ class HttpClient implements HttpClientInterface
         return $this->request('POST', $uri, $options);
     }
 
+    public function putMultipart(string $uri, array $multipart = [], array $options = []): array
+    {
+        $options['multipart'] = $multipart;
+        return $this->request('PUT', $uri, $options);
+    }
+
     private function request(string $method, string $uri, array $options): array
     {
         try {

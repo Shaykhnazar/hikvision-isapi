@@ -88,6 +88,12 @@ class HikvisionClient
         return $this->httpClient->postMultipart($uri, $multipart, $this->buildOptions());
     }
 
+    public function putMultipart(string $endpoint, array $multipart = [], array $queryParams = []): array
+    {
+        $uri = $this->buildUri($endpoint, $queryParams);
+        return $this->httpClient->putMultipart($uri, $multipart, $this->buildOptions());
+    }
+
     private function buildUri(string $endpoint, array $queryParams = []): string
     {
         $queryParams['format'] = $this->format;

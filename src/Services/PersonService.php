@@ -110,6 +110,6 @@ class PersonService
             ],
         ];
 
-        return $this->client->postMultipart(self::ENDPOINT_MODIFY, $multipart);
+        return $this->client->putMultipart(self::ENDPOINT_MODIFY, $multipart);
     }
 }
