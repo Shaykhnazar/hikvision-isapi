@@ -1,9 +1,9 @@
 # Hikvision ISAPI Laravel Package
 
-[![Latest Version](https://img.shields.io/badge/version-v1.4.0-brightgreen.svg)](https://github.com/shaykhnazar/hikvision-isapi/releases)
+[![Latest Version](https://img.shields.io/badge/version-v1.5.4-brightgreen.svg)](https://github.com/shaykhnazar/hikvision-isapi/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PHP Version](https://img.shields.io/badge/PHP-%5E8.2-blue.svg)](https://www.php.net/)
-[![Laravel Version](https://img.shields.io/badge/Laravel-%5E12.0-red.svg)](https://laravel.com/)
+[![Laravel Version](https://img.shields.io/badge/Laravel-11%20%7C%2012-red.svg)](https://laravel.com/)
 
 A clean, modern Laravel package for integrating with **Hikvision ISAPI Face Recognition Terminals** and access control devices. Supports multi-device management, universal device providers (config, database, API), multi-tenant architectures, and real-time event webhooks.
 
@@ -25,7 +25,7 @@ A clean, modern Laravel package for integrating with **Hikvision ISAPI Face Reco
 - **Type Safety**: PHP 8.2+ features (enums, readonly properties)
 - **Performance**: Built-in caching with configurable TTL (v1.3.0+)
 - **XML/JSON Support**: Automatic format detection and conversion (v1.4.0+)
-- **Laravel 12**: Full Laravel 12.x support with service provider and facade
+- **Laravel 11/12**: Supports Laravel 11.x and 12.x with service provider and facade
 
 ## Table of Contents
 
@@ -60,10 +60,12 @@ A clean, modern Laravel package for integrating with **Hikvision ISAPI Face Reco
 ## Requirements
 
 - PHP ^8.2
-- Laravel ^12.0
+- Laravel / illuminate/support ^11.0 || ^12.0
 - Guzzle HTTP ^7.8
 - ext-curl
 - ext-json
+- ext-simplexml
+- ext-libxml
 
 ## Installation
 
@@ -1327,11 +1329,17 @@ curl -v --digest -u admin:password http://192.168.1.100/ISAPI/System/deviceInfo
 
 ## Security
 
-- Store credentials in `.env` file (never commit)
-- Use HTTPS in production
-- Enable SSL verification with valid certificates
+See [SECURITY.md](SECURITY.md) for supported versions, vulnerability reporting instructions, and disclosure policy. Do not open public GitHub issues for suspected vulnerabilities; report them privately through the channels described there.
+
+- Store Hikvision device and webhook credentials in environment variables or a secret manager; never commit them
+- Prefer HTTPS/TLS for device and webhook communication where supported
+- Enable SSL certificate verification with valid certificates in production
+- Restrict device access with firewalls, VPNs, or private networks
 - Implement rate limiting on your API endpoints
-- Validate all user input
+- Validate webhook payloads and all user-controlled input
+- Treat XML input as untrusted and parse it defensively
+- Avoid logging credentials, tokens, face images, biometric data, or raw personally identifiable data
+- Rotate device and webhook credentials after suspected compromise
 
 ## Contributing
 
@@ -1344,6 +1352,13 @@ Contributions are welcome! Please follow these guidelines:
 5. Submit a pull request
 
 ## Changelog
+
+For full release history, see [CHANGELOG.md](CHANGELOG.md) and the GitHub releases/tags.
+
+### v1.5.4 (2025-11-05)
+
+- Current stable release on Packagist.
+- Fixed FaceService image filenames so supported face upload/update flows use unique `{fpid}.jpg` filenames.
 
 ### v1.4.0 (2025-10-30)
 
@@ -1401,7 +1416,7 @@ Contributions are welcome! Please follow these guidelines:
 - Full ISAPI support
 - Person, Card, Face, Fingerprint management
 - Access control and event handling
-- Laravel 12.x support
+- Laravel 11/12 support
 - PHP 8.2+ with modern features
 
 ## License
