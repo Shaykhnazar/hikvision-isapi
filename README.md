@@ -3,7 +3,7 @@
 [![Latest Version](https://img.shields.io/badge/version-v1.5.4-brightgreen.svg)](https://github.com/shaykhnazar/hikvision-isapi/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PHP Version](https://img.shields.io/badge/PHP-%5E8.2-blue.svg)](https://www.php.net/)
-[![Laravel Version](https://img.shields.io/badge/Laravel-11%20%7C%2012-red.svg)](https://laravel.com/)
+[![Laravel Version](https://img.shields.io/badge/Laravel-11%20%7C%2012%20%7C%2013-red.svg)](https://laravel.com/)
 
 A clean, modern Laravel package for integrating with **Hikvision ISAPI Face Recognition Terminals** and access control devices. Supports multi-device management, universal device providers (config, database, API), multi-tenant architectures, and real-time event webhooks.
 
@@ -25,7 +25,7 @@ A clean, modern Laravel package for integrating with **Hikvision ISAPI Face Reco
 - **Type Safety**: PHP 8.2+ features (enums, readonly properties)
 - **Performance**: Built-in caching with configurable TTL (v1.3.0+)
 - **XML/JSON Support**: Automatic format detection and conversion (v1.4.0+)
-- **Laravel 11/12**: Supports Laravel 11.x and 12.x with service provider and facade
+- **Laravel 11/12/13**: Supports Laravel 11.x, 12.x, and 13.x with service provider and facade
 
 ## Table of Contents
 
@@ -60,7 +60,8 @@ A clean, modern Laravel package for integrating with **Hikvision ISAPI Face Reco
 ## Requirements
 
 - PHP ^8.2
-- Laravel / illuminate/support ^11.0 || ^12.0
+- Laravel / illuminate/support ^11.0 || ^12.0 || ^13.0
+- PHP ^8.3 is required when installing with Laravel 13
 - Guzzle HTTP ^7.8
 - ext-curl
 - ext-json
@@ -1416,7 +1417,7 @@ For full release history, see [CHANGELOG.md](CHANGELOG.md) and the GitHub releas
 - Full ISAPI support
 - Person, Card, Face, Fingerprint management
 - Access control and event handling
-- Laravel 11/12 support
+- Laravel 11/12/13 support
 - PHP 8.2+ with modern features
 
 ## License

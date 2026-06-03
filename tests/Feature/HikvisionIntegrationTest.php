@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Shaykhnazar\HikvisionIsapi\Tests\Feature;
 
+use PHPUnit\Framework\Attributes\Group;
 use Shaykhnazar\HikvisionIsapi\DTOs\Card;
 use Shaykhnazar\HikvisionIsapi\DTOs\Person;
 use Shaykhnazar\HikvisionIsapi\Enums\UserType;
@@ -18,9 +19,8 @@ use Shaykhnazar\HikvisionIsapi\Tests\TestCase;
  * These tests are skipped by default. To run them:
  * 1. Configure your device credentials in phpunit.xml or .env
  * 2. Run: vendor/bin/phpunit --group integration
- *
- * @group integration
  */
+#[Group('integration')]
 class HikvisionIntegrationTest extends TestCase
 {
     private DeviceService $deviceService;

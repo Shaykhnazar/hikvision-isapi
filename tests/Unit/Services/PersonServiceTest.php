@@ -37,7 +37,7 @@ class PersonServiceTest extends TestCase
             ->with('/ISAPI/AccessControl/UserInfo/Count')
             ->once()
             ->andReturn([
-                'UserInfo' => [
+                'UserInfoCount' => [
                     'userNumber' => 42,
                 ],
             ]);
