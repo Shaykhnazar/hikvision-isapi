@@ -15,4 +15,6 @@ interface HttpClientInterface
     public function delete(string $uri, array $options = []): array;
 
     public function postMultipart(string $uri, array $multipart = [], array $options = []): array;
+
+    public function putMultipart(string $uri, array $multipart = [], array $options = []): array;
 }
