@@ -154,8 +154,8 @@ Yuz rasmi (base64) hech qachon logga, exception xabariga yoki stack trace'ga tus
 |---|---|---|---|---|
 | 1 | CI + Pint + PHPStan | 4 soat | 0 | ✅ |
 | 2 | Mavjud testlarni yashil qilish + qamrovni kengaytirish | 2 soat | 0 | ✅ |
-| 3 | `EventService::between()` iteratori | 3 soat | 1 | ⏳ |
-| 4 | Xato tasnifi (C4) | 2 soat | 1 | ⏳ |
+| 3 | `EventService::between()` iteratori | 3 soat | 1 | ✅ |
+| 4 | Xato tasnifi (C4) | 2 soat | 1 | ✅ qisman |
 | 5 | `DeviceDriver` kontrakti (C3) | 4 soat | 3 | ⏳ |
 | 6 | `DeviceService::profile()` (C2) | 3 soat | 3 | ⏳ |
 | 7 | Redaction helper (C5) | 2 soat | 5 | ⏳ |
@@ -163,6 +163,8 @@ Yuz rasmi (base64) hech qachon logga, exception xabariga yoki stack trace'ga tus
 | 9 | Moslik matritsasi | doimiy | — | ⏳ |
 
 Hammasi bir vaqtda qilinmaydi — Sprint 0 ning texnik qismi shu bilan yopildi.
+
+**#4 nima uchun "qisman":** xato tasnifi faqat aniq ma'lum bo'lgan narsalarga tayanadi — javob umuman keldimi va HTTP status qanday. `DeviceCapacityException` va `UnsupportedOperationException` hozircha qo'shilmadi, chunki ular Hikvision'ning `subStatusCode` qiymatlarini bilishni talab qiladi, bu qiymatlar esa model va firmware bo'yicha farq qiladi. Ularni real qurilmadan ko'rmasdan yozish — taxmin qilish bo'lardi (B1/B2 bilan bir xil siyosat).
 
 ## F. Keyingi to'siq
 

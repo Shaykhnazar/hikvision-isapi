@@ -5,13 +5,18 @@ declare(strict_types=1);
 namespace Shaykhnazar\HikvisionIsapi\Tests\Unit\Client;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shaykhnazar\HikvisionIsapi\Client\HttpClient;
+use Shaykhnazar\HikvisionIsapi\Exceptions\AuthenticationException;
+use Shaykhnazar\HikvisionIsapi\Exceptions\DeviceBusyException;
+use Shaykhnazar\HikvisionIsapi\Exceptions\DeviceUnreachableException;
 use Shaykhnazar\HikvisionIsapi\Exceptions\HikvisionException;
 
 class HttpClientTest extends TestCase
@@ -183,6 +188,76 @@ class HttpClientTest extends TestCase
         } catch (HikvisionException $e) {
             $this->assertStringContainsString('notSupport', $e->getMessage());
             $this->assertSame(403, $e->getCode());
+        }
+    }
+
+    public function test_connection_failure_is_retryable_and_unreachable(): void
+    {
+        $client = $this->makeClient([
+            new ConnectException('cURL error 28: Operation timed out', new Request('GET', 'http://device.local')),
+        ]);
+
+        try {
+            $client->get('http://device.local/ISAPI/System/deviceInfo');
+            $this->fail('Expected DeviceUnreachableException was not thrown.');
+        } catch (DeviceUnreachableException $e) {
+            $this->assertTrue($e->isRetryable());
+            $this->assertNull($e->statusCode());
+        }
+    }
+
+    public function test_401_is_an_authentication_failure_and_is_not_retryable(): void
+    {
+        $client = $this->makeClient([
+            new Response(401, ['Content-Type' => 'application/xml'], '<ResponseStatus><statusCode>4</statusCode></ResponseStatus>'),
+        ]);
+
+        try {
+            $client->get('http://device.local/ISAPI/System/deviceInfo');
+            $this->fail('Expected AuthenticationException was not thrown.');
+        } catch (AuthenticationException $e) {
+            $this->assertFalse($e->isRetryable());
+            $this->assertSame(401, $e->statusCode());
+            $this->assertStringContainsString('statusCode', (string) $e->responseBody());
+        }
+    }
+
+    /**
+     * @return list<array{int}>
+     */
+    public static function busyStatusProvider(): array
+    {
+        return [[408], [429], [500], [503]];
+    }
+
+    #[DataProvider('busyStatusProvider')]
+    public function test_transient_statuses_are_retryable(int $status): void
+    {
+        $client = $this->makeClient([
+            new Response($status, ['Content-Type' => 'application/xml'], '<ResponseStatus/>'),
+        ]);
+
+        try {
+            $client->get('http://device.local/ISAPI/System/deviceInfo');
+            $this->fail("Expected DeviceBusyException for status {$status}.");
+        } catch (DeviceBusyException $e) {
+            $this->assertTrue($e->isRetryable());
+            $this->assertSame($status, $e->statusCode());
+        }
+    }
+
+    public function test_other_client_errors_stay_generic_and_are_not_retryable(): void
+    {
+        $client = $this->makeClient([
+            new Response(403, ['Content-Type' => 'application/xml'], '<ResponseStatus><subStatusCode>notSupport</subStatusCode></ResponseStatus>'),
+        ]);
+
+        try {
+            $client->get('http://device.local/ISAPI/AccessControl/FingerPrint/Capabilities');
+            $this->fail('Expected HikvisionException was not thrown.');
+        } catch (HikvisionException $e) {
+            $this->assertFalse($e->isRetryable());
+            $this->assertSame(403, $e->statusCode());
         }
     }
 }

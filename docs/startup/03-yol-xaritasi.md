@@ -55,7 +55,9 @@ Tafsilotlar: `04-paket-mustahkamlash.md` → A bo'limi.
 
 **Eng katta texnik riskni birinchi bo'lib o'ldiramiz.** Agar agent ishlamasa, qolgan hamma narsa ma'nosiz.
 
-- [ ] `davomat-agent` repo, Laravel Zero + Docker image
+- [x] Protokol spetsifikatsiyasi: `05-agent-protokoli.md`
+- [x] SDK tomonidagi poydevor: `EventService::between()` (backfill) va xato tasnifi (retry siyosati)
+- [ ] `davomat-agent` repo, Laravel Zero + Docker image — **repo yaratilishini kutmoqda**
 - [ ] Bulutda faqat 4 ta endpoint uchun minimal Laravel app (`enroll`, `jobs`, `result`, `heartbeat`) — UI yo'q
 - [ ] Agent enroll → heartbeat → long-poll siklini yopish
 - [ ] Agent lokal HTTP listener (`:9080`), qurilma webhook'ini qabul qiladi

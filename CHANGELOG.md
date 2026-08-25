@@ -18,7 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Laravel Pint configuration (`pint.json`) and PHPStan/Larastan level 5 configuration (`phpstan.neon`), both passing with no baseline.
 - `HttpClient` now accepts an optional pre-configured Guzzle `Client`, so custom middleware, retry policies or a test handler can be injected. The default behaviour is unchanged.
 - Composer scripts: `composer lint`, `composer fix`, `composer analyse`, `composer test` and `composer ci`.
-- Tests for `HttpClient`, `HikvisionClient`, `DeviceManager`, `CallbackDeviceProvider` and `DigestAuthenticator`, covering XML/JSON parsing, URI and header building, device resolution and error paths (31 to 68 tests).
+- Tests for `HttpClient`, `HikvisionClient`, `DeviceManager`, `CallbackDeviceProvider`, `DigestAuthenticator` and `EventService`, covering XML/JSON parsing, URI and header building, device resolution, error classification and event pagination (31 to 88 tests).
+- `EventService::between()`: iterates every access-control event in a time window as a generator, reusing one `searchID` across pages, advancing by the number of records actually returned, and stopping when the device stops reporting `MORE`. This is the primitive for backfilling events that webhook delivery dropped.
+- `EventService::search()` accepts an optional `$searchId`, so callers that paginate can keep one search session across pages. Omitting it keeps the previous behaviour.
+- Exception taxonomy for retry decisions: `HikvisionException::isRetryable()`, `statusCode()` and `responseBody()`, with new `DeviceUnreachableException` (connection failures, retryable) and `DeviceBusyException` (HTTP 408/429/5xx, retryable). HTTP 401 now raises the existing `AuthenticationException`.
 
 ### Changed
 - Malformed XML from a device no longer raises a PHP warning: libxml errors are captured internally and the raw body is returned instead.

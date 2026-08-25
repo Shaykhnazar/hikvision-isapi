@@ -5,8 +5,13 @@ declare(strict_types=1);
 namespace Shaykhnazar\HikvisionIsapi\Client;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use Shaykhnazar\HikvisionIsapi\Client\Contracts\HttpClientInterface;
+use Shaykhnazar\HikvisionIsapi\Exceptions\AuthenticationException;
+use Shaykhnazar\HikvisionIsapi\Exceptions\DeviceBusyException;
+use Shaykhnazar\HikvisionIsapi\Exceptions\DeviceUnreachableException;
 use Shaykhnazar\HikvisionIsapi\Exceptions\HikvisionException;
 
 class HttpClient implements HttpClientInterface
@@ -95,22 +100,49 @@ class HttpClient implements HttpClientInterface
             // Fallback: return raw body
             return ['raw' => $body];
         } catch (GuzzleException $e) {
-            $errorMessage = "HTTP request failed: {$e->getMessage()}";
-
-            // Try to get response body for better error messages
-            if (method_exists($e, 'getResponse') && $e->getResponse()) {
-                $responseBody = (string) $e->getResponse()->getBody();
-                if (!empty($responseBody)) {
-                    $errorMessage .= "\nResponse: {$responseBody}";
-                }
-            }
-
-            throw new HikvisionException(
-                $errorMessage,
-                $e->getCode(),
-                $e
-            );
+            throw $this->classify($e);
         }
+    }
+
+    /**
+     * Turn a transport failure into the most specific exception we can justify.
+     *
+     * Classification is deliberately based only on what is certain: whether a
+     * response was received at all, and its HTTP status. Hikvision also encodes
+     * detail in `subStatusCode` (unsupported capability, storage full, and so
+     * on), but those strings vary by model and firmware, so they are not used
+     * here until they can be confirmed against real hardware.
+     */
+    private function classify(GuzzleException $e): HikvisionException
+    {
+        $message = "HTTP request failed: {$e->getMessage()}";
+
+        if ($e instanceof ConnectException) {
+            return new DeviceUnreachableException($message, $e->getCode(), $e);
+        }
+
+        $response = $e instanceof RequestException ? $e->getResponse() : null;
+
+        if ($response === null) {
+            return new HikvisionException($message, $e->getCode(), $e);
+        }
+
+        $status = $response->getStatusCode();
+        $body = (string) $response->getBody();
+
+        if ($body !== '') {
+            $message .= "\nResponse: {$body}";
+        }
+
+        if ($status === 401) {
+            return new AuthenticationException($message, $e->getCode(), $e, $status, $body);
+        }
+
+        if ($status === 408 || $status === 429 || $status >= 500) {
+            return new DeviceBusyException($message, $e->getCode(), $e, $status, $body);
+        }
+
+        return new HikvisionException($message, $e->getCode(), $e, $status, $body);
     }
 
     /**
