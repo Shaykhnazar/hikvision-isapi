@@ -180,7 +180,9 @@ Ya'ni **laravel/framework ning 11.x qatoridagi barcha relizlarda yopilmagan xavf
 
 **Nega lokal tekshiruvda chiqmadi:** ishlab chiqish muhitidagi Composer 2.8.12 — bu siyosat unda yo'q. Runner'da yangiroq Composer. Bu tekshiruv metodikasidagi kamchilik: kelajakda CI muhitiga yaqinroq versiyada sinash kerak.
 
-**Hozirgi qaror (vaqtinchalik):** Laravel 11 CI matritsasidan chiqarildi, shunda CI haqiqatan o'rnatilishi mumkin bo'lgan narsani tekshiradi. `composer.json` esa hali ham `illuminate/support: ^11.0` ni e'lon qiladi — ya'ni **e'lon qilingan, lekin sinalmaydigan qo'llab-quvvatlash**. Bu holat uzoq turmasligi kerak.
+**QAROR (2026-08-25): Laravel 11 qo'llab-quvvatlashi butunlay olib tashlandi.** `composer.json` endi `illuminate/support: ^12.0|^13.0` va `orchestra/testbench: ^10.0|^11.0` talab qiladi. Bu buzuvchi o'zgarish, shuning uchun keyingi reliz **major (v2.0.0)** bo'ladi; Laravel 11 da qolgan loyihalar paketning 1.x qatorida qoladi. Sabab: Laravel 11 ni hozirgi Composer bilan o'rnatishning iloji yo'q, ya'ni e'lon qilingan qo'llab-quvvatlash amalda mavjud emas edi.
+
+**Oldingi vaqtinchalik chora:** Laravel 11 CI matritsasidan chiqarildi, shunda CI haqiqatan o'rnatilishi mumkin bo'lgan narsani tekshiradi. `composer.json` esa hali ham `illuminate/support: ^11.0` ni e'lon qiladi — ya'ni **e'lon qilingan, lekin sinalmaydigan qo'llab-quvvatlash**. Bu holat uzoq turmasligi kerak.
 
 **Hal qilinishi kerak bo'lgan savol:** Laravel 11 qo'llab-quvvatlashi butunlay olib tashlansinmi?
 

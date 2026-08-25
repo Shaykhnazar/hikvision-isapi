@@ -7,10 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed (BREAKING)
+- **Dropped Laravel 11 support.** `illuminate/support` now requires `^12.0|^13.0` and `orchestra/testbench` requires `^10.0|^11.0`. Every `laravel/framework` 11.x release carries unresolved security advisories, and Composer 2.9+ refuses to resolve advisory-affected packages by default, so Laravel 11 can no longer be installed on a current toolchain and could not be tested. Projects still on Laravel 11 should stay on the 1.x line of this package.
+- Unused private constants `EventService::ENDPOINT_ALERT_STREAM` and `FingerprintService::ENDPOINT_MODIFY`. Both private, so there is no public API change.
+
 ### Added
 - Laravel 13 / `illuminate/support` ^13.0 compatibility.
 - Orchestra Testbench ^11.0 support for Laravel 13 package testing.
-- GitHub Actions CI: a PHP 8.2/8.3/8.4 x Laravel 11/12/13 test matrix, plus a job for code style, static analysis and dependency auditing.
+- GitHub Actions CI: a PHP 8.2/8.3/8.4 x Laravel 12/13 test matrix, plus a job for code style, static analysis and dependency auditing.
 - Laravel Pint configuration (`pint.json`) and PHPStan/Larastan level 5 configuration (`phpstan.neon`), both passing with no baseline.
 - `HttpClient` now accepts an optional pre-configured Guzzle `Client`, so custom middleware, retry policies or a test handler can be injected. The default behaviour is unchanged.
 - Composer scripts: `composer lint`, `composer fix`, `composer analyse`, `composer test` and `composer ci`.
@@ -21,9 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `minimum-stability` lowered from `dev` to `stable` now that Laravel 13 is released.
 - Updated `guzzlehttp/guzzle` to 7.15.5, `guzzlehttp/psr7` to 2.13.1 and `league/commonmark` to 2.10.0, clearing all advisories reported by `composer audit`.
 - Whole codebase formatted with Pint (Laravel preset). No behavioural change.
-
-### Removed
-- Unused private constants `EventService::ENDPOINT_ALERT_STREAM` and `FingerprintService::ENDPOINT_MODIFY`. Both were private, so there is no public API change.
 
 ## [1.4.0] - 2025-10-30
 
