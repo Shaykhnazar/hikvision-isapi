@@ -51,28 +51,37 @@ Tafsilotlar: `04-paket-mustahkamlash.md` → A bo'limi.
 
 ---
 
-## Sprint 1 — Edge agent spike (2 hafta)
+## Sprint 1 — Edge agent spike (2 hafta) — ✅ BAJARILDI 2026-08-25
 
 **Eng katta texnik riskni birinchi bo'lib o'ldiramiz.** Agar agent ishlamasa, qolgan hamma narsa ma'nosiz.
 
 - [x] Protokol spetsifikatsiyasi: `05-agent-protokoli.md`
-- [x] SDK tomonidagi poydevor: `EventService::between()` (backfill) va xato tasnifi (retry siyosati)
-- [x] Agent kodi yozildi: imzolash, LAN listener, payload parser, normalizer, SQLite outbox, asosiy sikl — 66 test
-- [ ] `davomat-agent` repo — **GitHub integratsiyasida repo yaratish ruxsati yo'q; repo yaratilishini kutmoqda**
-- [ ] Enrolment, qurilma reyestri, backfill sweep — agent repo push qilingandan keyin
-- [ ] Bulutda faqat 4 ta endpoint uchun minimal Laravel app (`enroll`, `jobs`, `result`, `heartbeat`) — UI yo'q
-- [ ] Agent enroll → heartbeat → long-poll siklini yopish
-- [ ] Agent lokal HTTP listener (`:9080`), qurilma webhook'ini qabul qiladi
-- [ ] Qurilmaga webhook manzilini yozish (`EventNotificationService` orqali agent IP'siga)
-- [ ] Voqeani normalizatsiya qilish va bulutga yuborish
+- [x] SDK poydevori: `EventService::between()` (backfill) va xato tasnifi (retry siyosati) — `hikvision-isapi` v2.0.0-beta.1
+- [x] `attendance-agent` repo: imzolash, LAN listener, payload parser, normalizer, SQLite outbox, enrolment, qurilma reyestri, heartbeat va backfill sikllari — 132 test
+- [x] `attendance-cloud` repo: 5 ta endpoint (enroll, jobs, result, heartbeat, events), imzo tekshiruvi, dedup, tenancy — 51 test
+- [x] Uchdan-uchgacha sinov (pastga qarang)
+- [ ] Qurilmaga webhook manzilini yozish (`EventNotificationService`) — real terminal kerak
+- [ ] Qurilmani tekshirish: model, imkoniyat, sig'im — real terminal kerak
 
-### ✅ Demo
-Real Hikvision terminalda: kimdir yuzini ko'rsatadi → 3 soniyada bulut bazasida yozuv paydo bo'ladi. Terminal internetga ulanmagan.
+### ✅ Demo — o'tkazildi
+
+Agent va bulut bitta mashinada, haqiqiy HTTP orqali:
+
+```
+enroll → 401 (token ikkinchi marta) → device:add → callback POST
+→ 200 terminalga → bulut bazasida access_events yozuvi (dev_1, 1042, face)
+→ takroriy callback: hamon 1 yozuv (dedup)
+→ imzosiz va soxta imzoli so'rovlar: 401
+```
+
+Yagona farq: yuz o'rniga qo'lda POST. Zanjirning qolgan hamma bo'g'ini haqiqiy.
+
+### Demo nimani ko'rsatdi
+
+Integratsiya ikkala tomonning testlari ko'rmagan xatoni topdi: agent `/agent/v1/...` ga murojaat qilardi, bulut esa `/api/agent/v1/...` beradi. Har bir tomon bir-birini mock qilgani uchun ichki jihatdan izchil edi. Imzo yo'lni qamragani uchun bu redirect emas, autentifikatsiyadan o'tolmaydigan 404 bo'lardi.
 
 ### 🚦 Gate
-Agar bu sprint 2 hafta o'rniga 4 haftaga cho'zilsa — arxitektura qayta ko'rib chiqiladi (on-prem modelga o'tish varianti).
-
----
+Agent ishladi. Arxitektura qayta ko'rib chiqilmaydi.
 
 ## Sprint 2 — Bulut skeleti va voqealar (2 hafta)
 

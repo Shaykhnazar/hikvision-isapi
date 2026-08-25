@@ -9,6 +9,15 @@ Ushbu katalog `hikvision-isapi` paketini to'laqonli mahsulotga aylantirish rejas
 | [`02-arxitektura.md`](02-arxitektura.md) | Edge agent arxitekturasi, uchta repo, sync modeli, voqealar oqimi, ma'lumotlar modeli, xavfsizlik |
 | [`03-yol-xaritasi.md`](03-yol-xaritasi.md) | 6 sprint, har birida demo qilinadigan natija va o'tish mezonlari |
 | [`04-paket-mustahkamlash.md`](04-paket-mustahkamlash.md) | **Shu repoda** bajariladigan ish: CI, testlar, topilgan xatolar, SDK qo'shimchalari |
+| [`05-agent-protokoli.md`](05-agent-protokoli.md) | Agent ↔ bulut shartnomasi: enrolment, imzolash, vazifalar, voqealar |
+
+## Repolar
+
+| Repo | Rol | Holat |
+|---|---|---|
+| `hikvision-isapi` | MIT ochiq SDK, distribusiya kanali | v2.0.0-beta.1 |
+| `attendance-agent` | Mijoz LAN'idagi edge agent (yopiq) | Sprint 1 yakunlandi |
+| `attendance-cloud` | Bulut xizmati (yopiq) | Agent API tayyor, UI yo'q |
 
 ## Qabul qilingan asosiy qarorlar
 

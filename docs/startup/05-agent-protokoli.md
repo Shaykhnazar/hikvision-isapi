@@ -21,7 +21,7 @@ Bu hujjat agent va bulut o'rtasidagi shartnomani belgilaydi. Uning maqsadi — a
 Ro'yxatdan o'tish (bir marta):
 
 ```
-POST /agent/v1/enroll
+POST /api/agent/v1/enroll
 { "enroll_token": "...", "agent_version": "0.1.0", "hostname": "kassa-pc" }
 → { "agent_id": "agt_...", "agent_secret": "...", "branch_id": "brn_..." }
 ```
@@ -40,12 +40,20 @@ Bulut: `agent_id` topilmasa yoki imzo mos kelmasa → `401`. Timestamp oynadan t
 
 `agent_secret` 90 kunda aylantiriladi: bulut heartbeat javobida yangi sirni beradi, agent uni saqlaydi va keyingi so'rovdan boshlab ishlatadi.
 
+> **Tuzatish (2026-08-25):** yo'llar `/agent/v1/...` dan `/api/agent/v1/...` ga
+> o'zgartirildi. Bulut Laravel'da yozilgan va agent API'sini `api` prefiksi
+> ostida beradi. Prefiks kosmetik emas — imzolanadigan kanonik satr so'rov
+> yo'lini o'z ichiga oladi, ya'ni nomuvofiqlik redirect emas, umuman
+> autentifikatsiyadan o'tolmaydigan 404 bo'ladi. Buni faqat agent va bulutni
+> birinchi marta haqiqiy ulaganda topdik: ikkala tomonning testlari ham
+> bir-birini mock qilgani uchun jim turgan edi.
+
 ## 3. Endpointlar
 
 ### 3.1. Heartbeat — har 30 soniyada
 
 ```
-POST /agent/v1/heartbeat
+POST /api/agent/v1/heartbeat
 {
   "agent_version": "0.1.0",
   "devices": [
@@ -63,7 +71,7 @@ Qurilma holatlari: `online` | `offline` | `error`. `error` — qurilma javob ber
 ### 3.2. Vazifalarni olish — long-poll
 
 ```
-GET /agent/v1/jobs?wait=30
+GET /api/agent/v1/jobs?wait=30
 → { "jobs": [ { ... }, { ... } ] }
 ```
 
@@ -74,7 +82,7 @@ Bir martada ko'pi bilan 20 vazifa. Bulut qaytargan vazifalarni `dispatched` deb 
 ### 3.3. Natijani qaytarish
 
 ```
-POST /agent/v1/jobs/{job_id}/result
+POST /api/agent/v1/jobs/{job_id}/result
 {
   "idempotency_key": "sha256(...)",
   "status": "succeeded",              # succeeded | failed | unsupported
@@ -90,7 +98,7 @@ Bir xil `idempotency_key` bilan takroriy natija `200` qaytaradi, lekin holatni o
 ### 3.4. Voqealarni yuborish — to'plam bilan
 
 ```
-POST /agent/v1/events
+POST /api/agent/v1/events
 {
   "events": [
     {
