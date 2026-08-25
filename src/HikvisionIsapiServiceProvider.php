@@ -9,15 +9,15 @@ use Shaykhnazar\HikvisionIsapi\Authentication\Contracts\AuthenticatorInterface;
 use Shaykhnazar\HikvisionIsapi\Authentication\DigestAuthenticator;
 use Shaykhnazar\HikvisionIsapi\Client\Contracts\HttpClientInterface;
 use Shaykhnazar\HikvisionIsapi\Client\DeviceManager;
-use Shaykhnazar\HikvisionIsapi\Client\HttpClient;
 use Shaykhnazar\HikvisionIsapi\Client\HikvisionClient;
+use Shaykhnazar\HikvisionIsapi\Client\HttpClient;
 
 class HikvisionIsapiServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/Config/hikvision.php',
+            __DIR__.'/Config/hikvision.php',
             'hikvision'
         );
 
@@ -55,7 +55,7 @@ class HikvisionIsapiServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/Config/hikvision.php' => config_path('hikvision.php'),
+                __DIR__.'/Config/hikvision.php' => config_path('hikvision.php'),
             ], 'hikvision-config');
         }
     }
@@ -74,7 +74,7 @@ class HikvisionIsapiServiceProvider extends ServiceProvider
 
         foreach ($services as $service) {
             $class = "Shaykhnazar\\HikvisionIsapi\\Services\\{$service}";
-            $this->app->singleton($class, fn($app) => new $class($app->make(HikvisionClient::class)));
+            $this->app->singleton($class, fn ($app) => new $class($app->make(HikvisionClient::class)));
         }
     }
 }

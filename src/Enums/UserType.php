@@ -12,7 +12,7 @@ enum UserType: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::NORMAL => 'Normal User',
             self::VISITOR => 'Visitor',
             self::BLOCKLIST => 'Blocklist',

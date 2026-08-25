@@ -9,8 +9,11 @@ use Shaykhnazar\HikvisionIsapi\Client\HikvisionClient;
 class FaceService
 {
     private const ENDPOINT_FDLIB = '/ISAPI/Intelligent/FDLib';
+
     private const ENDPOINT_CAPABILITIES = '/ISAPI/Intelligent/FDLib/capabilities';
+
     private const ENDPOINT_FACE_SEARCH = '/ISAPI/Intelligent/FDLib/FDSearch';
+
     private const ENDPOINT_FACE_DATA_RECORD = '/ISAPI/Intelligent/FDLib/FaceDataRecord';
 
     public function __construct(
@@ -50,17 +53,18 @@ class FaceService
     public function deleteFace(int $fdid, int $fpid): array
     {
         $endpoint = "/ISAPI/Intelligent/FDLib/{$fdid}/picture/{$fpid}";
+
         return $this->client->delete($endpoint);
     }
 
     /**
      * Search for face data
      *
-     * @param int $page Page number (searchResultPosition = page * maxResults)
-     * @param int $maxResults Maximum results per page (1-30)
-     * @param string $faceLibType Face library type (e.g., 'blackFD')
-     * @param int|null $fdid Face library ID
-     * @param string|null $fpid Face picture ID
+     * @param  int  $page  Page number (searchResultPosition = page * maxResults)
+     * @param  int  $maxResults  Maximum results per page (1-30)
+     * @param  string  $faceLibType  Face library type (e.g., 'blackFD')
+     * @param  int|null  $fdid  Face library ID
+     * @param  string|null  $fpid  Face picture ID
      * @return array Search results
      */
     public function searchFace(
@@ -90,8 +94,8 @@ class FaceService
     /**
      * Delete face search data
      *
-     * @param int $fdid Face library ID
-     * @param string $faceLibType Face library type (e.g., 'blackFD')
+     * @param  int  $fdid  Face library ID
+     * @param  string  $faceLibType  Face library type (e.g., 'blackFD')
      * @return array Deletion result
      */
     public function deleteFaceSearch(int $fdid, string $faceLibType = 'blackFD'): array
@@ -101,18 +105,18 @@ class FaceService
             'faceLibType' => $faceLibType,
         ];
 
-        return $this->client->put(self::ENDPOINT_FACE_SEARCH . '/Delete', [], $queryParams);
+        return $this->client->put(self::ENDPOINT_FACE_SEARCH.'/Delete', [], $queryParams);
     }
 
     /**
      * Upload face data record with image file
      * Official Hikvision ISAPI endpoint for adding face pictures
      *
-     * @param int $fdid Face library ID (1 for visible light library)
-     * @param string $fpid Face picture ID (should match employee number, max 63 bytes)
-     * @param string $imageContent Binary image content (JPEG format)
-     * @param string $faceLibType Face library type: 'blackFD' (list library), 'staticFD' (static library), 'infraredFD' (IR library)
-     * @param array $additionalData Optional additional fields (name, gender, bornTime, etc.)
+     * @param  int  $fdid  Face library ID (1 for visible light library)
+     * @param  string  $fpid  Face picture ID (should match employee number, max 63 bytes)
+     * @param  string  $imageContent  Binary image content (JPEG format)
+     * @param  string  $faceLibType  Face library type: 'blackFD' (list library), 'staticFD' (static library), 'infraredFD' (IR library)
+     * @param  array  $additionalData  Optional additional fields (name, gender, bornTime, etc.)
      * @return array Upload result with FPID
      */
     public function uploadFaceDataRecord(
@@ -166,9 +170,9 @@ class FaceService
     /**
      * Count face records in a specific face picture library
      *
-     * @param int $fdid Face library ID
-     * @param string $faceLibType Face library type ('blackFD', 'staticFD', 'infraredFD')
-     * @param string|null $terminalNo Optional terminal number
+     * @param  int  $fdid  Face library ID
+     * @param  string  $faceLibType  Face library type ('blackFD', 'staticFD', 'infraredFD')
+     * @param  string|null  $terminalNo  Optional terminal number
      * @return int Number of face records in the specified library
      */
     public function countFaceRecordsInLibrary(
@@ -185,7 +189,7 @@ class FaceService
             $queryParams['terminalNo'] = $terminalNo;
         }
 
-        $endpoint = '/ISAPI/Intelligent/FDLib/Count?' . http_build_query($queryParams);
+        $endpoint = '/ISAPI/Intelligent/FDLib/Count?'.http_build_query($queryParams);
         $response = $this->client->get($endpoint);
 
         return $response['recordDataNumber'] ?? 0;
@@ -196,11 +200,11 @@ class FaceService
      * This endpoint should be called after adding face via uploadFaceDataRecord()
      * to properly link the face picture to the person record
      *
-     * @param int $fdid Face library ID
-     * @param string $fpid Face picture ID (matches employee number)
-     * @param string $imageContent Binary image content (JPEG format)
-     * @param string $faceLibType Face library type ('blackFD', 'staticFD', 'infraredFD')
-     * @param array $additionalData Optional additional fields
+     * @param  int  $fdid  Face library ID
+     * @param  string  $fpid  Face picture ID (matches employee number)
+     * @param  string  $imageContent  Binary image content (JPEG format)
+     * @param  string  $faceLibType  Face library type ('blackFD', 'staticFD', 'infraredFD')
+     * @param  array  $additionalData  Optional additional fields
      * @return array Setup result
      */
     public function setupFaceData(
@@ -244,11 +248,11 @@ class FaceService
      * Edit/modify face records in the face picture library
      * Can update face image and/or metadata
      *
-     * @param int $fdid Face library ID
-     * @param string $fpid Face picture ID
-     * @param string $imageContent Binary image content (JPEG format)
-     * @param string $faceLibType Face library type ('blackFD', 'staticFD', 'infraredFD')
-     * @param array $additionalData Optional fields to update
+     * @param  int  $fdid  Face library ID
+     * @param  string  $fpid  Face picture ID
+     * @param  string  $imageContent  Binary image content (JPEG format)
+     * @param  string  $faceLibType  Face library type ('blackFD', 'staticFD', 'infraredFD')
+     * @param  array  $additionalData  Optional fields to update
      * @return array Modification result
      */
     public function modifyFaceRecord(

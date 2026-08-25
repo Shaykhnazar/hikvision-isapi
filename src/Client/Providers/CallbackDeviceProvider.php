@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Shaykhnazar\HikvisionIsapi\Client\Providers;
 
+use Illuminate\Database\Eloquent\Builder;
 use Shaykhnazar\HikvisionIsapi\Client\Contracts\DeviceProviderInterface;
 
 /**
@@ -29,10 +30,10 @@ use Shaykhnazar\HikvisionIsapi\Client\Contracts\DeviceProviderInterface;
 class CallbackDeviceProvider implements DeviceProviderInterface
 {
     /**
-     * @param callable $deviceNamesCallback Callback that returns array of device names
-     * @param callable $deviceConfigCallback Callback that returns device config for given name
-     * @param string|callable|null $defaultDevice Default device name, callback returning device name, or null
-     * @param callable|null $hasDeviceCallback Optional callback to check device existence
+     * @param  callable  $deviceNamesCallback  Callback that returns array of device names
+     * @param  callable  $deviceConfigCallback  Callback that returns device config for given name
+     * @param  string|callable|null  $defaultDevice  Default device name, callback returning device name, or null
+     * @param  callable|null  $hasDeviceCallback  Optional callback to check device existence
      */
     public function __construct(
         private $deviceNamesCallback,
@@ -99,11 +100,10 @@ class CallbackDeviceProvider implements DeviceProviderInterface
      * );
      * ```
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $nameColumn Column to use as device name
-     * @param array $configMap Mapping of config keys to model attributes
-     * @param string $defaultDevice Default device name
-     * @return self
+     * @param  Builder  $query
+     * @param  string  $nameColumn  Column to use as device name
+     * @param  array  $configMap  Mapping of config keys to model attributes
+     * @param  string  $defaultDevice  Default device name
      */
     public static function fromEloquent(
         $query,
@@ -118,6 +118,7 @@ class CallbackDeviceProvider implements DeviceProviderInterface
             if ($terminals === null) {
                 $terminals = $query->get();
             }
+
             return $terminals;
         };
 
@@ -171,17 +172,16 @@ class CallbackDeviceProvider implements DeviceProviderInterface
      * ]);
      * ```
      *
-     * @param array $devices Array of device configurations
-     * @param string $defaultDevice Default device name
-     * @return self
+     * @param  array  $devices  Array of device configurations
+     * @param  string  $defaultDevice  Default device name
      */
     public static function fromArray(array $devices, string $defaultDevice = 'primary'): self
     {
         return new self(
-            deviceNamesCallback: fn() => array_keys($devices),
-            deviceConfigCallback: fn($name) => $devices[$name] ?? null,
+            deviceNamesCallback: fn () => array_keys($devices),
+            deviceConfigCallback: fn ($name) => $devices[$name] ?? null,
             defaultDevice: $defaultDevice,
-            hasDeviceCallback: fn($name) => isset($devices[$name])
+            hasDeviceCallback: fn ($name) => isset($devices[$name])
         );
     }
 
@@ -196,9 +196,8 @@ class CallbackDeviceProvider implements DeviceProviderInterface
      * );
      * ```
      *
-     * @param string $cacheKey Cache key for device list
-     * @param int $ttl Cache TTL in seconds
-     * @return self
+     * @param  string  $cacheKey  Cache key for device list
+     * @param  int  $ttl  Cache TTL in seconds
      */
     public static function fromCache(string $cacheKey = 'hikvision_devices', int $ttl = 3600): self
     {
@@ -207,14 +206,14 @@ class CallbackDeviceProvider implements DeviceProviderInterface
                 return cache()->remember(
                     "{$cacheKey}_names",
                     $ttl,
-                    fn() => \DB::table('terminals')->pluck('name')->toArray()
+                    fn () => \DB::table('terminals')->pluck('name')->toArray()
                 );
             },
             deviceConfigCallback: function (string $deviceName) use ($cacheKey, $ttl) {
                 return cache()->remember(
                     "{$cacheKey}_{$deviceName}",
                     $ttl,
-                    fn() => \DB::table('terminals')->where('name', $deviceName)->first()
+                    fn () => \DB::table('terminals')->where('name', $deviceName)->first()
                 );
             }
         );

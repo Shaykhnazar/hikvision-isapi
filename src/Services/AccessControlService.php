@@ -9,6 +9,7 @@ use Shaykhnazar\HikvisionIsapi\Client\HikvisionClient;
 class AccessControlService
 {
     private const ENDPOINT_DOOR_CONTROL = '/ISAPI/AccessControl/RemoteControl/door';
+
     private const ENDPOINT_DOOR_STATUS = '/ISAPI/AccessControl/DoorStatus';
 
     public function __construct(
@@ -23,7 +24,7 @@ class AccessControlService
             ],
         ];
 
-        return $this->client->put(self::ENDPOINT_DOOR_CONTROL . "/{$doorNo}", $data);
+        return $this->client->put(self::ENDPOINT_DOOR_CONTROL."/{$doorNo}", $data);
     }
 
     public function closeDoor(int $doorNo): array
@@ -34,11 +35,11 @@ class AccessControlService
             ],
         ];
 
-        return $this->client->put(self::ENDPOINT_DOOR_CONTROL . "/{$doorNo}", $data);
+        return $this->client->put(self::ENDPOINT_DOOR_CONTROL."/{$doorNo}", $data);
     }
 
     public function getDoorStatus(int $doorNo): array
     {
-        return $this->client->get(self::ENDPOINT_DOOR_STATUS . "/{$doorNo}");
+        return $this->client->get(self::ENDPOINT_DOOR_STATUS."/{$doorNo}");
     }
 }

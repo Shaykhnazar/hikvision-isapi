@@ -32,11 +32,14 @@ Kunlik amaliy taqsimot misoli: 3 ta kechqurun × 2 soat (qurish) + shanba 6 soat
 - [ ] 3 ta integrator bilan uchrashuv (25% komissiya taklifi)
 - [ ] 1 soatlik yurist konsultatsiyasi (`01-biznes-reja.md` §8 dagi 4 savol)
 
-### Texnik yo'nalishi (ikkilamchi, ~8 soat)
+### Texnik yo'nalishi (ikkilamchi, ~8 soat) — ✅ bajarildi 2026-08-25
 Faqat mavjud paketda, mahsulotga tegilmaydi:
-- [ ] `.github/workflows/ci.yml` — PHP 8.2/8.3/8.4 × Laravel 11/12/13 matritsasi
-- [ ] Laravel Pint + PHPStan (larastan) level 5
-- [ ] Mavjud testlarni yashil holatga keltirish, `DigestAuthenticator` va `HttpClient` uchun test qo'shish
+- [x] `.github/workflows/ci.yml` — PHP 8.2/8.3/8.4 × Laravel 11/12/13 matritsasi
+- [x] Laravel Pint + PHPStan (larastan) level 5, baseline'siz
+- [x] Test qamrovi: 31 → 68 test; `HttpClient`, `HikvisionClient`, `DeviceManager`, `DigestAuthenticator`
+- [x] Xavfsizlik: `composer audit` 17 ta ogohlantirishdan 0 ga tushirildi
+
+Tafsilotlar: `04-paket-mustahkamlash.md` → A bo'limi.
 
 ### 🚦 Gate — davom etish sharti
 - 8+ suhbatda muammo tasdiqlandi

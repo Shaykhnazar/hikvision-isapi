@@ -13,7 +13,9 @@ use Shaykhnazar\HikvisionIsapi\Client\HikvisionClient;
 class EventNotificationService
 {
     private const ENDPOINT_HTTP_HOSTS = '/ISAPI/Event/notification/httpHosts';
+
     private const ENDPOINT_HTTP_HOST = '/ISAPI/Event/notification/httpHosts/%s';
+
     private const ENDPOINT_NOTIFICATION_CAPABILITIES = '/ISAPI/Event/notification/capabilities';
 
     public function __construct(
@@ -24,14 +26,14 @@ class EventNotificationService
      * Configure HTTP notification host
      * Tells the device to send events to specified URL
      *
-     * @param string $url Target URL to receive events (e.g., https://your-api.com/api/webhooks/hikvision/events)
-     * @param int $id Host ID (1-8, default 1)
-     * @param string $protocol Protocol type (HTTP or HTTPS)
-     * @param int $port Port number (default 80 for HTTP, 443 for HTTPS)
-     * @param string $httpAuthType Authentication type (none, basic, digest)
-     * @param string|null $username Username for authentication (if required)
-     * @param string|null $password Password for authentication (if required)
-     * @param array $eventTypes Array of event types to send (empty = all events)
+     * @param  string  $url  Target URL to receive events (e.g., https://your-api.com/api/webhooks/hikvision/events)
+     * @param  int  $id  Host ID (1-8, default 1)
+     * @param  string  $protocol  Protocol type (HTTP or HTTPS)
+     * @param  int  $port  Port number (default 80 for HTTP, 443 for HTTPS)
+     * @param  string  $httpAuthType  Authentication type (none, basic, digest)
+     * @param  string|null  $username  Username for authentication (if required)
+     * @param  string|null  $password  Password for authentication (if required)
+     * @param  array  $eventTypes  Array of event types to send (empty = all events)
      * @return array Response from device
      */
     public function configureHttpHost(
@@ -79,24 +81,26 @@ class EventNotificationService
         if (!empty($eventTypes)) {
             // Format event types for XML conversion
             $data['HttpHostNotification']['eventList'] = [
-                'eventType' => $eventTypes
+                'eventType' => $eventTypes,
             ];
         }
 
         // Use PUT with XML format (event notification endpoint requires XML)
         $endpoint = sprintf(self::ENDPOINT_HTTP_HOST, $id);
+
         return $this->client->putXml($endpoint, $data);
     }
 
     /**
      * Get HTTP notification host configuration
      *
-     * @param int $id Host ID (1-8)
+     * @param  int  $id  Host ID (1-8)
      * @return array Host configuration
      */
     public function getHttpHost(int $id = 1): array
     {
         $endpoint = sprintf(self::ENDPOINT_HTTP_HOST, $id);
+
         return $this->client->get($endpoint);
     }
 
@@ -113,12 +117,13 @@ class EventNotificationService
     /**
      * Remove HTTP notification host configuration
      *
-     * @param int $id Host ID (1-8)
+     * @param  int  $id  Host ID (1-8)
      * @return array Response from device
      */
     public function removeHttpHost(int $id = 1): array
     {
         $endpoint = sprintf(self::ENDPOINT_HTTP_HOST, $id);
+
         return $this->client->delete($endpoint);
     }
 
@@ -126,12 +131,13 @@ class EventNotificationService
      * Test HTTP notification configuration
      * Sends a test event to the configured URL
      *
-     * @param int $id Host ID to test (1-8)
+     * @param  int  $id  Host ID to test (1-8)
      * @return array Response from device
      */
     public function testHttpNotification(int $id = 1): array
     {
-        $endpoint = sprintf(self::ENDPOINT_HTTP_HOST, $id) . '/test';
+        $endpoint = sprintf(self::ENDPOINT_HTTP_HOST, $id).'/test';
+
         return $this->client->post($endpoint, []);
     }
 
@@ -149,7 +155,7 @@ class EventNotificationService
     /**
      * Enable HTTP notification host
      *
-     * @param int $id Host ID (1-8)
+     * @param  int  $id  Host ID (1-8)
      * @return array Response from device
      */
     public function enableHttpHost(int $id = 1): array
@@ -163,13 +169,14 @@ class EventNotificationService
         $config['HttpHostNotification']['enabled'] = true;
 
         $endpoint = sprintf(self::ENDPOINT_HTTP_HOST, $id);
+
         return $this->client->putXml($endpoint, $config);
     }
 
     /**
      * Disable HTTP notification host
      *
-     * @param int $id Host ID (1-8)
+     * @param  int  $id  Host ID (1-8)
      * @return array Response from device
      */
     public function disableHttpHost(int $id = 1): array
@@ -183,6 +190,7 @@ class EventNotificationService
         $config['HttpHostNotification']['enabled'] = false;
 
         $endpoint = sprintf(self::ENDPOINT_HTTP_HOST, $id);
+
         return $this->client->putXml($endpoint, $config);
     }
 
@@ -190,9 +198,9 @@ class EventNotificationService
      * Configure simplified HTTP notification
      * Easier method for basic webhook setup
      *
-     * @param string $webhookUrl Full webhook URL (e.g., https://api.example.com/webhooks/events)
-     * @param int $hostId Host ID (1-8, default 1)
-     * @param array $eventTypes Event types to subscribe to (empty = subscribe to all access control events)
+     * @param  string  $webhookUrl  Full webhook URL (e.g., https://api.example.com/webhooks/events)
+     * @param  int  $hostId  Host ID (1-8, default 1)
+     * @param  array  $eventTypes  Event types to subscribe to (empty = subscribe to all access control events)
      * @return array Response from device
      */
     public function configureWebhook(string $webhookUrl, int $hostId = 1, array $eventTypes = []): array
@@ -220,15 +228,15 @@ class EventNotificationService
      *
      * The device will send events to: http(s)://<eventServerIp>:<eventServerPort><urlPath>
      *
-     * @param string $eventServerIp Event server IP address or domain name (e.g., '192.168.1.100' or 'api.company.com')
-     * @param int $eventServerPort Event server port (e.g., 8080)
-     * @param string $urlPath URL path on the event server (e.g., '/api/webhooks/hikvision/events')
-     * @param string $protocol Protocol type (HTTP or HTTPS, default HTTP)
-     * @param int $hostId Host ID (1-8, default 1)
-     * @param string $httpAuthType Authentication type (none, basic, digest, default none)
-     * @param string|null $username Username for authentication (if required)
-     * @param string|null $password Password for authentication (if required)
-     * @param array $eventTypes Event types to subscribe to (empty = all events)
+     * @param  string  $eventServerIp  Event server IP address or domain name (e.g., '192.168.1.100' or 'api.company.com')
+     * @param  int  $eventServerPort  Event server port (e.g., 8080)
+     * @param  string  $urlPath  URL path on the event server (e.g., '/api/webhooks/hikvision/events')
+     * @param  string  $protocol  Protocol type (HTTP or HTTPS, default HTTP)
+     * @param  int  $hostId  Host ID (1-8, default 1)
+     * @param  string  $httpAuthType  Authentication type (none, basic, digest, default none)
+     * @param  string|null  $username  Username for authentication (if required)
+     * @param  string|null  $password  Password for authentication (if required)
+     * @param  array  $eventTypes  Event types to subscribe to (empty = all events)
      * @return array Response from device
      */
     public function configureEventListeningHost(
@@ -243,7 +251,7 @@ class EventNotificationService
         array $eventTypes = []
     ): array {
         // Validate IP address or domain name
-        if (! filter_var($eventServerIp, FILTER_VALIDATE_IP) && ! $this->isValidDomain($eventServerIp)) {
+        if (!filter_var($eventServerIp, FILTER_VALIDATE_IP) && !$this->isValidDomain($eventServerIp)) {
             throw new \InvalidArgumentException("Invalid IP address or domain name: {$eventServerIp}");
         }
 
@@ -253,7 +261,7 @@ class EventNotificationService
         }
 
         // Ensure URL path starts with /
-        if (! str_starts_with($urlPath, '/')) {
+        if (!str_starts_with($urlPath, '/')) {
             $urlPath = '/'.$urlPath;
         }
 
@@ -289,18 +297,19 @@ class EventNotificationService
         // Add event types if specified
         if (!empty($eventTypes)) {
             $data['HttpHostNotification']['eventList'] = [
-                'eventType' => $eventTypes
+                'eventType' => $eventTypes,
             ];
         }
 
         $endpoint = sprintf(self::ENDPOINT_HTTP_HOST, $hostId);
+
         return $this->client->putXml($endpoint, $data);
     }
 
     /**
      * Validate if the given string is a valid domain name
      *
-     * @param string $domain Domain name to validate
+     * @param  string  $domain  Domain name to validate
      * @return bool True if valid domain, false otherwise
      */
     private function isValidDomain(string $domain): bool

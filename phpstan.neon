@@ -1,0 +1,20 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/phpstan/phpstan-mockery/extension.neon
+
+parameters:
+    level: 5
+
+    paths:
+        - src
+        - tests
+
+    ignoreErrors:
+        # This package ships its config at src/Config/hikvision.php instead of
+        # the app-level config/ directory, so Larastan's config-directory check
+        # does not recognise it. env() is correct here.
+        -
+            identifier: larastan.noEnvCallsOutsideOfConfig
+            paths:
+                - src/Config/hikvision.php
+                - tests/TestCase.php

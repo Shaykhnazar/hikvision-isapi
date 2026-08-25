@@ -36,16 +36,17 @@ use Shaykhnazar\HikvisionIsapi\Client\Contracts\DeviceProviderInterface;
 class DatabaseDeviceProvider implements DeviceProviderInterface
 {
     private array $cachedDevices = [];
+
     private ?int $cacheTime = null;
 
     /**
-     * @param string $table Database table name
-     * @param string $nameColumn Column name for device name/identifier
-     * @param array $configColumns Mapping of config keys to database columns
-     * @param string $defaultDevice Default device name
-     * @param array|null $whereConditions Additional WHERE conditions (e.g., ['status' => 'active'])
-     * @param bool $cache Enable in-memory caching
-     * @param int $cacheTtl Cache TTL in seconds (for future Redis/cache driver support)
+     * @param  string  $table  Database table name
+     * @param  string  $nameColumn  Column name for device name/identifier
+     * @param  array  $configColumns  Mapping of config keys to database columns
+     * @param  string  $defaultDevice  Default device name
+     * @param  array|null  $whereConditions  Additional WHERE conditions (e.g., ['status' => 'active'])
+     * @param  bool  $cache  Enable in-memory caching
+     * @param  int  $cacheTtl  Cache TTL in seconds (for future Redis/cache driver support)
      */
     public function __construct(
         private readonly string $table = 'terminals',
@@ -174,12 +175,11 @@ class DatabaseDeviceProvider implements DeviceProviderInterface
      * );
      * ```
      *
-     * @param string $model Eloquent model class
-     * @param string $nameColumn Column for device name
-     * @param array $configColumns Config mapping
-     * @param callable|null $query Additional query builder callback
-     * @param string $defaultDevice Default device name
-     * @return self
+     * @param  string  $model  Eloquent model class
+     * @param  string  $nameColumn  Column for device name
+     * @param  array  $configColumns  Config mapping
+     * @param  callable|null  $query  Additional query builder callback
+     * @param  string  $defaultDevice  Default device name
      */
     public static function fromModel(
         string $model,

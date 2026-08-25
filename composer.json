@@ -22,7 +22,10 @@
   "require-dev": {
     "orchestra/testbench": "^9.0|^10.0|^11.0",
     "phpunit/phpunit": "^10.5|^11.0",
-    "mockery/mockery": "^1.6"
+    "mockery/mockery": "^1.6",
+    "laravel/pint": "^1.18",
+    "larastan/larastan": "^3.0",
+    "phpstan/phpstan-mockery": "^2.0"
   },
   "autoload": {
     "psr-4": {
@@ -44,6 +47,20 @@
       }
     }
   },
-  "minimum-stability": "dev",
+  "scripts": {
+    "lint": "pint --test",
+    "fix": "pint",
+    "analyse": "phpstan analyse",
+    "test": "phpunit",
+    "ci": [
+      "@lint",
+      "@analyse",
+      "@test"
+    ]
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
   "prefer-stable": true
 }

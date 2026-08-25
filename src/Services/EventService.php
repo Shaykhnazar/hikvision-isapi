@@ -9,9 +9,10 @@ use Shaykhnazar\HikvisionIsapi\Client\HikvisionClient;
 class EventService
 {
     private const ENDPOINT_SEARCH = '/ISAPI/AccessControl/AcsEvent';
+
     private const ENDPOINT_COUNT = '/ISAPI/AccessControl/AcsEventTotalNum';
+
     private const ENDPOINT_SUBSCRIBE = '/ISAPI/Event/notification/subscribeEvent';
-    private const ENDPOINT_ALERT_STREAM = '/ISAPI/Event/notification/alertStream';
 
     public function __construct(
         private readonly HikvisionClient $client
@@ -35,6 +36,7 @@ class EventService
         $data = ['AcsEventTotalNumCond' => $conditions];
 
         $response = $this->client->post(self::ENDPOINT_COUNT, $data);
+
         return $response['totalNum'] ?? 0;
     }
 

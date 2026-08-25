@@ -9,7 +9,9 @@ use Shaykhnazar\HikvisionIsapi\Client\HikvisionClient;
 class DeviceService
 {
     private const ENDPOINT_INFO = '/ISAPI/System/deviceInfo';
+
     private const ENDPOINT_CAPABILITIES = '/ISAPI/AccessControl/capabilities';
+
     private const ENDPOINT_STATUS = '/ISAPI/System/status';
 
     public function __construct(
@@ -35,6 +37,7 @@ class DeviceService
     {
         try {
             $this->getInfo();
+
             return true;
         } catch (\Exception $e) {
             return false;

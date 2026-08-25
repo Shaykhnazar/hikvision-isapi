@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Shaykhnazar\HikvisionIsapi\Tests\Unit\Services;
 
 use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use Shaykhnazar\HikvisionIsapi\Client\HikvisionClient;
 use Shaykhnazar\HikvisionIsapi\DTOs\Person;
@@ -13,14 +14,19 @@ use Shaykhnazar\HikvisionIsapi\Services\PersonService;
 
 class PersonServiceTest extends TestCase
 {
+    /** @var HikvisionClient&MockInterface */
     private HikvisionClient $mockClient;
+
     private PersonService $personService;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->mockClient = Mockery::mock(HikvisionClient::class);
+        /** @var HikvisionClient&MockInterface $client */
+        $client = Mockery::mock(HikvisionClient::class);
+
+        $this->mockClient = $client;
         $this->personService = new PersonService($this->mockClient);
     }
 
@@ -137,8 +143,8 @@ class PersonServiceTest extends TestCase
 
         $persons = $this->personService->search(0, 30);
 
-        $this->assertIsArray($persons);
         $this->assertCount(2, $persons);
+        $this->assertContainsOnlyInstancesOf(Person::class, $persons);
         $this->assertInstanceOf(Person::class, $persons[0]);
         $this->assertSame('EMP001', $persons[0]->employeeNo);
     }

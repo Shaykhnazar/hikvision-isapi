@@ -17,32 +17,45 @@ Sabab: bu repo mahsulotning marketing kanali. U qanchalik yaxshi va mustaqil bo'
 
 ---
 
-## A. Sifat infratuzilmasi (Sprint 0, ~6 soat)
+## A. Sifat infratuzilmasi — ✅ BAJARILDI (2026-08-25)
 
-### A1. CI
-`.github/workflows/ci.yml`:
-- Matritsa: PHP 8.2 / 8.3 / 8.4 × Laravel 11 / 12 / 13
-- Qadamlar: `composer install` → `pint --test` → `phpstan` → `phpunit`
-- `composer.lock` cheklanmaydi (kutubxona uchun `--prefer-lowest` varianti ham qo'shiladi)
+### A1. CI — ✅
+`.github/workflows/ci.yml` qo'shildi:
+- `tests` job: PHP 8.2 / 8.3 / 8.4 x Laravel 11 / 12 / 13 matritsasi (8 kombinatsiya; Laravel 13 PHP 8.3+ talab qilgani uchun `php 8.2 + laravel 13` chiqarib tashlangan).
+- `quality` job: `composer validate --strict`, `pint --test`, `phpstan analyse`, `composer audit --locked`.
 
-### A2. Kod uslubi
-- `laravel/pint` dev-dependency, `pint.json` (Laravel preset)
-- Bir marta butun repoga qo'llaniladi
+Matritsa lokal tekshirildi: uchala Laravel versiyasi ham PHP 8.2/8.3/8.4 platform cheklovlari ostida to'g'ri resolve bo'ladi, va test to'plami Laravel 11, 12, 13 da yashil.
 
-### A3. Statik tahlil
-- `larastan/larastan` level 5 dan boshlanadi
-- `phpstan.neon`, baseline **yaratilmaydi** — 2 680 qatorda level 5 ni to'g'ridan-to'g'ri tozalash mumkin
+### A2. Kod uslubi — ✅
+`pint.json` (Laravel preset + `declare_strict_types`) qo'shildi va butun repoga qo'llandi. 25 fayl formatlandi, xulq-atvor o'zgarmadi.
 
-### A4. Test qamrovi
-Hozir: 5 fayl. Qo'shiladi:
-- `DigestAuthenticator` — nonce, qc, cnonce hisobi, `stale` javobi
-- `HttpClient` — XML↔array konvertatsiyasi, Content-Type aniqlash, timeout
-- `DeviceManager` — provider tanlovi, default device, mavjud bo'lmagan qurilma
-- Xato yo'llari: 401, 403, 500, buzilgan XML, bo'sh javob
+### A3. Statik tahlil — ✅
+`phpstan.neon`, larastan + phpstan-mockery kengaytmalari, **level 5**, **baseline yo'q**.
 
-Maqsad: `src/Client` va `src/Authentication` uchun qamrov ≥ 80%. Servislar uchun happy path + kamida bitta xato yo'li.
+Boshlang'ich holat: 36 xato. Yakuniy holat: **0 xato**. Tuzatilgan toifalar:
+- Mockery mock'lariga noto'g'ri tip berilishi (testlarda `HikvisionClient&MockInterface` docblock'i bilan hal qilindi).
+- Ikkita ishlatilmagan `private const` (B bo'limiga qarang).
+- Ikkita tavtologik assertion (`assertIsArray` massivga, `assertIsInt` int'ga).
+- `env()` chaqiruvlari — bu paket konfiguratsiyani `src/Config/` da saqlaydi, larastan esa faqat `config/` ni taniydi; shu ikki faylga aniq `ignoreErrors` yozildi.
 
----
+### A4. Test qamrovi — ✅
+31 test / 70 assertion → **68 test / 131 assertion**.
+
+Qo'shilgan fayllar:
+- `tests/Unit/Client/HttpClientTest.php` — JSON/XML javob tahlili, `text/xml`, noma'lum Content-Type, buzilgan XML, JSON va XML body yuborish, multipart, 401 va 403 xato yo'llari.
+- `tests/Unit/Client/HikvisionClientTest.php` — base URL, `format` query parametri, auth/timeout/SSL opsiyalari, JSON va XML sarlavhalari, `putXml()` majburiy XML, multipart'da Content-Type qo'yilmasligi, konfiguratsiya validatsiyasi.
+- `tests/Unit/Client/DeviceManagerTest.php` — provider tanlovi, default qurilma, klient keshi, `clearClients()`, noma'lum qurilma xatosi, `switchDevice()`, `setProvider()`, `registerDevice()`, callback provider'ning kechiktirilgan default'i.
+- `tests/Unit/Authentication/DigestAuthenticatorTest.php`
+- `tests/Support/RecordingHttpClient.php` — test yordamchisi.
+
+**Rejadagi tuzatish:** dastlab bu yerda `DigestAuthenticator` uchun "nonce, qc, cnonce, stale" testlari rejalashtirilgan edi. Kodni o'qib chiqilgach ma'lum bo'ldiki, bu klass digest'ni o'zi hisoblamaydi — u faqat Guzzle'ning `auth` opsiyasini quradi (`['user', 'pass', 'digest']`), digest mexanizmini Guzzle/cURL bajaradi. Shuning uchun u yerda uchta kichik test yetarli.
+
+### A5. Qo'shimcha (rejada yo'q edi, lekin yo'l-yo'lakay topildi)
+- `HttpClient` konstruktori endi ixtiyoriy `Client` qabul qiladi. Ilgari u `new Client` ni qattiq bog'lagan va shu sababli **umuman test qilib bo'lmas edi**. Bu orqaga mos o'zgarish va edge agent uchun ham kerak bo'ladi (retry middleware, connect timeout).
+- `xmlToArray()` endi libxml xatolarini ichki holda ushlaydi. Ilgari buzilgan XML PHP warning chiqarardi — qurilmadan kelgan noto'g'ri payload ilova logini ifloslantirishi mumkin edi.
+- `minimum-stability` `dev` dan `stable` ga tushirildi (Laravel 13 endi stabil).
+- `composer audit` 17 ta ogohlantirish ko'rsatdi (guzzle'da bittasi **high**). Guzzle 7.11 → 7.15.5, psr7 → 2.13.1, commonmark → 2.10.0. Endi: **0 ogohlantirish**.
+- `composer.lock` `.gitignore` da turgan edi, lekin fayl aslida repoda kuzatilardi. Qarama-qarshilik olib tashlandi (CI lock'ga tayanadi).
 
 ## B. Aniqlangan potensial xatolar (tekshirish kerak)
 
@@ -137,16 +150,20 @@ Yuz rasmi (base64) hech qachon logga, exception xabariga yoki stack trace'ga tus
 
 ## E. Bajarilish tartibi
 
-| № | Ish | Vaqt | Sprint |
-|---|---|---|---|
-| 1 | CI + Pint + PHPStan | 4 soat | 0 |
-| 2 | Mavjud testlarni yashil qilish | 2 soat | 0 |
-| 3 | `EventService::between()` iteratori | 3 soat | 1 |
-| 4 | Xato tasnifi (C4) | 2 soat | 1 |
-| 5 | `DeviceDriver` kontrakti (C3) | 4 soat | 3 |
-| 6 | `DeviceService::profile()` (C2) | 3 soat | 3 |
-| 7 | Redaction helper (C5) | 2 soat | 5 |
-| 8 | B1/B2 tuzatish (real qurilmada tasdiqlangach) | 3 soat | 1-3 |
-| 9 | Moslik matritsasi | doimiy | — |
+| № | Ish | Vaqt | Sprint | Holat |
+|---|---|---|---|---|
+| 1 | CI + Pint + PHPStan | 4 soat | 0 | ✅ |
+| 2 | Mavjud testlarni yashil qilish + qamrovni kengaytirish | 2 soat | 0 | ✅ |
+| 3 | `EventService::between()` iteratori | 3 soat | 1 | ⏳ |
+| 4 | Xato tasnifi (C4) | 2 soat | 1 | ⏳ |
+| 5 | `DeviceDriver` kontrakti (C3) | 4 soat | 3 | ⏳ |
+| 6 | `DeviceService::profile()` (C2) | 3 soat | 3 | ⏳ |
+| 7 | Redaction helper (C5) | 2 soat | 5 | ⏳ |
+| 8 | B1/B2 tuzatish (real qurilmada tasdiqlangach) | 3 soat | 1-3 | ⏳ blokda |
+| 9 | Moslik matritsasi | doimiy | — | ⏳ |
 
-Jami: ~23 soat, sprintlarga taqsimlangan. Hammasi bir vaqtda qilinmaydi.
+Hammasi bir vaqtda qilinmaydi — Sprint 0 ning texnik qismi shu bilan yopildi.
+
+## F. Keyingi to'siq
+
+№ 8 (B1 `searchID`, B2 `count()`) **real qurilmada tasdiqlanmaguncha tuzatilmaydi.** Ikkalasi ham qurilma xulq-atvoriga bog'liq va noto'g'ri "tuzatish" hozir ishlayotgan narsani buzishi mumkin. Bu Sprint 1 da, agent birinchi marta real terminalga ulanganda tekshiriladi.

@@ -10,11 +10,17 @@ use Shaykhnazar\HikvisionIsapi\DTOs\Person;
 class PersonService
 {
     private const ENDPOINT_CAPABILITIES = '/ISAPI/AccessControl/UserInfo/Capabilities';
+
     private const ENDPOINT_COUNT = '/ISAPI/AccessControl/UserInfo/Count';
+
     private const ENDPOINT_SEARCH = '/ISAPI/AccessControl/UserInfo/Search';
+
     private const ENDPOINT_RECORD = '/ISAPI/AccessControl/UserInfo/Record';
+
     private const ENDPOINT_MODIFY = '/ISAPI/AccessControl/UserInfo/Modify';
+
     private const ENDPOINT_SETUP = '/ISAPI/AccessControl/UserInfo/SetUp';
+
     private const ENDPOINT_DELETE = '/ISAPI/AccessControl/UserInfo/Delete';
 
     public function __construct(
@@ -29,6 +35,7 @@ class PersonService
     public function count(): int
     {
         $response = $this->client->get(self::ENDPOINT_COUNT);
+
         return $response['UserInfoCount']['userNumber'] ?? 0;
     }
 
@@ -74,7 +81,7 @@ class PersonService
         $data = [
             'UserInfoDelCond' => [
                 'EmployeeNoList' => array_map(
-                    fn($no) => ['employeeNo' => $no],
+                    fn ($no) => ['employeeNo' => $no],
                     $employeeNos
                 ),
             ],
@@ -87,8 +94,8 @@ class PersonService
      * Upload face image for a person using multipart form-data
      * For Access Control devices that support face recognition
      *
-     * @param string $employeeNo Employee number
-     * @param string $imageData Binary image data (JPEG)
+     * @param  string  $employeeNo  Employee number
+     * @param  string  $imageData  Binary image data (JPEG)
      * @return array Response from device
      */
     public function uploadFace(string $employeeNo, string $imageData): array

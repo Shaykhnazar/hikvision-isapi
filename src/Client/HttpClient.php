@@ -13,9 +13,13 @@ class HttpClient implements HttpClientInterface
 {
     private Client $client;
 
-    public function __construct()
+    /**
+     * @param  Client|null  $client  Optional pre-configured Guzzle client. Useful for
+     *                               injecting custom middleware, retries or a test handler.
+     */
+    public function __construct(?Client $client = null)
     {
-        $this->client = new Client();
+        $this->client = $client ?? new Client;
     }
 
     public function get(string $uri, array $options = []): array
@@ -59,12 +63,14 @@ class HttpClient implements HttpClientInterface
     public function postMultipart(string $uri, array $multipart = [], array $options = []): array
     {
         $options['multipart'] = $multipart;
+
         return $this->request('POST', $uri, $options);
     }
 
     public function putMultipart(string $uri, array $multipart = [], array $options = []): array
     {
         $options['multipart'] = $multipart;
+
         return $this->request('PUT', $uri, $options);
     }
 
@@ -146,7 +152,7 @@ class HttpClient implements HttpClientInterface
                 if (is_bool($value)) {
                     $value = $value ? 'true' : 'false';
                 }
-                $xml->addChild($key, htmlspecialchars((string)$value));
+                $xml->addChild($key, htmlspecialchars((string) $value));
             }
         }
     }
@@ -156,7 +162,16 @@ class HttpClient implements HttpClientInterface
      */
     private function xmlToArray(string $xml): array
     {
-        $xmlObj = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+        // Devices occasionally emit truncated or malformed XML. Collect libxml
+        // errors internally so a bad payload never raises a PHP warning.
+        $previous = libxml_use_internal_errors(true);
+
+        try {
+            $xmlObj = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($previous);
+        }
 
         if ($xmlObj === false) {
             return ['raw' => $xml];

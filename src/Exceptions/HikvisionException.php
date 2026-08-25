@@ -4,6 +4,4 @@ declare(strict_types=1);
 
 namespace Shaykhnazar\HikvisionIsapi\Exceptions;
 
-class HikvisionException extends \Exception
-{
-}
+class HikvisionException extends \Exception {}

@@ -9,10 +9,13 @@ use Shaykhnazar\HikvisionIsapi\Client\HikvisionClient;
 class FingerprintService
 {
     private const ENDPOINT_CAPABILITIES = '/ISAPI/AccessControl/FingerPrint/capabilities';
+
     private const ENDPOINT_SEARCH = '/ISAPI/AccessControl/FingerPrint/Search';
+
     private const ENDPOINT_RECORD = '/ISAPI/AccessControl/FingerPrint/Record';
-    private const ENDPOINT_MODIFY = '/ISAPI/AccessControl/FingerPrint/Modify';
+
     private const ENDPOINT_DELETE = '/ISAPI/AccessControl/FingerPrint/Delete';
+
     private const ENDPOINT_CAPTURE = '/ISAPI/AccessControl/CaptureFingerPrint';
 
     public function __construct(
@@ -77,7 +80,7 @@ class FingerprintService
             'FingerPrintDelete' => [
                 'mode' => 'byEmployeeNo',
                 'EmployeeNoList' => array_map(
-                    fn($no) => ['employeeNo' => $no],
+                    fn ($no) => ['employeeNo' => $no],
                     $employeeNos
                 ),
             ],
