@@ -7,9 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed (BREAKING)
+- **Dropped Laravel 11 support.** `illuminate/support` now requires `^12.0|^13.0` and `orchestra/testbench` requires `^10.0|^11.0`. Every `laravel/framework` 11.x release carries unresolved security advisories, and Composer 2.9+ refuses to resolve advisory-affected packages by default, so Laravel 11 can no longer be installed on a current toolchain and could not be tested. Projects still on Laravel 11 should stay on the 1.x line of this package.
+- Unused private constants `EventService::ENDPOINT_ALERT_STREAM` and `FingerprintService::ENDPOINT_MODIFY`. Both private, so there is no public API change.
+
 ### Added
 - Laravel 13 / `illuminate/support` ^13.0 compatibility.
 - Orchestra Testbench ^11.0 support for Laravel 13 package testing.
+- GitHub Actions CI: a PHP 8.2/8.3/8.4 x Laravel 12/13 test matrix, plus a job for code style, static analysis and dependency auditing.
+- Laravel Pint configuration (`pint.json`) and PHPStan/Larastan level 5 configuration (`phpstan.neon`), both passing with no baseline.
+- `HttpClient` now accepts an optional pre-configured Guzzle `Client`, so custom middleware, retry policies or a test handler can be injected. The default behaviour is unchanged.
+- Composer scripts: `composer lint`, `composer fix`, `composer analyse`, `composer test` and `composer ci`.
+- Tests for `HttpClient`, `HikvisionClient`, `DeviceManager`, `CallbackDeviceProvider`, `DigestAuthenticator` and `EventService`, covering XML/JSON parsing, URI and header building, device resolution, error classification and event pagination (31 to 88 tests).
+- `EventService::between()`: iterates every access-control event in a time window as a generator, reusing one `searchID` across pages, advancing by the number of records actually returned, and stopping when the device stops reporting `MORE`. This is the primitive for backfilling events that webhook delivery dropped.
+- `EventService::search()` accepts an optional `$searchId`, so callers that paginate can keep one search session across pages. Omitting it keeps the previous behaviour.
+- Exception taxonomy for retry decisions: `HikvisionException::isRetryable()`, `statusCode()` and `responseBody()`, with new `DeviceUnreachableException` (connection failures, retryable) and `DeviceBusyException` (HTTP 408/429/5xx, retryable). HTTP 401 now raises the existing `AuthenticationException`.
+
+### Changed
+- Malformed XML from a device no longer raises a PHP warning: libxml errors are captured internally and the raw body is returned instead.
+- `minimum-stability` lowered from `dev` to `stable` now that Laravel 13 is released.
+- Updated `guzzlehttp/guzzle` to 7.15.5, `guzzlehttp/psr7` to 2.13.1 and `league/commonmark` to 2.10.0, clearing all advisories reported by `composer audit`.
+- Whole codebase formatted with Pint (Laravel preset). No behavioural change.
 
 ## [1.4.0] - 2025-10-30
 

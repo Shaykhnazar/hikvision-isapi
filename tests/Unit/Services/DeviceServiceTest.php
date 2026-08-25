@@ -5,20 +5,26 @@ declare(strict_types=1);
 namespace Shaykhnazar\HikvisionIsapi\Tests\Unit\Services;
 
 use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use Shaykhnazar\HikvisionIsapi\Client\HikvisionClient;
 use Shaykhnazar\HikvisionIsapi\Services\DeviceService;
 
 class DeviceServiceTest extends TestCase
 {
+    /** @var HikvisionClient&MockInterface */
     private HikvisionClient $mockClient;
+
     private DeviceService $deviceService;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->mockClient = Mockery::mock(HikvisionClient::class);
+        /** @var HikvisionClient&MockInterface $client */
+        $client = Mockery::mock(HikvisionClient::class);
+
+        $this->mockClient = $client;
         $this->deviceService = new DeviceService($this->mockClient);
     }
 

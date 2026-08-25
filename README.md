@@ -25,7 +25,7 @@ A clean, modern Laravel package for integrating with **Hikvision ISAPI Face Reco
 - **Type Safety**: PHP 8.2+ features (enums, readonly properties)
 - **Performance**: Built-in caching with configurable TTL (v1.3.0+)
 - **XML/JSON Support**: Automatic format detection and conversion (v1.4.0+)
-- **Laravel 11/12/13**: Supports Laravel 11.x, 12.x, and 13.x with service provider and facade
+- **Laravel 12/13**: Supports Laravel 12.x and 13.x with service provider and facade
 
 ## Table of Contents
 
@@ -60,7 +60,7 @@ A clean, modern Laravel package for integrating with **Hikvision ISAPI Face Reco
 ## Requirements
 
 - PHP ^8.2
-- Laravel / illuminate/support ^11.0 || ^12.0 || ^13.0
+- Laravel / illuminate/support ^12.0 || ^13.0
 - PHP ^8.3 is required when installing with Laravel 13
 - Guzzle HTTP ^7.8
 - ext-curl

@@ -25,7 +25,6 @@ interface DeviceProviderInterface
     /**
      * Get configuration for specific device
      *
-     * @param string $deviceName
      * @return array{
      *     ip: string,
      *     port: int,
@@ -47,16 +46,11 @@ interface DeviceProviderInterface
 
     /**
      * Check if device exists
-     *
-     * @param string $deviceName
-     * @return bool
      */
     public function hasDevice(string $deviceName): bool;
 
     /**
      * Get global configuration (format, logging, etc.)
-     *
-     * @return array
      */
     public function getGlobalConfig(): array;
 }

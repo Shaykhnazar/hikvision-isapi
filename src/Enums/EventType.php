@@ -13,7 +13,7 @@ enum EventType: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACCESS_GRANTED => 'Access Granted',
             self::ACCESS_DENIED => 'Access Denied',
             self::FACE_RECOGNIZED => 'Face Recognition Completed',

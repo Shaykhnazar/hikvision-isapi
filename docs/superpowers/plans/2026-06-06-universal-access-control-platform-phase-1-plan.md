@@ -1,5 +1,8 @@
 # Universal Access Platform Phase 1 Implementation Plan
 
+> **ARXIV / SUPERSEDED (2026-08-25).** Bu hujjat endi ijro uchun ustuvor emas. Uning tanqidiy tahlili va o'rniga qabul qilingan qarorlar: `docs/startup/` (ayniqsa `docs/startup/00-eski-rejaning-tahlili.md`). Hujjat to'g'ri prinsiplar manbasi sifatida saqlanmoqda.
+
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development or superpowers:executing-plans to implement this plan task-by-task.
 
 **Goal:** Build a minimal universal access-control engine for the Hikvision package with tenant-scoped people, credentials, access groups, event normalization, and sync orchestration.

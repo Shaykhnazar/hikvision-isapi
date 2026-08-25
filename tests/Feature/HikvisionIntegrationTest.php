@@ -24,7 +24,9 @@ use Shaykhnazar\HikvisionIsapi\Tests\TestCase;
 class HikvisionIntegrationTest extends TestCase
 {
     private DeviceService $deviceService;
+
     private PersonService $personService;
+
     private CardService $cardService;
 
     protected function setUp(): void
@@ -60,13 +62,12 @@ class HikvisionIntegrationTest extends TestCase
     {
         $count = $this->personService->count();
 
-        $this->assertIsInt($count);
         $this->assertGreaterThanOrEqual(0, $count);
     }
 
     public function test_complete_person_workflow(): void
     {
-        $testEmployeeNo = 'TEST_' . time();
+        $testEmployeeNo = 'TEST_'.time();
 
         // 1. Create person
         $person = new Person(
@@ -83,7 +84,7 @@ class HikvisionIntegrationTest extends TestCase
 
         // 2. Search for person
         $persons = $this->personService->search(0, 100);
-        $found = collect($persons)->first(fn($p) => $p->employeeNo === $testEmployeeNo);
+        $found = collect($persons)->first(fn ($p) => $p->employeeNo === $testEmployeeNo);
         $this->assertNotNull($found, 'Person should be found in search results');
 
         // 3. Update person
@@ -106,8 +107,8 @@ class HikvisionIntegrationTest extends TestCase
 
     public function test_complete_card_workflow(): void
     {
-        $testEmployeeNo = 'TEST_CARD_' . time();
-        $testCardNo = 'CARD_' . time();
+        $testEmployeeNo = 'TEST_CARD_'.time();
+        $testCardNo = 'CARD_'.time();
 
         // 1. Create person first
         $person = new Person(
@@ -131,7 +132,7 @@ class HikvisionIntegrationTest extends TestCase
 
         // 3. Search for card
         $cards = $this->cardService->search(0, 100, $testEmployeeNo);
-        $found = collect($cards)->first(fn($c) => $c->cardNo === $testCardNo);
+        $found = collect($cards)->first(fn ($c) => $c->cardNo === $testCardNo);
         $this->assertNotNull($found, 'Card should be found in search results');
 
         // 4. Cleanup
@@ -142,9 +143,9 @@ class HikvisionIntegrationTest extends TestCase
     public function test_batch_card_operations(): void
     {
         $testEmployeeNos = [
-            'BATCH_TEST_1_' . time(),
-            'BATCH_TEST_2_' . time(),
-            'BATCH_TEST_3_' . time(),
+            'BATCH_TEST_1_'.time(),
+            'BATCH_TEST_2_'.time(),
+            'BATCH_TEST_3_'.time(),
         ];
 
         // Create persons first
@@ -160,7 +161,7 @@ class HikvisionIntegrationTest extends TestCase
 
         // Batch add cards
         $cards = array_map(
-            fn($no) => new Card($no, 'CARD_' . $no),
+            fn ($no) => new Card($no, 'CARD_'.$no),
             $testEmployeeNos
         );
 

@@ -1,0 +1,18 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "declare_strict_types": true,
+        "final_class": false,
+        "ordered_imports": {
+            "sort_algorithm": "alpha"
+        },
+        "no_unused_imports": true,
+        "not_operator_with_successor_space": false,
+        "concat_space": {
+            "spacing": "none"
+        }
+    },
+    "exclude": [
+        "vendor"
+    ]
+}

@@ -11,10 +11,15 @@ use Shaykhnazar\HikvisionIsapi\Exceptions\HikvisionException;
 class CardService
 {
     private const ENDPOINT_CAPABILITIES = '/ISAPI/AccessControl/CardInfo/capabilities';
+
     private const ENDPOINT_COUNT = '/ISAPI/AccessControl/CardInfo/Count';
+
     private const ENDPOINT_SEARCH = '/ISAPI/AccessControl/CardInfo/Search';
+
     private const ENDPOINT_RECORD = '/ISAPI/AccessControl/CardInfo/Record';
+
     private const ENDPOINT_MODIFY = '/ISAPI/AccessControl/CardInfo/Modify';
+
     private const ENDPOINT_DELETE = '/ISAPI/AccessControl/CardInfo/Delete';
 
     public function __construct(
@@ -83,7 +88,7 @@ class CardService
         $data = [
             'CardInfoDelCond' => [
                 'EmployeeNoList' => array_map(
-                    fn($no) => ['employeeNo' => $no],
+                    fn ($no) => ['employeeNo' => $no],
                     $employeeNos
                 ),
             ],

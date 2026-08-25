@@ -1,5 +1,8 @@
 # Universal Access Control Platform Design
 
+> **ARXIV / SUPERSEDED (2026-08-25).** Bu hujjat endi ijro uchun ustuvor emas. Uning tanqidiy tahlili va o'rniga qabul qilingan qarorlar: `docs/startup/` (ayniqsa `docs/startup/00-eski-rejaning-tahlili.md`). Hujjat to'g'ri prinsiplar manbasi sifatida saqlanmoqda.
+
+
 Date: 2026-06-06
 Status: Design approved for review
 Repository context: Laravel package for Hikvision ISAPI access-control terminals

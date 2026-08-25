@@ -11,7 +11,9 @@ use Shaykhnazar\HikvisionIsapi\Exceptions\HikvisionException;
 class HikvisionClient
 {
     private string $baseUrl;
+
     private array $authOptions;
+
     private string $format;
 
     public function __construct(
@@ -57,6 +59,7 @@ class HikvisionClient
     public function get(string $endpoint, array $queryParams = []): array
     {
         $uri = $this->buildUri($endpoint, $queryParams);
+
         return $this->httpClient->get($uri, $this->buildOptions());
     }
 
@@ -65,6 +68,7 @@ class HikvisionClient
         $uri = $this->buildUri($endpoint, $queryParams);
         $options = $this->buildOptions();
         $options['_format'] = $this->format; // Pass format to HttpClient
+
         return $this->httpClient->post($uri, $data, $options);
     }
 
@@ -73,6 +77,7 @@ class HikvisionClient
         $uri = $this->buildUri($endpoint, $queryParams);
         $options = $this->buildOptions();
         $options['_format'] = $this->format; // Pass format to HttpClient
+
         return $this->httpClient->put($uri, $data, $options);
     }
 
@@ -97,18 +102,21 @@ class HikvisionClient
     public function delete(string $endpoint, array $queryParams = []): array
     {
         $uri = $this->buildUri($endpoint, $queryParams);
+
         return $this->httpClient->delete($uri, $this->buildOptions());
     }
 
     public function postMultipart(string $endpoint, array $multipart = [], array $queryParams = []): array
     {
         $uri = $this->buildUri($endpoint, $queryParams);
+
         return $this->httpClient->postMultipart($uri, $multipart, $this->buildOptions(excludeContentType: true));
     }
 
     public function putMultipart(string $endpoint, array $multipart = [], array $queryParams = []): array
     {
         $uri = $this->buildUri($endpoint, $queryParams);
+
         return $this->httpClient->putMultipart($uri, $multipart, $this->buildOptions(excludeContentType: true));
     }
 
@@ -120,7 +128,7 @@ class HikvisionClient
         }
         $query = http_build_query($queryParams);
 
-        return $this->baseUrl . $endpoint . ($query ? '?' . $query : '');
+        return $this->baseUrl.$endpoint.($query ? '?'.$query : '');
     }
 
     private function buildOptions(bool $excludeContentType = false): array

@@ -22,12 +22,11 @@ use Shaykhnazar\HikvisionIsapi\Exceptions\HikvisionException;
 class DeviceManager
 {
     private array $clients = [];
+
     private DeviceProviderInterface $provider;
 
     /**
-     * @param HttpClientInterface $httpClient
-     * @param AuthenticatorInterface $authenticator
-     * @param DeviceProviderInterface|array|null $provider Device provider or legacy config array
+     * @param  DeviceProviderInterface|array|null  $provider  Device provider or legacy config array
      */
     public function __construct(
         private readonly HttpClientInterface $httpClient,
@@ -112,8 +111,7 @@ class DeviceManager
      * Note: This only works with in-memory registration and will be lost on next request.
      * For persistent devices, use DatabaseDeviceProvider.
      *
-     * @param string $deviceName
-     * @param array $config Device configuration
+     * @param  array  $config  Device configuration
      */
     public function registerDevice(string $deviceName, array $config): void
     {
@@ -200,8 +198,6 @@ class DeviceManager
      *
      * This is a convenience method that combines hasDevice check and device retrieval
      *
-     * @param string $deviceName
-     * @return HikvisionClient
      * @throws HikvisionException if device not found
      */
     public function switchDevice(string $deviceName): HikvisionClient
