@@ -57,7 +57,9 @@ Tafsilotlar: `04-paket-mustahkamlash.md` → A bo'limi.
 
 - [x] Protokol spetsifikatsiyasi: `05-agent-protokoli.md`
 - [x] SDK tomonidagi poydevor: `EventService::between()` (backfill) va xato tasnifi (retry siyosati)
-- [ ] `davomat-agent` repo, Laravel Zero + Docker image — **repo yaratilishini kutmoqda**
+- [x] Agent kodi yozildi: imzolash, LAN listener, payload parser, normalizer, SQLite outbox, asosiy sikl — 66 test
+- [ ] `davomat-agent` repo — **GitHub integratsiyasida repo yaratish ruxsati yo'q; repo yaratilishini kutmoqda**
+- [ ] Enrolment, qurilma reyestri, backfill sweep — agent repo push qilingandan keyin
 - [ ] Bulutda faqat 4 ta endpoint uchun minimal Laravel app (`enroll`, `jobs`, `result`, `heartbeat`) — UI yo'q
 - [ ] Agent enroll → heartbeat → long-poll siklini yopish
 - [ ] Agent lokal HTTP listener (`:9080`), qurilma webhook'ini qabul qiladi

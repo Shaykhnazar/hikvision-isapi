@@ -64,7 +64,9 @@ Agent va cloud ikkalasi ham `hikvision-isapi` ni composer orqali oladi. Ya'ni SD
 
 ### 4.1. Texnologiya
 
-PHP (Laravel Zero), Docker image sifatida tarqatiladi. Sabab: yakka asoschi uchun bitta til. Go binary tozaroq bo'lardi, lekin ikkinchi tilni qo'llab-quvvatlash haftasiga 12 soatga sig'maydi.
+PHP, Docker image sifatida tarqatiladi. Sabab: yakka asoschi uchun bitta til. Go binary tozaroq bo'lardi, lekin ikkinchi tilni qo'llab-quvvatlash haftasiga 12 soatga sig'maydi.
+
+**Tuzatish (2026-08-25, Sprint 1):** dastlab bu yerda Laravel Zero yozilgan edi. Amalda agent uchun framework kerak emas — u bitta siklda ishlaydi: soketdan so'rov qabul qiladi, SQLite'ga yozadi, HTTP so'rov yuboradi. Laravel Zero mijoz kompyuterida qo'llab-quvvatlanadigan yuzlab fayl qo'shadi va hech qanday foyda bermaydi. Shuning uchun agent **sof PHP** da yozildi: bog'liqliklar faqat Guzzle va shu SDK.
 
 O'rnatish: mijozning mavjud Windows kompyuteriga (Docker Desktop) yoki mini-PC ga. Bitta buyruq:
 ```
