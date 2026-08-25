@@ -167,3 +167,25 @@ Hammasi bir vaqtda qilinmaydi — Sprint 0 ning texnik qismi shu bilan yopildi.
 ## F. Keyingi to'siq
 
 № 8 (B1 `searchID`, B2 `count()`) **real qurilmada tasdiqlanmaguncha tuzatilmaydi.** Ikkalasi ham qurilma xulq-atvoriga bog'liq va noto'g'ri "tuzatish" hozir ishlayotgan narsani buzishi mumkin. Bu Sprint 1 da, agent birinchi marta real terminalga ulanganda tekshiriladi.
+
+## G. Laravel 11 muammosi (CI birinchi ishga tushganda topildi)
+
+**Sana:** 2026-08-25 · **Manba:** PR #4, CI run 32851669081
+
+Matritsaning uchala Laravel 11 job'i ham `composer update` bosqichida yiqildi. Xato:
+
+> `laravel/framework[v11.0.0, ..., v11.56.0] ... were not loaded, because they are affected by security advisories`
+
+Ya'ni **laravel/framework ning 11.x qatoridagi barcha relizlarda yopilmagan xavfsizlik ogohlantirishlari bor**, va Composer 2.9+ shunday paketlarni resolve qilishdan bosh tortadi (`policy.advisories.block` sukut bo'yicha yoqilgan). Natijada `orchestra/testbench 9.*` uchun o'rnatiladigan Laravel versiyasi umuman topilmaydi.
+
+**Nega lokal tekshiruvda chiqmadi:** ishlab chiqish muhitidagi Composer 2.8.12 — bu siyosat unda yo'q. Runner'da yangiroq Composer. Bu tekshiruv metodikasidagi kamchilik: kelajakda CI muhitiga yaqinroq versiyada sinash kerak.
+
+**Hozirgi qaror (vaqtinchalik):** Laravel 11 CI matritsasidan chiqarildi, shunda CI haqiqatan o'rnatilishi mumkin bo'lgan narsani tekshiradi. `composer.json` esa hali ham `illuminate/support: ^11.0` ni e'lon qiladi — ya'ni **e'lon qilingan, lekin sinalmaydigan qo'llab-quvvatlash**. Bu holat uzoq turmasligi kerak.
+
+**Hal qilinishi kerak bo'lgan savol:** Laravel 11 qo'llab-quvvatlashi butunlay olib tashlansinmi?
+
+Foydasiga: Laravel 11 2024-yil mart oyida chiqqan, xavfsizlik qo'llab-quvvatlash oynasi allaqachon yopilgan, va yuqoridagi xato buni tasdiqlaydi — yangi loyihada Laravel 11 ni o'rnatishning o'zi endi siyosatni chetlab o'tishni talab qiladi.
+
+Qarshi: `^11.0` ni olib tashlash — mavjud foydalanuvchilar uchun buzuvchi o'zgarish (major versiya talab qiladi).
+
+Uchinchi variant: `composer.json` da `^11.0` qoldirib, CI da faqat Laravel 11 job'lari uchun advisory siyosatini o'chirish. Bu qo'llab-quvvatlashni sinalgan holda saqlaydi, lekin CI'ni xavfsizlik ogohlantirishlariga ko'r qiladi.

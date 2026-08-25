@@ -21,10 +21,13 @@ jobs:
       fail-fast: false
       matrix:
         php: ['8.2', '8.3', '8.4']
-        laravel: ['11.*', '12.*', '13.*']
+        # Laravel 11 is not tested here. Every laravel/framework 11.x release
+        # carries unresolved security advisories, and Composer 2.9+ refuses to
+        # resolve advisory-affected packages by default, so `composer update`
+        # cannot install any Laravel 11 version on a current runner. See
+        # docs/startup/04-paket-mustahkamlash.md, section G.
+        laravel: ['12.*', '13.*']
         include:
-          - laravel: '11.*'
-            testbench: '9.*'
           - laravel: '12.*'
             testbench: '10.*'
           - laravel: '13.*'
