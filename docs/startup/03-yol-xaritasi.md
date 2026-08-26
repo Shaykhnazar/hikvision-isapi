@@ -400,20 +400,82 @@ Sprint 6 ga o'tish uchun **kamida bitta haqiqiy o'rnatish** kerak. Sprint 6 —
 
 ---
 
-## Sprint 6 — Pilotni mustahkamlash (2 hafta)
+## Sprint 6 — Pilotni mustahkamlash (2 hafta) — ⚠️ QISMAN, 2026-08-26
 
-- [ ] Pilot davomida chiqqan xatolarni tuzatish (bu ro'yxat pilotdan keladi, oldindan yozib bo'lmaydi)
-- [ ] Tunlik drift tekshiruvi va inventarizatsiya
-- [ ] Agentning o'z-o'zini yangilashi
-- [ ] Sentry, uptime monitoring, kunlik backup
-- [ ] 1C export formati (buxgalter bilan birga aniqlanadi)
-- [ ] Onboarding hujjati + video
+- [ ] Pilot davomida chiqqan xatolarni tuzatish ← **pilotsiz yozib bo'lmaydi**
+- [x] Tunlik drift tekshiruvi va inventarizatsiya
+- [ ] Agentning o'z-o'zini yangilashi ← **ataylab qilinmadi, pastda sabab**
+- [x] Sentry, uptime monitoring, kunlik backup
+- [ ] 1C export formati ← **buxgaltersiz taxmin qilib bo'lmaydi**
+- [ ] Onboarding hujjati + video ← runbook bor, video yo'q
+
+PR: cloud #17, #18; agent #4. Bulut testlari 396 → **458**, agent 169 → **188**.
+
+**Sprintning nomi bajarilmadi.** "Pilotni mustahkamlash" — mustahkamlanadigan
+pilot yo'q. Oltitadan ikkitasi to'liq bajarildi; qolgani mijoz yoki buxgalter
+talab qiladi.
+
+### Nima qilindi
+
+**Drift tekshiruvi.** Bulut terminal haqida bilgan yagona narsa — `applied_hash`,
+ya'ni agent qachondir "yozdim" deganining xotirasi. Uni hech narsa qayta
+tekshirmasdi. Terminal factory reset qilinsa yoki texnik foydalanuvchilar
+ro'yxatini tozalasa, bulut hamon "hammasi joyida" deb hisoblardi, hech narsa
+navbatga qo'yilmasdi, va birinchi belgi — eshik oldida turgan xodim. Hech qanday
+xato yo'q edi, chunki hech narsa yiqilmagan: yozuv oylar oldin muvaffaqiyatli
+o'tgan va tizim ko'ra olmaydigan qo'l uni bekor qilgan.
+
+Endi agent kuniga bir marta ro'yxatni o'qiydi. Faqat **oxirigacha o'qilgan**
+ro'yxat "yo'q" degan xulosaga asos bo'ladi: yarim o'qilgani va o'qilmagani
+alohida holat, chunki ularni bo'sh ro'yxat deb hisoblash butun terminalga qayta
+yozishni navbatga qo'yardi.
+
+**Zaxira — tekshirilgani.** Nusxa ochiladi va butunligi so'raladi. O'tmagan fayl
+o'chiriladi. Diskda yotgan yaroqsiz nusxa "zaxira bor" degan tuyg'u beradi, va bu
+hech qanday zaxiradan yomonroq. Tiklanishini kafolatlamaydi — buni faqat qo'lda
+mashq qilingan tiklash isbotlaydi, runbook shuni aytadi.
+
+**`/health`.** Laravel'ning `/up` ekrani "dastur ishga tushdimi" deydi va bu
+tizimning haqiqiy nosozliklarida ham yashil qoladi. Ikkita jim nosozlik bor:
+crontab'dan `schedule:run` tushib qolishi va zaxiraning to'xtashi. Ikkalasi ham
+hech qanday xato bermaydi.
+
+**Xatolar — o'chirilgan holda.** Bu tizimdagi yagona funksiya mijoz ma'lumotini
+tashqariga chiqaradi. Yoqilsa, nima chiqishi **ruxsat ro'yxati** bilan
+belgilangan, taqiq ro'yxati bilan emas — taqiq ro'yxati faqat oxirgi
+yangilanishigacha to'g'ri bo'ladi.
+
+### Agentning o'z-o'zini yangilashi — ataylab qilinmadi
+
+Rejaning o'zida bu "birinchi qurbon bo'ladigan narsalar" ro'yxatida (5-o'rin).
+Undan muhimi: o'z-o'zini yangilash mexanizmi buzilsa, u **siz bora olmaydigan
+ofisdagi agentni** ishdan chiqaradi. Buni birinchi haqiqiy o'rnatishdan oldin
+yozish — sinab ko'rib bo'lmaydigan xavfni qo'shish. Hozircha qo'lda yangilanadi
+(`docker pull` + restart), bu bir mijoz uchun ikki daqiqalik ish.
+
+### Topilgan nuqsonlar
+
+1. **`date` cast'i noto'g'ri edi** (`date`, `date:Y-m-d` o'rniga). Ustunga
+   `2026-08-26 00:00:00` yozilardi, keyin `2026-08-26` bo'yicha qidirilardi,
+   topilmasdi va takroriy yozuv urinardi — **kunning ikkinchi hisobotida 500**,
+   ya'ni birinchi kundan keyingi har kuni.
+2. **`VACUUM INTO` mavjud faylga yozmaydi.** Rejalashtirilgan zaxiradan keyin
+   qo'lda ishga tushirilsa (o'sha soniyada) "output file already exists" xatosi
+   chiqardi va buzilgan zaxira kabi ko'rinardi.
+3. **`prune()` PHP'ning stat kesh'ini o'qirdi** — bitta jarayonda yozib, keyin
+   tozalaganda eski vaqtlar bo'yicha saralab, noto'g'ri faylni o'chirishi mumkin
+   edi.
+4. **Bo'sh `SENTRY_LARAVEL_DSN`** `null` emas, `''` bo'lib kelardi — "o'chirilgan"
+   holatning ikkita yozilishi paydo bo'lgandi.
 
 ### 🚦 Gate — pilotdan to'lovga
 - Pilot mijoz 1 oy uzluksiz ishlatdi
 - Tabel qo'lda tekshirilganda **to'g'ri chiqdi**
 - Mijoz oylik to'lovga rozi
 - Qo'llab-quvvatlash oyiga ≤ 2 soat
+
+**Bu gate'ning to'rttasi ham bitta shartga bog'liq: mijoz.** Sprint 7 ni
+boshlashdan oldin qiladigan eng foydali ish — kod emas.
 
 ---
 
