@@ -61,12 +61,29 @@ POST /api/agent/v1/heartbeat
     { "device_id": "dev_...", "status": "error", "error": "auth_failed" }
   ]
 }
-→ { "server_time": "...", "agent_upgrade": null, "secret_rotation": null }
+→ { "server_time": "...", "agent_upgrade": null, "secret_rotation": null,
+    "devices_registered": 0 }
 ```
 
 Bulut 90 soniya heartbeat kelmasa agentni `offline` deb belgilaydi va HR ga Telegram signal yuboradi.
 
 Qurilma holatlari: `online` | `offline` | `error`. `error` — qurilma javob beradi, lekin ishlay olmaydi (masalan parol noto'g'ri).
+
+**Heartbeat terminalni ro'yxatdan ham o'tkazadi.** Bulut ko'rmagan `device_id`
+kelsa, u o'sha agentning tashkiloti va filialida yaratiladi. Aks holda terminallar
+ro'yxatini faqat qo'lda to'ldirish mumkin bo'lardi — bu esa LAN'da haqiqatan turgan
+narsa emas, tilak ro'yxati. Qaysi terminallar borligini operator emas, agent biladi.
+
+`devices_registered` — shu heartbeat nechta yangi terminal yaratganini aytadi. Jim
+o'tgan heartbeat'ni taxmin qilish o'rniga ko'rish uchun.
+
+Bir tashkilot ichida boshqa agent egallagan `device_id` **tegilmaydi**. Ikki filial
+bir xil terminal id ishlatishi — o'rnatishdagi xato, va terminalni jimgina bir
+filialdan boshqasiga ko'chirish uning o'tishlarini noto'g'ri tabelga tushirardi.
+
+`device_id` **tashkilot ichida** unique, butun o'rnatma bo'yicha emas. Dedup
+kalitidan farqli o'laroq, bu yerda to'qnashuv kutiladigan hol: id ni agentni
+o'rnatgan odam yozadi va ikkinchi mijoz ham `dev_kirish` deb nomlaydi.
 
 ### 3.2. Vazifalarni olish — long-poll
 

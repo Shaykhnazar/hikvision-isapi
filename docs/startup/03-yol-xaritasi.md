@@ -83,18 +83,78 @@ Integratsiya ikkala tomonning testlari ko'rmagan xatoni topdi: agent `/agent/v1/
 ### 🚦 Gate
 Agent ishladi. Arxitektura qayta ko'rib chiqilmaydi.
 
-## Sprint 2 — Bulut skeleti va voqealar (2 hafta)
+## Sprint 2 — Bulut skeleti va voqealar (2 hafta) — ✅ BAJARILDI 2026-08-26
 
-- [ ] `davomat-cloud` repo: Laravel 12 + Filament v4 + Postgres + Redis/Horizon
-- [ ] Auth, `organizations`, `memberships`, rollar, tenant global scope
-- [ ] Filament: filial, agent, qurilma ro'yxatlari; enroll token generatsiyasi
-- [ ] `access_events` jadvali + dedup unique index
-- [ ] Agent endpointlarini bulutga ko'chirish, HMAC imzo bilan himoyalash
-- [ ] Voqealar ekrani: filtr (filial, qurilma, sana, xodim)
-- [ ] Tenant izolyatsiyasi uchun feature testlar
+- [x] `attendance-cloud` repo: **Laravel 13 + Filament v5** + SQLite (test) / Postgres (prod)
+- [x] Auth, `organizations`, `memberships`, rollar, tenant global scope
+- [x] Filament: filial, agent, qurilma ro'yxatlari; enroll token generatsiyasi
+- [x] `access_events` jadvali + dedup unique index
+- [x] Agent endpointlari, HMAC imzo bilan himoyalangan
+- [x] Voqealar ekrani: filtr (filial, terminal, tur, xodim, sana)
+- [x] Tenant izolyatsiyasi uchun feature testlar
+- [ ] Redis / Horizon — hali kerak emas, navbat `database` drayverida
 
-### ✅ Demo
-HR panelga kiradi, filial yaratadi, token oladi, agent ulanadi, qurilma ko'rinadi, kirish-chiqishlar jonli oqadi.
+### Rejadan farqlar
+
+| Reja | Amalda | Sabab |
+|---|---|---|
+| `davomat-cloud` | `attendance-cloud` | Repo Sprint 1 da shu nom bilan yaratilgan |
+| Laravel 12 + Filament v4 | Laravel 13 + Filament v5 | Ikkalasi ham chiqib bo'lgan; eski versiyani tanlash qarzdan boshqa narsa emas |
+| Redis / Horizon | Yo'q | Hozircha fon vazifalari yo'q. Kerak bo'lganda qo'shiladi |
+
+### Tenancy qanday ishlaydi
+
+Har bir kirish nuqtasi so'rovga **bitta tashkilotni** qo'yadi — agent HMAC'idan yoki
+tizimga kirgan foydalanuvchi a'zoligidan — va `organization_id` ustuni bor har bir
+model global scope bilan cheklanadi. Kontrollerlar `where` ni takrorlamaydi, ya'ni
+uni unutish boshqa mijoz ma'lumotini ochib yubormaydi. Chegaradan chiqish mumkin,
+lekin yozib qo'yish shart: `Model::acrossOrganizations()`, u atigi ikki joyda bor —
+agentni topish va enrolment, ikkalasi ham tashkilotni bilishdan **oldin** ishlaydi.
+
+### ✅ Demo — o'tkazildi
+
+Haqiqiy agent jarayoni, haqiqiy HTTP, bitta mashinada:
+
+```
+enroll                        → agt_v9kh8...
+enroll (o'sha token qayta)    → 401 invalid_token
+heartbeat                     → bulutda dev_kirish paydo bo'ldi (branch=1, org=1)
+multipart callback → agent    → 1 voqea: emp=1042, credential=face, source=webhook
+o'sha callback qayta          → hamon 1 voqea (dedup)
+GET /admin/access-events      → 302 → /admin/login
+```
+
+Panelga brauzerdan kirish jonli o'tkazilmadi; u to'liq middleware zanjiri orqali
+ishlaydigan HTTP testlari bilan qoplangan.
+
+### Demo nimani ko'rsatdi
+
+**Uchta xato, uchalasi ham faqat haqiqiy ishga tushirganda chiqdi.**
+
+1. **Qurilma bulutda o'z-o'zidan paydo bo'lmasdi.** Panel terminallarni ko'rsatardi,
+   lekin ularni hech nima yaratmasdi — ro'yxatni faqat qo'lda to'ldirish mumkin edi.
+   Endi heartbeat notanish terminalni ro'yxatdan o'tkazadi. Bu tilak ro'yxati bilan
+   LAN'da haqiqatan turgan narsa o'rtasidagi farq.
+
+2. **`devices.device_id` butun o'rnatma bo'yicha unique edi.** Bu dedup kalitidan
+   farqli — bu yerda to'qnashuv kutilmagan hol emas, **kutiladigan** hol: id ni
+   agentni o'rnatgan odam yozadi va ikkinchi mijoz ham `dev_kirish` deb nomlaydi.
+   Global unique degani o'sha mijozning terminali umuman ro'yxatdan o'tolmasligi.
+
+3. **Livewire yangilanishlari panel middleware'idan o'tmaydi.** Livewire'ning update
+   endpointi faqat `web` guruhini olib yuradi, ya'ni saralash, filtr yoki sahifa
+   almashtirish panel zanjirini qayta ishga tushirmaydi — agar u `isPersistent`
+   deb ro'yxatdan o'tkazilmagan bo'lsa. Bu sizishning eng yomon shakli: birinchi
+   sahifa to'g'ri chiqadi, kimdir ustun sarlavhasini bosgunicha.
+
+Uchinchisini sinash uchun ikki marta xato qildim va ikkalasini ham tuzatdim:
+`Livewire::test()` uni umuman ushlay olmaydi (u middleware o'chirilgan sintetik
+endpoint orqali render qiladi), va haqiqiy so'rov bilan yozilgan test ham avval
+noto'g'ri sababdan o'tdi — test bitta konteynerni `GET` va `POST` orasida
+qayta ishlatgani uchun ijaraga olingan tashkilot sizib o'tgan edi.
+
+### 🚦 Gate
+Bulut skeleti tayyor. Ekranlar bor, tenant chegarasi model qatlamida majburlangan.
 
 ---
 
