@@ -226,24 +226,99 @@ Zanjir uchdan-uchgacha ishlaydi. Sinxronizatsiya modeli o'zgartirilmaydi.
 
 ---
 
-## Sprint 4 — Davomat mexanizmi (2 hafta)
+## Sprint 4 — Davomat mexanizmi (2 hafta) — ✅ BAJARILDI 2026-08-26
 
-**Bu sprint mahsulotni "jurnal"dan "mahsulot"ga aylantiradi.**
+**Bu sprint mahsulotni "jurnal"dan "mahsulot"ga aylantirdi.**
 
-- [ ] `work_schedules` (5/2, 6/1, suzuvchi), kechikish chegarasi, tanaffus
-- [ ] `schedule_assignments` (xodim ↔ smena, davr bilan)
-- [ ] `attendance_days` hisoblagichi: birinchi kirish, oxirgi chiqish, ish soati, kechikish, erta ketish, kelmagan
-- [ ] Kech kelgan voqealar uchun kunni qayta hisoblash (backfill bilan bog'liq)
-- [ ] Gap-filling: agent har 10 daqiqada oxirgi 30 daqiqani qayta o'qiydi
-- [ ] Kunlik audit: voqealar soni farqi bo'lsa ichki signal
-- [ ] Filament: kunlik tabel ekrani, oylik tabel ekrani
-- [ ] Excel export
+- [x] `work_schedules` (5/2, 6/1, suzuvchi), kechikish chegarasi, tanaffus
+- [x] `schedule_assignments` (xodim ↔ smena, davr bilan)
+- [x] `attendance_days` hisoblagichi: birinchi kirish, oxirgi chiqish, ish soati, kechikish, erta ketish, kelmagan
+- [x] Kech kelgan voqealar uchun kunni qayta hisoblash (backfill bilan bog'liq)
+- [x] Gap-filling: agent har 10 daqiqada oxirgi 30 daqiqani qayta o'qiydi *(Sprint 1 da bajarilgan)*
+- [x] Kunlik audit: voqealar soni farqi bo'lsa ichki signal
+- [x] Filament: kunlik tabel ekrani, oylik tabel ekrani
+- [x] Excel export
 
-### ✅ Demo
-HR "avgust oyi tabeli" tugmasini bosadi → tayyor Excel. Qo'lda ish nolga tushdi.
+PR: cloud #9, #10, #11, #12; agent #2. Bulut testlari 171 → **274**, agent 145 → **159**.
 
-### 🚦 Gate
-Bu nuqtada mahsulot **sotiladigan minimum**ga yetadi. Shu yerda pilot mijozga o'rnatish boshlanadi, keyingi sprintlarni kutmasdan.
+### Rejadan farqlar
+
+**Smena kunlari — ISO hafta kunlari ro'yxati, nomlangan naqsh emas.** 5/2 va 6/1
+keng tarqalgan, lekin novvoyxona seshanbadan yakshanbagacha ishlaydi va nomlangan
+enum'da bunga javob yo'q.
+
+**Kecha smenasi — bitta kun, ikkita yarim kun emas.** 20:00–04:00 smenasining
+o'tishlari ikki kalendar sanaga tushadi. Oyna kalendar emas, smenaning o'zi
+atrofida quriladi, ikki tomondan to'rt soat zaxira bilan — erta kelish uchun
+yetarli, ketma-ket ikki tun bir-biriga tegmaydigan darajada tor.
+
+**Tanaffus har doim ayiriladi, hatto qisqa kundan ham.** Bu qo'pol va ataylab:
+har qanday chegara ("faqat olti soatdan uzun kunlarda ayirilsin") — siyosat
+qarori, va uni shu yerda o'ylab topish har bir oyliqqa taxminni singdirgan
+bo'lardi. Pilot buni noto'g'ri deb topsa, yechim — smenaga minimal davomiylik
+maydoni qo'shish, yashirin konstanta emas.
+
+**Kunlik audit dedup kalitlarini sanaydi, xom yozuvlarni emas.** Bulut har
+kalitga bitta qator saqlaydi, shuning uchun kalit ajrata olmaydigan ikki yozuv
+baribir bitta qator bo'lardi. Xom soni bilan solishtirish hech qachon
+yopilmaydigan farqni ko'rsatgan bo'lardi — va nolga tushmaydigan raqamni odamlar
+o'qishni to'xtatadi. Agent ikkalasini ham yuboradi.
+
+**O'qib bo'lmagan terminal — nol emas, alohida holat.** Nol ekranda voqealarning
+butunlay yo'qolgani kabi o'qiladi, ya'ni haqiqatning teskarisi. Aynan shunday
+yolg'on signal operatorni ustunni e'tiborsiz qoldirishga o'rgatadi.
+
+### Nima uchun ikkita tabel ekrani
+
+Ikki xil odam ikki xil savol beradi. **Kunlik tabel** — tushlikkacha kim
+kelmaganini bilmoqchi bo'lgan HR uchun; nishoni faqat bugungi kelmaganlarni
+sanaydi. **Oylik tabel** — yon tomonda odamlar, tepada kunlar: bu buxgalterning
+stolida allaqachon turgan shakl. Normallashtirilgan eksport berib, "o'zingiz
+pivot qiling" deyish qo'l mehnatini olib tashlamaydi, faqat ko'chiradi.
+
+Katakchalar soat ko'rsatadi, daqiqa emas: `8:07`, `487` emas. Xom daqiqa sonini
+hech kim tekshirmaydi; soat va daqiqani kimdir noto'g'ri ekanini payqaydi.
+`K` — kelmadi, `D` — dam olish, chunki nol bu ikkisini ajrata olmaydi, ular esa
+oyliqda qarama-qarshi ma'noga ega.
+
+### ✅ Demo — o'tkazildi
+
+Ikkita jonli ishga tushirish, mock emas — haqiqiy jarayonlar:
+
+1. **Tabel zanjiri.** Voqealardan `attendance_days` hisoblandi, ekranda
+   ko'rsatildi, keyin haqiqiy `OpenSpout` o'quvchisi bilan qayta o'qib
+   tekshirildi — hech kim ochmagan fayl ochilmasligi mumkin bo'lgan fayl.
+2. **Audit zanjiri.** Haqiqiy agent jarayoni xizmat ko'rsatayotgan bulutga
+   ro'yxatdan o'tdi, terminalini heartbeat orqali qayd etdi, to'rtta alohida
+   o'tishdan ikkitasini yetkazdi. Audit `raw=5 distinct=4 cloud=2 missing=2
+   collapsed=1` yozdi — birlashgan juftlik farqdan to'g'ri chetda qoldi.
+   Imzosiz hisobot jonli endpoint'dan 401 oldi.
+
+### Yozish jarayonida topilgan nuqsonlar
+
+Barchasi testlarda emas, ishlatib ko'rilganda chiqdi:
+
+1. **Kecha smenasi nol soat qaytardi.** Voqea so'rovi oxirgi kun yarim tunida
+   to'xtardi va aynan smenani yakunlovchi ertalabki o'tishni kesib tashlardi.
+2. **`updateOrCreate` hech qachon mavjud qatorni topmadi.** Laravel'ning oddiy
+   `date` cast'i `date` ustuniga `2026-08-24 00:00:00` yozardi, shuning uchun har
+   o'tish unique indeksga urilardi.
+3. **`runRecent` PHP soatini o'qirdi, framework'nikini emas** — `Carbon::setTestNow`
+   ta'sir qilmasdi, ya'ni test o'tishi mumkin edi, haqiqiy kod esa boshqa kunni
+   o'lchardi.
+4. **`routes/console.php` dagi `date('n')`** jadval e'lon qilinganda bir marta,
+   server vaqt mintaqasida hisoblanardi — tungi oylik qayta hisoblash noto'g'ri
+   oyga siljigan bo'lardi.
+5. **`TimesheetExporter` da `static` qator hisoblagichi** — bitta jarayonda ikkita
+   eksport qilinsa, ikkinchi varaq 4-raqamdan boshlanardi.
+
+### 🚦 Gate — o'tildi
+Bu nuqtada mahsulot **sotiladigan minimum**ga yetdi. Shu yerda pilot mijozga
+o'rnatish boshlanadi, keyingi sprintlarni kutmasdan.
+
+**Lekin Sprint 0 sotuv gate'i hamon nolda** — 15 intervyu, 3 pilot, 1 integrator
+kelishuvi. Texnik tomon sotuvdan oldinda ketmoqda, va bu xavf: hech kim
+so'ramagan narsani mukammal qilish eng qimmat xato turi.
 
 ---
 
@@ -314,4 +389,38 @@ Ushbu tartibda tashlanadi:
 
 ## Keyingi qadam
 
-`04-paket-mustahkamlash.md` — Sprint 0 ning texnik qismi, ya'ni **hozir shu repoda** boshlanadigan ish.
+Sprint 0–4 texnik jihatdan yopildi. Qolgan ish ikkiga bo'linadi va **ikkinchisi
+muhimroq**:
+
+### 1. Texnik (Sprint 5)
+
+Telegram bildirishnomalari, signallar, birinchi o'rnatish. Batafsil pastda.
+
+### 2. Sotuv — kechikib ketgan yo'nalish
+
+Sprint 0 ning sotuv gate'i hamon **nolda**: 15 intervyu, 3 pilot kelishuvi,
+1 integrator. To'rt sprintlik texnik ish hech kim so'ramagan taxminlar ustiga
+qurildi. Ular asosli taxminlar, lekin taxminligicha qolmoqda.
+
+Bu yerda halol bo'lish kerak: mahsulot endi **sotiladigan minimum**ga yetdi, ya'ni
+keyingi sprintni yozishdan ko'ra bitta haqiqiy ofisga o'rnatib ko'rish qimmatroq
+ma'lumot beradi. Sprint 5 ni boshlashdan oldin bitta pilot topish tavsiya
+etiladi — chunki Sprint 5 ning mazmuni (qaysi signal kerak, Telegram'da nima
+yozilishi kerak) aynan pilotdan kelib chiqishi lozim.
+
+### Haqiqiy terminalsiz hal qilib bo'lmaydigan narsalar
+
+Bu ro'yxat to'rt sprintdan beri o'zgarmadi va faqat qurilma bilan yopiladi:
+
+- `HikvisionDeviceCommands` — yagona sinf, xatti-harakati hujjatga tayangan,
+  javob bergan terminalga emas
+- `device.probe` — imkoniyat va sig'im o'qish
+- major/minor kodlar xaritasi (hozir `unknown` ga tushadi)
+- `04-paket-mustahkamlash.md` §B dagi ikkita tasdiqlanmagan nuqson
+- Yo'nalishli kirish/chiqish (hozir: birinchi o'tish — kelish, oxirgisi — ketish)
+
+---
+
+## Sprint 0 ning texnik qismi
+
+`04-paket-mustahkamlash.md` — SDK paketining o'zini mustahkamlash.

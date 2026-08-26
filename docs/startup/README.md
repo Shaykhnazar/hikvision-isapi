@@ -16,8 +16,12 @@ Ushbu katalog `hikvision-isapi` paketini to'laqonli mahsulotga aylantirish rejas
 | Repo | Rol | Holat |
 |---|---|---|
 | `hikvision-isapi` | MIT ochiq SDK, distribusiya kanali | v2.0.0-beta.1 |
-| `attendance-agent` | Mijoz LAN'idagi edge agent (yopiq) | Sprint 3 — vazifalarni terminalda bajaradi |
-| `attendance-cloud` | Bulut xizmati (yopiq) | Sprint 3 yakunlandi — xodimlar, import, reconciler |
+| `attendance-agent` | Mijoz LAN'idagi edge agent (yopiq) | Sprint 4 yakunlandi — vazifalar, backfill, kunlik audit (159 test) |
+| `attendance-cloud` | Bulut xizmati (yopiq) | Sprint 4 yakunlandi — smenalar, tabel, Excel, audit (274 test) |
+
+Sprint 4 bilan mahsulot **sotiladigan minimum**ga yetdi. Sprint 0 ning sotuv
+gate'i (15 intervyu, 3 pilot, 1 integrator) esa hamon nolda — texnik tomon
+sotuvdan oldinda ketmoqda.
 
 ## Qabul qilingan asosiy qarorlar
 
