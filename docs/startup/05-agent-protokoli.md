@@ -136,17 +136,29 @@ Bir so'rovda ko'pi bilan 500 voqea. `dedup_key` bulutda unique index — takror 
 
 ## 4. Vazifa turlari
 
-| Tur | Yuk | Izoh |
-|---|---|---|
-| `person.upsert` | employee_no, ism, faollik | Birinchi bo'lib bajariladi |
-| `person.delete` | employee_no | |
-| `person.set_enabled` | employee_no, enabled | Obuna/ishdan bo'shash uchun |
-| `card.upsert` | employee_no, card_no | `person.upsert` dan keyin |
-| `face.upsert` | employee_no, image_base64 | Eng oxirida; rasm faqat shu vazifada bo'ladi |
-| `device.probe` | — | Model, firmware, imkoniyat, sig'im |
-| `device.configure_webhook` | agent_url | Qurilmaga lokal agent manzilini yozadi |
+> **Tuzatish (2026-08-26):** `person.*` va `card.*` alohida turlari bitta
+> `employee.sync` bilan almashtirildi. Sabab quyida.
 
-Agent bitta qurilma uchun vazifalarni **ketma-ket** bajaradi (terminal parallel so'rovlarda beqaror), turli qurilmalarni parallel.
+| Tur | Yuk | Holat |
+|---|---|---|
+| `employee.sync` | device_id, employee_no, full_name, enabled, card_no | ✅ ishlaydi |
+| `face.upsert` | employee_no, image_base64 | Rejada; kesish ro'yxatida birinchi |
+| `device.probe` | — | Rejada; real terminal kerak |
+| `device.configure_webhook` | agent_url | Rejada; real terminal kerak |
+
+**Nega bitta vazifa, alohida `person` va `card` emas.** Bulut har bir (xodim,
+qurilma) juftligi uchun bitta `applied_hash` saqlaydi. Bo'lingan vazifalar qisman
+muvaffaqiyat holatini keltirib chiqaradi — odam qo'llandi, karta yo'q — va buni
+bitta hash ifodalay olmaydi. Buni boshqa joyda kuzatish esa aynan shu
+desired-state modeli qochadigan "niyatlar navbati"ni qaytadan yaratardi. Bitta
+vazifa, bitta natija, ko'chiriladigan bitta hash.
+
+`employee.sync` ichida tartib: **person → card**. Kartani terminal hech qachon
+eshitmagan odamga biriktirib bo'lmaydi. `card_no` `null` bo'lsa, qurilmadagi
+karta o'chiriladi — bekor qilingan karta eshikda qolsa, u hamon ochadi.
+
+Agent bitta qurilma uchun vazifalarni **ketma-ket** bajaradi (terminal parallel
+so'rovlarda beqaror), turli qurilmalarni parallel.
 
 ## 5. Xatolar va qayta urinish
 
@@ -154,12 +166,26 @@ Agent xatoni SDK'ning exception ierarxiyasidan oladi (`HikvisionException::isRet
 
 | Xato | Retryable | Agent nima qiladi |
 |---|---|---|
-| `DeviceUnreachableException` | ha | Backoff: 5s, 15s, 60s, 300s; keyin `failed` |
+| `DeviceUnreachableException` | ha | Xabar qilinmaydi; bulut vazifani qaytadan beradi (pastga qarang) |
 | `DeviceBusyException` | ha | Xuddi shunday |
 | `AuthenticationException` | yo'q | Darhol `failed`, qurilma `error` holatiga o'tadi, HR ga signal |
 | Boshqa `HikvisionException` | yo'q | `failed`, xato matni bilan |
 
+> **Tuzatish (2026-08-26):** agentda joyida backoff (5s, 15s, 60s, 300s)
+> qilinmaydi. Agent bir oqimli: tick ichida besh daqiqa uxlash uni terminal
+> callback'larini qabul qilishdan to'xtatadi, va karta yozuvini qayta urinish
+> uchun haqiqiy o'tishni yo'qotish — noto'g'ri almashuv. Buning o'rniga qayta
+> uriniladigan xato **umuman xabar qilinmaydi**: bulutning visibility oynasi
+> vazifani navbatga qaytaradi, va bulut allaqachon sanayotgan `attempts` qachon
+> to'xtashni hal qiladi. Backoff — o'sha visibility oynasi.
+
 Bulut tomonida: `failed` vazifa ekranda sababi bilan ko'rinadi va qo'lda qayta urinish tugmasi bo'ladi. Avtomatik cheksiz qayta urinish yo'q — bu qurilmani bo'g'adi.
+
+Sabab ekranga **tarjima qilib** chiqariladi. Agentning xom matni Guzzle
+istisnosi bo'lib, terminalning LAN manzilini o'z ichiga oladi; ekran esa nima
+qilish kerakligini ko'rsatadi ("Terminal parolni qabul qilmadi. Qurilma parolini
+tekshiring."). Xom matn vazifa qatorida qoladi — debug qilayotgan odam o'sha
+yerga qaraydi.
 
 ## 6. Voqealar oqimi — uch qatlam
 
