@@ -247,4 +247,62 @@ class EventServiceTest extends TestCase
         $this->assertSame(0, $this->sentConditions[0]['searchResultPosition']);
         $this->assertSame(30, $this->sentConditions[1]['searchResultPosition']);
     }
+
+    /**
+     * B2: the count endpoint answers under `AcsEventTotalNum`, and this client
+     * only ever looked at the top level — so on a device that follows the
+     * documentation it returned zero for everything, silently, with nothing to
+     * separate that from "no events".
+     *
+     * A daily audit comparing a device count against the cloud's own would have
+     * reported total event loss, every day, on every terminal.
+     */
+    public function test_count_reads_the_documented_nested_shape(): void
+    {
+        $this->mockClient
+            ->shouldReceive('post')
+            ->with('/ISAPI/AccessControl/AcsEventTotalNum', Mockery::type('array'))
+            ->once()
+            ->andReturn(['AcsEventTotalNum' => ['totalNum' => 137]]);
+
+        $this->assertSame(137, $this->eventService->count([]));
+    }
+
+    /**
+     * Some firmware answers flat. Reading both is what makes it unnecessary to
+     * know which — the shape is one of the things only a real terminal settles.
+     */
+    public function test_count_still_reads_a_flat_shape(): void
+    {
+        $this->mockClient
+            ->shouldReceive('post')
+            ->once()
+            ->andReturn(['totalNum' => 42]);
+
+        $this->assertSame(42, $this->eventService->count([]));
+    }
+
+    public function test_count_is_zero_when_the_device_says_nothing_useful(): void
+    {
+        $this->mockClient
+            ->shouldReceive('post')
+            ->once()
+            ->andReturn(['AcsEventTotalNum' => ['responseStatusStrg' => 'OK']]);
+
+        $this->assertSame(0, $this->eventService->count([]));
+    }
+
+    /**
+     * Devices answer numbers as strings often enough that treating one as zero
+     * would reproduce the original bug by a different route.
+     */
+    public function test_count_accepts_a_numeric_string(): void
+    {
+        $this->mockClient
+            ->shouldReceive('post')
+            ->once()
+            ->andReturn(['AcsEventTotalNum' => ['totalNum' => '58']]);
+
+        $this->assertSame(58, $this->eventService->count([]));
+    }
 }

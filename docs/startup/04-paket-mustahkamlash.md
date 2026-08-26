@@ -59,6 +59,10 @@ Qo'shilgan fayllar:
 
 ## B. Aniqlangan potensial xatolar (tekshirish kerak)
 
+> **B1 va B2 tuzatildi (Sprint 7).** Ikkalasi ham qurilmasiz hal qilinadigan
+> mantiqiy xato bo'lib chiqdi — "tekshirish kerak" emas, "tuzatish kerak" edi.
+> Batafsil pastda, har birining ostida.
+
 Kod ko'rib chiqishda topilgan, real qurilmada tasdiqlanishi kerak:
 
 ### B1. `searchID` har chaqiruvda o'zgaradi
@@ -74,11 +78,43 @@ Hikvision ISAPI'da `searchID` — bitta qidiruv sessiyasining identifikatori va 
 
 **Tuzatish:** qidiruv sessiyasini ochiq qilish — `search()` ga `?string $searchId = null` parametri, yoki `searchAll()` iteratori ichida bitta UUID ishlatish. Orqaga moslik saqlanadi.
 
+### ✅ B1 — tuzatildi (Sprint 7)
+
+`Concerns\PagesSearchResults` qo'shildi: bitta `searchID`, **haqiqatan qaytgan**
+yozuvlar soniga siljish, va `responseStatusStrg` bo'yicha to'xtash. `PersonService`,
+`CardService`, `FingerprintService` shunga o'tkazildi; `EventService` ham
+o'shanga birlashtirildi, ya'ni endi bitta amalga oshirish bor.
+
+`PersonService::all()` va `CardService::all()` generatorlari qo'shildi.
+
+⚠️ **Bu Sprint 6 da yozilgan drift tekshiruviga bevosita ta'sir qilardi.** U
+`PersonService::search()` ustida sahifalab yurardi. Agentdagi `RosterPager` da
+"firmware nol-sahifani qayta beryapti" degan himoya bor edi — va o'sha
+simptomning eng ehtimoliy sababi aynan shu xato edi. Ya'ni himoya ishlab,
+ro'yxat `partial` bo'lib, drift tekshiruvi jimgina ishlamay qolishi mumkin edi.
+
+**Test qanday yozilgani muhim:** dastlabki testim xatoni **ushlamadi**. `time()`
+bitta soniya ichida bir xil qiymat qaytaradi, ya'ni testdagi uchta sahifa ham
+bir xil `searchID` oladi va test o'tadi. Xato faqat yurish soniya chegarasidan
+o'tganda paydo bo'ladi. Shuning uchun test endi `searchID` **soatdan
+olinmasligini** ham tekshiradi — bu deterministik tekshirish mumkin bo'lgan
+yagona xossa.
+
 ### B2. `EventService::count()` javob strukturasi
 ```php
 return $response['totalNum'] ?? 0;
 ```
 `AcsEventTotalNum` endpointi javobni odatda `AcsEventTotalNum` kaliti ostida qaytaradi. Agar shunday bo'lsa, bu metod **doim 0 qaytaradi** va hech kim sezmaydi. Real qurilmada tekshirilsin.
+
+### ✅ B2 — tuzatildi (Sprint 7)
+
+Endi **ikkala shakl ham** o'qiladi (ichma-ich va tekis), va raqamli satr ham
+qabul qilinadi. Ya'ni qurilma qaysi shaklda javob berishi **endi ahamiyatsiz** —
+bu savolni haqiqiy terminalda hal qilish shart emas.
+
+Nega muhim: kunlik audit qurilmadagi sonni bulutdagi bilan solishtiradi. `count()`
+doim 0 qaytarsa, audit **har kuni, har terminalda** "hamma voqealar yo'qolgan"
+deb ko'rsatardi.
 
 ### B3. Sahifalash chegarasi
 `search()` metodlarida umumiy sonni bilmasdan sahifalash mumkin emas — chaqiruvchi qachon to'xtashni bilmaydi. Iterator qo'shilsin (B4 ga qarang).

@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Shaykhnazar\HikvisionIsapi\Services;
 
 use Shaykhnazar\HikvisionIsapi\Client\HikvisionClient;
+use Shaykhnazar\HikvisionIsapi\Concerns\PagesSearchResults;
 use Shaykhnazar\HikvisionIsapi\DTOs\Person;
 
 class PersonService
 {
+    use PagesSearchResults;
+
     private const ENDPOINT_CAPABILITIES = '/ISAPI/AccessControl/UserInfo/Capabilities';
 
     private const ENDPOINT_COUNT = '/ISAPI/AccessControl/UserInfo/Count';
@@ -39,26 +42,83 @@ class PersonService
         return $response['UserInfoCount']['userNumber'] ?? 0;
     }
 
-    public function search(int $page = 0, int $maxResults = 30): array
+    /**
+     * One page of the user list.
+     *
+     * `searchID` identifies a search *session*, and every page of one search must
+     * carry the same value — so pass `$searchId` when paginating. Omitting it
+     * generates a fresh one, which is correct only for a single-page query.
+     *
+     * Prefer {@see all()} for walking the whole list: it holds the session open
+     * and advances by what the device actually returned, which this method
+     * cannot do because it only sees one page.
+     *
+     * @return list<Person>
+     */
+    public function search(int $page = 0, int $maxResults = 30, ?string $searchId = null): array
     {
-        $data = [
-            'UserInfoSearchCond' => [
-                'searchID' => (string) time(),
-                'searchResultPosition' => $page * $maxResults,
-                'maxResults' => $maxResults,
-            ],
-        ];
+        return $this->searchAt($page * $maxResults, $maxResults, $searchId ?? self::newSearchId())['items'];
+    }
 
-        $response = $this->client->post(self::ENDPOINT_SEARCH, $data);
-
-        $persons = [];
-        if (isset($response['UserInfoSearch']['UserInfo'])) {
-            foreach ($response['UserInfoSearch']['UserInfo'] as $personData) {
-                $persons[] = Person::fromArray(['UserInfo' => $personData]);
-            }
+    /**
+     * Every person the device holds, one page at a time.
+     *
+     * This is the primitive anything reconciling against a terminal needs. A
+     * caller paging by hand cannot know when to stop — the device says so in
+     * `responseStatusStrg`, which a single `search()` call discards — and cannot
+     * keep the search session open across calls.
+     *
+     * @return \Generator<int, Person>
+     */
+    public function all(int $pageSize = 30): \Generator
+    {
+        if ($pageSize < 1) {
+            throw new \InvalidArgumentException('pageSize must be at least 1');
         }
 
-        return $persons;
+        yield from $this->walkSearch(
+            fn (int $position, string $searchId): array => $this->searchAt($position, $pageSize, $searchId),
+        );
+    }
+
+    /**
+     * @return array{items: list<Person>, more: bool}
+     */
+    private function searchAt(int $position, int $maxResults, string $searchId): array
+    {
+        $response = $this->client->post(self::ENDPOINT_SEARCH, [
+            'UserInfoSearchCond' => [
+                'searchID' => $searchId,
+                'searchResultPosition' => $position,
+                'maxResults' => $maxResults,
+            ],
+        ]);
+
+        $result = $response['UserInfoSearch'] ?? [];
+
+        $persons = [];
+
+        foreach (self::normalizeRecords($result['UserInfo'] ?? []) as $personData) {
+            $persons[] = Person::fromArray(['UserInfo' => $personData]);
+        }
+
+        return ['items' => $persons, 'more' => self::saysMore($result)];
+    }
+
+    /**
+     * A device returns a bare record when a page holds exactly one, and a list
+     * otherwise. Normalise both into a list.
+     *
+     * @param  array<mixed>  $records
+     * @return list<array<string, mixed>>
+     */
+    private static function normalizeRecords(array $records): array
+    {
+        if ($records === []) {
+            return [];
+        }
+
+        return array_is_list($records) ? $records : [$records];
     }
 
     public function add(Person $person): array

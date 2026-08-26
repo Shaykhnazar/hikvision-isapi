@@ -560,6 +560,63 @@ boshlashdan oldin qiladigan eng foydali ish — kod emas.
 
 ---
 
+## Sprint 7 — Paketni ishonchli qilish (davom etmoqda, 2026-08-26)
+
+Rejada Sprint 7 yo'q edi — reja Sprint 6 da tugaydi, chunki undan keyingi hamma
+narsa haqiqiy mijozdan kelishi kerak edi. Mijoz hamon yo'q, shuning uchun Sprint 7
+mavjud **dalillardan** aniqlandi: `04-paket-mustahkamlash.md` §B dagi ochiq
+nuqsonlar, ular qurilmasiz hal qilinadi va **allaqachon yozilgan kodga** ta'sir
+qiladi.
+
+- [x] **B1 — `searchID` soatdan olinardi** (`PersonService`, `CardService`,
+      `FingerprintService`)
+- [x] **B2 — `EventService::count()` doim 0 qaytarardi**
+- [x] **B3 — sahifalashni qachon to'xtatishni bilib bo'lmasdi** — `all()`
+      generatorlari
+- [ ] Agentni yangi SDK ga o'tkazish ← **yangi beta tegi kerak**
+
+SDK testlari 88 → **108**.
+
+### Nega bu Sprint 7 bo'ldi
+
+Sprint 6 da yozgan drift tekshiruvim `PersonService::search()` ustida sahifalab
+yuradi. B1 esa aynan o'sha sahifalashni buzadi: `searchID` har chaqiruvda
+o'zgarsa, qurilma yangi qidiruv boshlaydi va birinchi sahifani qayta beradi.
+
+Agentdagi `RosterPager` da "firmware nol-sahifani qayta beryapti" degan himoya
+bor edi — va o'sha simptomning eng ehtimoliy sababi **bizning o'z SDK'imiz**
+edi. Ya'ni himoya ishlab, ro'yxat `partial` deb belgilanib, drift tekshiruvi
+jimgina ishlamay qolishi mumkin edi. Aynan men uchta holat qo'shib oldini
+olmoqchi bo'lgan nosozlik.
+
+B2 ham shunga o'xshash: kunlik audit qurilmadagi sonni bulutdagi bilan
+solishtiradi, va `count()` doim 0 qaytarsa audit har kuni "hamma voqealar
+yo'qolgan" deb ko'rsatardi.
+
+Ya'ni ikkala nuqson ham **to'g'rilikni tekshirish uchun qurilgan mexanizmlarning
+ostida** yotgan edi.
+
+### Test yozishda topilgan narsa
+
+Dastlabki testim B1 ni **ushlamadi**. `time()` bitta soniya ichida bir xil
+qiymat qaytaradi, ya'ni testdagi uchta sahifa bir xil `searchID` oladi va test
+o'tadi. Xato faqat yurish soniya chegarasidan o'tganda paydo bo'ladi — buni
+soat seam'isiz test majburlay olmaydi.
+
+Shuning uchun test endi `searchID` **soatdan olinmasligini** ham tekshiradi.
+Bu deterministik tasdiqlash mumkin bo'lgan yagona xossa. Tuzatishni olib
+tashlab sinaldi: uchta test yiqiladi (avval ikkita edi).
+
+Bu sessiyada uchinchi marta "o'tadigan, lekin himoya qilmaydigan" test yozdim.
+
+### Keyingi qadam
+
+Agent SDK'ni Packagist'dan `v2.0.0-beta.1` sifatida oladi, ya'ni `all()` ni
+ishlata olmaydi. **Yangi beta tegi kerak**, keyin agent `RosterPager` o'rniga
+SDK ning to'g'ri yurishini ishlatadi.
+
+---
+
 ## Umumiy vaqt jadvali
 
 | Bosqich | Sprint | Taxminiy sana |

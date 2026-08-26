@@ -218,13 +218,19 @@ $personService = app(PersonService::class);
 // Get total count
 $total = $personService->count();
 
-// Search with pagination (30 persons per page)
-$persons = $personService->search(page: 0, maxResults: 30);
-
-foreach ($persons as $person) {
+// Walk the whole list. One search session, and it stops when the device says
+// there is nothing more — which a single search() call cannot know.
+foreach ($personService->all() as $person) {
     echo "{$person->employeeNo}: {$person->name}\n";
 }
+
+// A single page, when that is genuinely all you want.
+$persons = $personService->search(page: 0, maxResults: 30);
 ```
+
+> Paginating by hand? Pass the same `$searchId` to every call. ISAPI treats it as
+> the identity of a search session, and changing it mid-walk makes the device
+> start over — silently. `all()` handles this for you.
 
 ### Add Card
 
@@ -563,7 +569,8 @@ $personService = app(PersonService::class);
 $personService->add(Person $person);              // Add person
 $personService->update(Person $person);           // Update person
 $personService->apply(Person $person);            // Apply person changes
-$personService->search(int $page, int $maxResults); // Search persons
+$personService->all(int $pageSize);                // Walk every person (generator)
+$personService->search(int $page, int $maxResults, ?string $searchId); // One page
 $personService->delete(array $employeeNos);       // Delete persons
 $personService->count();                          // Count persons
 $personService->getCapabilities();                // Get capabilities

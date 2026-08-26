@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Shaykhnazar\HikvisionIsapi\Services;
 
 use Shaykhnazar\HikvisionIsapi\Client\HikvisionClient;
+use Shaykhnazar\HikvisionIsapi\Concerns\PagesSearchResults;
 
 class EventService
 {
+    use PagesSearchResults;
+
     private const ENDPOINT_SEARCH = '/ISAPI/AccessControl/AcsEvent';
 
     private const ENDPOINT_COUNT = '/ISAPI/AccessControl/AcsEventTotalNum';
@@ -17,8 +20,6 @@ class EventService
     /**
      * Response status a device returns while more pages of the same search remain.
      */
-    private const STATUS_MORE = 'MORE';
-
     public function __construct(
         private readonly HikvisionClient $client
     ) {}
@@ -73,44 +74,56 @@ class EventService
             throw new \InvalidArgumentException('from must not be later than to');
         }
 
-        $searchId = self::newSearchId();
         $conditions = array_merge($extraConditions, [
             'startTime' => $from->format(\DateTimeInterface::ATOM),
             'endTime' => $to->format(\DateTimeInterface::ATOM),
         ]);
 
-        $position = 0;
+        // The session, the advance-by-returned and the stop condition all live in
+        // PagesSearchResults now, so events, people and cards cannot drift into
+        // three subtly different ideas of how ISAPI paging works.
+        yield from $this->walkSearch(
+            function (int $position, string $searchId) use ($conditions, $pageSize): array {
+                $response = $this->searchAt($conditions, $position, $pageSize, $searchId);
+                $result = $response['AcsEvent'] ?? [];
 
-        do {
-            $response = $this->searchAt($conditions, $position, $pageSize, $searchId);
-
-            $result = $response['AcsEvent'] ?? [];
-            $events = self::normalizeInfoList($result['InfoList'] ?? []);
-
-            foreach ($events as $event) {
-                yield $event;
-            }
-
-            $returned = count($events);
-            $position += $returned;
-
-            // The empty-page guard matters as much as the status check: a device
-            // that keeps reporting MORE while returning nothing would otherwise
-            // spin forever.
-            $hasMore = ($result['responseStatusStrg'] ?? '') === self::STATUS_MORE && $returned > 0;
-        } while ($hasMore);
+                return [
+                    'items' => self::normalizeInfoList($result['InfoList'] ?? []),
+                    'more' => self::saysMore($result),
+                ];
+            },
+        );
     }
 
     /**
      * @param  array<string, mixed>  $conditions
      */
+    /**
+     * How many events match, according to the device.
+     *
+     * The count is read from either the nested `AcsEventTotalNum` block or the
+     * top level, because the endpoint is documented to answer with the former
+     * and this client previously only looked at the latter — which returns zero
+     * for every device that follows the documentation, silently and with nothing
+     * to distinguish it from "no events".
+     *
+     * Not verified against hardware: which shape a real terminal sends is one of
+     * the things the first installation has to answer. Reading both is what
+     * makes the answer not matter.
+     *
+     * @param  array<string, mixed>  $conditions
+     */
     public function count(array $conditions): int
     {
-        $data = ['AcsEventTotalNumCond' => $conditions];
+        $response = $this->client->post(self::ENDPOINT_COUNT, ['AcsEventTotalNumCond' => $conditions]);
 
-        $response = $this->client->post(self::ENDPOINT_COUNT, $data);
+        $nested = $response['AcsEventTotalNum'] ?? [];
 
-        return $response['totalNum'] ?? 0;
+        $total = (is_array($nested) ? ($nested['totalNum'] ?? null) : null)
+            ?? $response['totalNum']
+            ?? 0;
+
+        return is_numeric($total) ? (int) $total : 0;
     }
 
     /**
@@ -145,11 +158,6 @@ class EventService
         ];
 
         return $this->client->post(self::ENDPOINT_SEARCH, $data);
-    }
-
-    private static function newSearchId(): string
-    {
-        return bin2hex(random_bytes(8));
     }
 
     /**

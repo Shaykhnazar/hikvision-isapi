@@ -144,9 +144,13 @@ class PersonServiceTest extends TestCase
         $persons = $this->personService->search(0, 30);
 
         $this->assertCount(2, $persons);
-        $this->assertContainsOnlyInstancesOf(Person::class, $persons);
-        $this->assertInstanceOf(Person::class, $persons[0]);
-        $this->assertSame('EMP001', $persons[0]->employeeNo);
+        // The types are guaranteed by the signature now, so assert the mapping
+        // instead: that both records came back, in order, as themselves.
+        $this->assertSame(['EMP001', 'EMP002'], array_map(
+            static fn (Person $person): string => $person->employeeNo,
+            $persons,
+        ));
+        $this->assertSame('John Doe', $persons[0]->name);
     }
 
     public function test_can_get_capabilities(): void

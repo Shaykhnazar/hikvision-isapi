@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Shaykhnazar\HikvisionIsapi\Services;
 
 use Shaykhnazar\HikvisionIsapi\Client\HikvisionClient;
+use Shaykhnazar\HikvisionIsapi\Concerns\PagesSearchResults;
 
 class FingerprintService
 {
+    use PagesSearchResults;
+
     private const ENDPOINT_CAPABILITIES = '/ISAPI/AccessControl/FingerPrint/capabilities';
 
     private const ENDPOINT_SEARCH = '/ISAPI/AccessControl/FingerPrint/Search';
@@ -27,24 +30,32 @@ class FingerprintService
         return $this->client->get(self::ENDPOINT_CAPABILITIES);
     }
 
+    /**
+     * One page of fingerprint records.
+     *
+     * `searchID` identifies a search *session*: every page of one search must
+     * carry the same value, so pass `$searchId` when paginating. Omitting it
+     * generates a fresh one, which is correct only for a single-page query.
+     *
+     * @return array<string, mixed>
+     */
     public function search(
         int $page = 0,
         int $maxResults = 30,
-        ?string $employeeNo = null
+        ?string $employeeNo = null,
+        ?string $searchId = null,
     ): array {
-        $data = [
-            'FingerPrintCond' => [
-                'searchID' => (string) time(),
-                'searchResultPosition' => $page * $maxResults,
-                'maxResults' => $maxResults,
-            ],
+        $condition = [
+            'searchID' => $searchId ?? self::newSearchId(),
+            'searchResultPosition' => $page * $maxResults,
+            'maxResults' => $maxResults,
         ];
 
-        if ($employeeNo) {
-            $data['FingerPrintCond']['employeeNo'] = $employeeNo;
+        if ($employeeNo !== null && $employeeNo !== '') {
+            $condition['employeeNo'] = $employeeNo;
         }
 
-        return $this->client->post(self::ENDPOINT_SEARCH, $data);
+        return $this->client->post(self::ENDPOINT_SEARCH, ['FingerPrintCond' => $condition]);
     }
 
     public function add(
