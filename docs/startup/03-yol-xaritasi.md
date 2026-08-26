@@ -404,16 +404,17 @@ Sprint 6 ga o'tish uchun **kamida bitta haqiqiy o'rnatish** kerak. Sprint 6 —
 
 - [ ] Pilot davomida chiqqan xatolarni tuzatish ← **pilotsiz yozib bo'lmaydi**
 - [x] Tunlik drift tekshiruvi va inventarizatsiya
-- [ ] Agentning o'z-o'zini yangilashi ← **ataylab qilinmadi, pastda sabab**
+- [x] Agentning o'z-o'zini yangilashi
 - [x] Sentry, uptime monitoring, kunlik backup
 - [ ] 1C export formati ← **buxgaltersiz taxmin qilib bo'lmaydi**
 - [~] Onboarding hujjati + video ← **hujjat bor** (`mijoz-qollanmasi.md`), video yo'q
 
-PR: cloud #17, #18, #19; agent #4. Bulut testlari 396 → **464**, agent 169 → **188**.
+PR: cloud #17, #18, #19, #20; agent #4, #5. Bulut testlari 396 → **482**,
+agent 169 → **244**.
 
 **Sprintning nomi bajarilmadi.** "Pilotni mustahkamlash" — mustahkamlanadigan
-pilot yo'q. Oltitadan ikki yarimtasi bajarildi; qolgani mijoz, buxgalter yoki
-videokamera talab qiladi.
+pilot yo'q. Kod bilan yopiladigan hamma band yopildi; qolgan ikkitasi mijoz yoki
+buxgalter talab qiladi.
 
 ### Nima qilindi
 
@@ -473,13 +474,60 @@ Endi tarixi bor xodim o'chmaydi va ommaviy tanlovga ham tushmaydi. Bugun
 ertalab o'tgan, lekin hali tabel qatori yaratilmagan odam ham himoyalangan.
 Xato bilan kiritilgan qator esa o'chaveradi — u haqiqatan xato.
 
-### Agentning o'z-o'zini yangilashi — ataylab qilinmadi
+### Agentning o'z-o'zini yangilashi
 
-Rejaning o'zida bu "birinchi qurbon bo'ladigan narsalar" ro'yxatida (5-o'rin).
-Undan muhimi: o'z-o'zini yangilash mexanizmi buzilsa, u **siz bora olmaydigan
-ofisdagi agentni** ishdan chiqaradi. Buni birinchi haqiqiy o'rnatishdan oldin
-yozish — sinab ko'rib bo'lmaydigan xavfni qo'shish. Hozircha qo'lda yangilanadi
-(`docker pull` + restart), bu bir mijoz uchun ikki daqiqalik ish.
+Men buni ikki marta qilmaslikni tavsiya qilgandim: buzilgan yangilanuvchi
+**siz bora olmaydigan ofisdagi agentni** o'ldiradi. Qaror qabul qilingach, aynan
+shu nosozlik **mumkin bo'lmaydigan** qilib yozildi.
+
+**Asosiy tamoyil — "pol".** Image ichidagi versiya hech qachon o'zgartirilmaydi,
+o'chirilmaydi va har doim tanlanishi mumkin. Yuklab olingan relizlar uning
+yonida turadi va faqat **afzal ko'riladi**. Nosozlikning har bir yo'li —
+tekshiruvdan o'tmagan fayl, yarim ochilgan papka, buzilgan holat fayli, ishga
+tushib bulutga ulana olmagan reliz, bajarilmagan `exec` — bitta natijaga olib
+keladi: agent o'z image'idagi kod bilan ishlaydi. Bu funksiya paydo bo'lishidan
+oldingi xatti-harakatning aynan o'zi.
+
+Pol o'chirilmaydigan bo'lishi **qoida bilan emas, tuzilish bilan** ta'minlangan:
+u tozalash ishlaydigan papkada umuman yo'q.
+
+**Ikkita mustaqil tekshiruv.** Bayt'lar e'lon qilingan xeshga mos kelishi kerak,
+**va** o'sha xesh reliz kalitining Ed25519 imzosini olib yurishi kerak. Ochiq
+kalit image ichida, hech qachon yuklab olinmaydi. Kalitsiz build hech narsa
+o'rnatmaydi.
+
+"Bulut aytdi" — bu dalil emas. Buzg'unchi aynan bulutni taqlid qiladi, va bu
+agent mijoz LAN'ida terminal parollarini ushlab turadi.
+
+**Reliz o'zini isbotlashi kerak.** "Ishga tushdi" yetarli emas — bulutga
+**heartbeat yetkazishi** kerak. Ishga tushib, hech qayerga ulana olmaydigan build
+— aynan mijozni yolg'iz qoldiradigan nosozlik, va uni exit code ko'rmaydi.
+
+**Bulut tomoni — tarqalish tezligi.** Agent nosozlikni *omon qoladigan* qiladi;
+bulut uni *hammaga bir kunda yetib bormaydigan* qiladi. Odatiy holat — bir vaqtda
+bitta agent. Yangi versiyada bulutga ulanmaguncha navbat siljimaydi, ya'ni
+muvaffaqiyatsiz reliz **o'z tarqalishini o'zi to'xtatadi**.
+
+Imzo bulutda yaratilmaydi, faqat uzatiladi. Agar bulut imzo yarata olsa, agentdagi
+tekshiruv buzilgan bulutdan himoya qilmaydi va butun mexanizm teatrga aylanadi.
+
+### Testlar topgan ikkita nuqson
+
+Ikkalasi ham tashqaridan **ishlayotgan agent kabi ko'rinardi**.
+
+1. **`pcntl_exec` muhitni `name => value` shaklida oladi**, `"NAME=value"`
+   ro'yxatida emas. Yassilangan shakl bolaga marker yetkazmasdi — bola o'zi
+   reliz qidirib, yana `exec` qilardi. **Cheksiz exec halqasi.** Buni faqat
+   haqiqiy jarayonni almashtiradigan integratsion test ko'ra oldi.
+
+2. **O'sha himoya uchun yozgan testim himoya olib tashlanganda ham o'tardi.**
+   Qo'yilgan reliz launcher kodiga yetib bormasdan, birinchi klassda yiqilardi,
+   chunki uning `vendor/autoload.php` fayli qalbaki edi. Haqiqiy autoloader'ga
+   ulangach, test himoyasiz yiqiladigan bo'ldi: bitta chaqiruvda uchta urinish
+   sarflanadi va butunlay yaroqli reliz "yaroqsiz" deb belgilanadi.
+
+⚠️ **Sinalmagani:** shu tarzda yig'ilgan reliz haqiqiy o'rnatilgan agentni
+yangilashi. Mexanizmning testlari bor; haqiqiy yangilanish hech qachon bo'lmagan.
 
 ### Topilgan nuqsonlar
 
@@ -496,6 +544,10 @@ yozish — sinab ko'rib bo'lmaydigan xavfni qo'shish. Hozircha qo'lda yangilanad
 4. **Bo'sh `SENTRY_LARAVEL_DSN`** `null` emas, `''` bo'lib kelardi — "o'chirilgan"
    holatning ikkita yozilishi paydo bo'lgandi.
 5. **Xodimni o'chirish tabelni ham o'chirardi** (yuqorida batafsil).
+6. **`pcntl_exec` muhiti** va **himoyasini sinamaydigan test** (yuqorida batafsil).
+7. **Agent modelida yangi ustunlar `$fillable` da yo'q edi** — `Agent::create`
+   ularni jimgina tashlab ketardi, va parallel chegara **hech narsani
+   sanamasdi**. Chegara o'z testidan tasodifan o'tardi.
 
 ### 🚦 Gate — pilotdan to'lovga
 - Pilot mijoz 1 oy uzluksiz ishlatdi
