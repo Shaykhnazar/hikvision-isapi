@@ -17,7 +17,7 @@ Ushbu katalog `hikvision-isapi` paketini to'laqonli mahsulotga aylantirish rejas
 |---|---|---|
 | `hikvision-isapi` | MIT ochiq SDK, distribusiya kanali | v2.0.0-beta.1 |
 | `attendance-agent` | Mijoz LAN'idagi edge agent (yopiq) | Sprint 6 — vazifalar, backfill, audit, yuz, drift tekshiruvi (188 test) |
-| `attendance-cloud` | Bulut xizmati (yopiq) | Sprint 6 — tabel, Telegram, rozilik, inventarizatsiya, zaxira (458 test) |
+| `attendance-cloud` | Bulut xizmati (yopiq) | Sprint 6 — tabel, Telegram, rozilik, inventarizatsiya, zaxira (464 test) |
 
 Mahsulot **sotiladigan minimum**dan ancha o'tdi. Sprint 5 va 6 ning kod qismi
 tayyor, ammo **ikkalasi ham yopilmadi**, va ikkalasining ham yopilmagan bandi

@@ -407,13 +407,13 @@ Sprint 6 ga o'tish uchun **kamida bitta haqiqiy o'rnatish** kerak. Sprint 6 —
 - [ ] Agentning o'z-o'zini yangilashi ← **ataylab qilinmadi, pastda sabab**
 - [x] Sentry, uptime monitoring, kunlik backup
 - [ ] 1C export formati ← **buxgaltersiz taxmin qilib bo'lmaydi**
-- [ ] Onboarding hujjati + video ← runbook bor, video yo'q
+- [~] Onboarding hujjati + video ← **hujjat bor** (`mijoz-qollanmasi.md`), video yo'q
 
-PR: cloud #17, #18; agent #4. Bulut testlari 396 → **458**, agent 169 → **188**.
+PR: cloud #17, #18, #19; agent #4. Bulut testlari 396 → **464**, agent 169 → **188**.
 
 **Sprintning nomi bajarilmadi.** "Pilotni mustahkamlash" — mustahkamlanadigan
-pilot yo'q. Oltitadan ikkitasi to'liq bajarildi; qolgani mijoz yoki buxgalter
-talab qiladi.
+pilot yo'q. Oltitadan ikki yarimtasi bajarildi; qolgani mijoz, buxgalter yoki
+videokamera talab qiladi.
 
 ### Nima qilindi
 
@@ -445,6 +445,34 @@ tashqariga chiqaradi. Yoqilsa, nima chiqishi **ruxsat ro'yxati** bilan
 belgilangan, taqiq ro'yxati bilan emas — taqiq ro'yxati faqat oxirgi
 yangilanishigacha to'g'ri bo'ladi.
 
+**Mijoz qo'llanmasi.** O'rnatuvchi uchun runbook bor edi; bu — mijozning o'zi
+uchun. Eng muhim qismi — **tizim nima qilmasligi**, chunki birinchi haftada
+ishonch aynan shu yerda yutiladi yoki yo'qoladi.
+
+Eng keskini: **kunlik tabelni qo'lda tuzatib bo'lmaydi.** Tahrirlash tugmasi
+yo'q, ataylab — tahrirlanadigan tabel dalil bo'lishdan to'xtaydi. Ya'ni
+kartasini uyda unutgan odam "Kelmadi" bo'lib qoladi va tuzatish oylik
+hisob-kitobda, tizimdan tashqarida bo'ladi. Qo'llanma buni ochiq aytadi va
+HR'dan **birinchi oyda bu qancha xalaqit berganini yozib borishni** so'raydi —
+chunki bu qarorning keyingi versiyasi uchun kerak bo'ladigan yagona ma'lumot
+shu, va uni keyin eslab bo'lmaydi.
+
+### Yozish jarayonida topilgan xavf
+
+Qo'llanmaning "ishdan bo'shash" bo'limini yozayotganda ma'lum bo'ldi: xodimni
+**o'chirish mumkin edi** (tahrirlash sahifasida va ommaviy amalda), va
+`attendance_days` cascade bilan bog'langan. Ya'ni bir necha xodimni belgilab
+o'chirish **bir necha oylik tabelni jimgina yo'q qilardi** — qaytarib
+bo'lmaydigan tarzda.
+
+Bu tizimning o'z mantiqiga zid edi: saqlash muddati mexanizmi aynan shu
+qatorlarni **saqlab qolish** uchun alohida yozilgan (xom voqealar o'chadi,
+tabel qoladi). Bitta yo'l himoya qilardi, ikkinchisi o'chirardi.
+
+Endi tarixi bor xodim o'chmaydi va ommaviy tanlovga ham tushmaydi. Bugun
+ertalab o'tgan, lekin hali tabel qatori yaratilmagan odam ham himoyalangan.
+Xato bilan kiritilgan qator esa o'chaveradi — u haqiqatan xato.
+
 ### Agentning o'z-o'zini yangilashi — ataylab qilinmadi
 
 Rejaning o'zida bu "birinchi qurbon bo'ladigan narsalar" ro'yxatida (5-o'rin).
@@ -467,6 +495,7 @@ yozish — sinab ko'rib bo'lmaydigan xavfni qo'shish. Hozircha qo'lda yangilanad
    edi.
 4. **Bo'sh `SENTRY_LARAVEL_DSN`** `null` emas, `''` bo'lib kelardi — "o'chirilgan"
    holatning ikkita yozilishi paydo bo'lgandi.
+5. **Xodimni o'chirish tabelni ham o'chirardi** (yuqorida batafsil).
 
 ### 🚦 Gate — pilotdan to'lovga
 - Pilot mijoz 1 oy uzluksiz ishlatdi
