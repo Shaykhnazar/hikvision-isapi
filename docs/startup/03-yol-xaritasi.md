@@ -158,21 +158,71 @@ Bulut skeleti tayyor. Ekranlar bor, tenant chegarasi model qatlamida majburlanga
 
 ---
 
-## Sprint 3 — Xodimlar va sinxronizatsiya (2 hafta)
+## Sprint 3 — Xodimlar va sinxronizatsiya (2 hafta) — ✅ BAJARILDI 2026-08-26
 
 **Karta birinchi, yuz keyin** — karta ancha oddiy va pilotni tezlashtiradi.
 
-- [ ] `employees`, `credentials`, `sync_states`, `sync_jobs` jadvallari
-- [ ] `employee_no` ketma-ketligi (tashkilot ichida global, qayta ishlatilmaydi)
-- [ ] Filament: xodim CRUD, Excel'dan import
-- [ ] Reconciler: `desired_hash != applied_hash` → vazifa yaratish
-- [ ] Agent tomonida vazifa bajarish: person → card
-- [ ] Idempotentlik kaliti, retry + backoff, `failed` holati va sababi ekranda
-- [ ] Qurilma imkoniyatlari va sig'imini o'qish
-- [ ] Voqeani xodimga bog'lash (`employee_no` orqali)
+- [x] `employees`, `credentials`, `sync_states`, `sync_jobs` jadvallari
+- [x] `employee_no` ketma-ketligi (tashkilot ichida global, qayta ishlatilmaydi)
+- [x] Filament: xodim CRUD, Excel/CSV dan import
+- [x] Reconciler: `desired_hash != applied_hash` → vazifa yaratish
+- [x] Agent tomonida vazifa bajarish: person → card
+- [x] Idempotentlik kaliti, retry, `failed` holati va sababi ekranda
+- [x] Voqeani xodimga bog'lash (`employee_no` orqali)
+- [ ] Qurilma imkoniyatlari va sig'imini o'qish — **real terminal kerak**
 
-### ✅ Demo
-HR 50 ta xodimni Excel'dan yuklaydi → hammasi terminalga tushadi → kartani bosgan odam ekranda ism bilan ko'rinadi.
+### Rejadan farqlar
+
+| Reja | Amalda | Sabab |
+|---|---|---|
+| `person.upsert` + `card.upsert` alohida vazifalar | Bitta `employee.sync` | `sync_states` da bitta `applied_hash` bor. Bo'lingan vazifalar qisman muvaffaqiyat beradi — odam qo'llandi, karta yo'q — buni bitta hash ifodalay olmaydi. Boshqa joyda kuzatish esa aynan shu model qochadigan "niyatlar navbati"ni qaytadan yaratardi |
+| Agentda backoff: 5s, 15s, 60s, 300s | Bulutning visibility timeout'i | Agent bir oqimli. Tick ichida besh daqiqa uxlash uni terminal callback'larini qabul qilishdan to'xtatadi, va karta yozuvini qayta urinish uchun haqiqiy o'tishni yo'qotish — noto'g'ri almashuv. Qayta uriniladigan xato umuman xabar qilinmaydi; bulut vazifani qaytadan beradi |
+
+### Xodim raqami — nega bu shunchalik muhim
+
+`employee_no` — o'tishni odamga bog'laydigan **yagona** narsa, terminal boshqa hech nima yubormaydi. Shuning uchun hisoblagich faqat oldinga yuradi: xodimni o'chirish raqamni qaytarmaydi, muvaffaqiyatsiz import ham. Ikki marta berilgan raqam avvalgi egasining tarixini jimgina qayta yozadi — o'tgan mart oyidagi davomati boshqa odamniki bo'lib qoladi.
+
+Voqealar xodimga `employee_no` orqali bog'lanadi, ingest paytida olingan foreign key orqali emas. Voqealar odam bulutda paydo bo'lishidan **oldin** kelishi odatiy hol; ingest paytidagi kalit o'sha qatorlarni abadiy nomsiz qoldirardi. Raqam orqali moslashtirish esa xodimni ertaga yaratsangiz, u allaqachon qilgan har bir o'tishni nomlaydi.
+
+### ✅ Demo — o'tkazildi
+
+Haqiqiy agent jarayoni, haqiqiy bulut, digest autentifikatsiyasini talab qiladigan o'rindosh terminal:
+
+```
+CSV dan 3 xodim import           → 3 xodim, 2 tasida karta
+agent enroll, terminal paydo     → dev_kirish, online, qo'lda qadamsiz
+attendance:reconcile             → 3 vazifa navbatga
+agent oldi va qo'lladi           → digest challenge → autentifikatsiyalangan yozuv → succeeded
+                                   3 ta sync state ham applied va sinxron
+xodim nomini o'zgartirish        → 1 vazifa, qo'llandi, qayta sinxron
+qurilma paroli noto'g'ri         → 1 urinishda failed, kind=authentication, qayta urinilmadi
+                                   qolgan ikkitasi applied bo'lib qoldi
+parol tuzatildi, retry bosildi   → tiklangan vazifa muvaffaqiyatli, hammasi sinxron
+```
+
+Terminal o'rindosh — digest talab qiladi va nima so'ralganini yozib boradi. Ya'ni bu zanjirni **simgacha** isbotlaydi, jumladan `DigestAuthenticator` haqiqatan challenge qiladigan serverda ishlashini (buni hech qanday test qoplamagan edi). Hikvision proshivkasi bu payloadlarni qabul qiladimi — buni isbotlamaydi. U real qurilmagacha tasdiqlanmagan bo'lib qoladi.
+
+### Demo nimani ko'rsatdi
+
+Ekranda operatorga quyidagi matn chiqdi:
+
+```
+Client error: `PUT http://127.0.0.1:8899/ISAPI/AccessControl/UserInfo/SetUp?format=json`
+resulted in a `401 Unauthorized` response
+```
+
+Sinxronizatsiya ekrani "men bu odamni bir soat oldin qo'shdim — nega kira olmayapti?" degan savolga javob berish uchun bor. Bu matn hech qanday javob bermaydi, ustiga-ustak terminalning LAN manzilini HR ekraniga chiqarib qo'yadi. Endi xato turi bo'yicha tarjima qilinadi: "Terminal parolni qabul qilmadi. Qurilma parolini tekshiring."
+
+### Yozish jarayonida topilgan uchta nuqson
+
+1. **Muvaffaqiyatsiz vazifa juftlikni abadiy to'sib qo'yardi.** Idempotentlik kaliti unique, va "shu kalitli vazifa bor bo'lsa o'tkazib yubor" degani — xohlangan holat o'zgarib keyin qaytganda (odam bo'shatilib qayta tiklanganda, karta bekor qilinib qaytadan berilganda) ish umuman navbatga tushmasdi.
+2. **Natijadagi dublikat tekshiruvi teskari ishlardi.** Kalit endi navbatga qo'yishda beriladi, ya'ni uni taqqoslash **birinchi** natijani dublikat deb hisoblab, hech qanday natijani yozmasdi.
+3. **Import birovning kartasini jimgina ko'chirib olardi.** Forma buni validatsiya bilan rad etardi, importda esa bunday qoida yo'q edi — ro'yxatda birovning kartasi bo'lsa, o'sha odam eshikni ocholmay qolardi, import esa "muvaffaqiyatli" deb hisobot berardi.
+
+Agent tomonida PHPStan to'rtinchisini topdi: "qurilma ro'yxatda yo'q" uchun `catch` o'lik edi, chunki shartnomada bu xato e'lon qilinmagan. Vazifa `unsupported` o'rniga ushlanmagan xato bo'lib chiqardi.
+
+### 🚦 Gate
+Zanjir uchdan-uchgacha ishlaydi. Sinxronizatsiya modeli o'zgartirilmaydi.
 
 ---
 
