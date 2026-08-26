@@ -17,7 +17,7 @@ Ushbu katalog `hikvision-isapi` paketini to'laqonli mahsulotga aylantirish rejas
 |---|---|---|
 | `hikvision-isapi` | MIT ochiq SDK, distribusiya kanali | v2.0.0-beta.1 |
 | `attendance-agent` | Mijoz LAN'idagi edge agent (yopiq) | Sprint 1 yakunlandi |
-| `attendance-cloud` | Bulut xizmati (yopiq) | Agent API tayyor, UI yo'q |
+| `attendance-cloud` | Bulut xizmati (yopiq) | Sprint 2 yakunlandi — agent API + HR paneli |
 
 ## Qabul qilingan asosiy qarorlar
 
