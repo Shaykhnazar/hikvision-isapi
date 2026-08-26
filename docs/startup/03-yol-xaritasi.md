@@ -322,18 +322,81 @@ so'ramagan narsani mukammal qilish eng qimmat xato turi.
 
 ---
 
-## Sprint 5 — Telegram, signallar, birinchi o'rnatish (2 hafta)
+## Sprint 5 — Telegram, signallar, birinchi o'rnatish (2 hafta) — ⚠️ KOD QISMI BAJARILDI 2026-08-26
 
-- [ ] Telegram bot: tashkilotni ulash, chat bog'lash
-- [ ] Direktorga kunlik xulosa (soat 10:00): kim keldi, kim kechikdi, kim yo'q
-- [ ] HR ga signal: qurilma offline (2 daqiqa), sync xatosi, ommaviy kechikish
-- [ ] Xodim roziligi qayd etish, voqealar uchun saqlash muddati sozlamasi
-- [ ] Yuz yuklash oqimi (rasm → agent → qurilma → bulutdan o'chirish)
-- [ ] **Birinchi pilot mijozga real o'rnatish**
-- [ ] O'rnatish runbook'i (integrator ham bajara olishi kerak)
+- [x] Telegram bot: tashkilotni ulash, chat bog'lash
+- [x] Direktorga kunlik xulosa (har tashkilot o'z vaqt mintaqasida): kim keldi, kim kechikdi, kim yo'q
+- [x] HR ga signal: qurilma offline (2 daqiqa), sync xatosi, ommaviy kechikish
+- [x] Xodim roziligi qayd etish, voqealar uchun saqlash muddati sozlamasi
+- [x] Yuz yuklash oqimi (rasm → agent → qurilma → bulutdan o'chirish)
+- [ ] **Birinchi pilot mijozga real o'rnatish** ← **bajarilmadi, mijoz kerak**
+- [x] O'rnatish runbook'i (integrator ham bajara olishi kerak)
 
-### ✅ Demo
-Real mijozda ishlaydigan tizim + direktorning telefonida har kuni ertalab xulosa.
+PR: cloud #13, #14, #15, #16; agent #3. Bulut testlari 274 → **396**, agent 159 → **169**.
+
+**Sprint yopilmadi.** Yettitadan oltitasi bajarildi, lekin qolgani — haqiqiy
+o'rnatish — kod bilan yopiladigan band emas. Sprintning demo shartida
+"real mijozda ishlaydigan tizim" deyilgan, va bu hali yo'q.
+
+### Rejadan farqlar
+
+**Bitta bot butun o'rnatish uchun, har mijozga alohida emas.** O'z botini
+yaratishi kerak bo'lgan mijozga Telegram developer akkaunti va topshiriladigan
+token kerak bo'lardi — bu besh daqiqalik sozlashni qo'ng'iroqqa aylantiradigan
+qadam.
+
+**Chat kod orqali ulanadi, chat id yozib emas.** Agent ro'yxatga olish bilan bir
+xil shakl: xeshlangan, muddatli, bir martalik. Boshqa tashkilotga ulangan chat
+**ko'chirilmaydi, rad etiladi** — Telegram chat id lari global, va ikkinchi kodni
+qabul qilish bir kompaniyaning davomatini boshqasining chatiga yo'naltirardi.
+
+**Obunalar, bitta oqim emas.** Telegram'ni istaydigan ikki odam qarama-qarshi
+narsani istaydi: direktor kuniga bitta xabar xohlaydi va har bir terminal
+uzilishi ham kelsa kanalni o'chiradi; HR esa uzilishni bir necha daqiqada bilishi
+kerak.
+
+**Ommaviy kechikish hech kimni nomlamaydi** va ham ulush, ham quyi chegara
+talab qiladi: besh kishilik ofisda ikki kishi 40% bo'ladi va bu tizimli nosozlik
+emas.
+
+**Rozilik — yozuv, belgi emas.** Kim, qachon, **qaysi versiyaga**, qanday
+usulda. Versiyasiz — kelasi yil qayta yozilgan siyosat hamma unga rozi bo'lgandek
+ko'rinadi. Qaytarish yozuvni o'chirmaydi, belgilaydi: yozuvning o'zi rozilik
+mavjud bo'lganining dalili.
+
+**Yuz rasmi bulutdan o'tadi, lekin unda qolmaydi.** Reja "bulutda saqlanmaydi"
+deydi; so'zma-so'z bu imkonsiz, chunki terminal NAT orqasida va agent o'zi
+so'raydi. Amalga oshirilgani: private diskda, yetkazilishi bilan o'chadi,
+xatoda ham o'chadi, olib ketilmasa muddati bilan o'chadi. Doimiy qoladigani —
+xodimdagi bitta sana.
+
+### ⚠️ Demo — qisman
+
+Telegram zanjiri stub Telegram serveriga qarshi to'liq ishga tushirildi: ikki
+chat ulandi, ertalabki xulosa faqat direktorga bordi, signallar faqat HR
+guruhiga, bloklangan chat haqiqiy 403 dan keyin o'chirildi. Yuz zanjiri haqiqiy
+agent jarayoni bilan tekshirildi — haqiqiy PNG bulutdan olindi, xeshi mos keldi,
+stub terminalga yozildi, va bulutdagi nusxa darhol yo'q bo'ldi.
+
+**Lekin sprintning haqiqiy demosi — "real mijozda ishlaydigan tizim" — yo'q.**
+
+### Yozish jarayonida topilgan nuqsonlar
+
+1. **`.env.example` yolg'on gapirardi.** `APP_TIMEZONE=Asia/Tashkent` yozilgan,
+   lekin `config/app.php` da `'timezone' => 'UTC'` qattiq yozilgan va bu
+   o'zgaruvchi umuman o'qilmaydi.
+2. **Saqlash muddati tabelni jimgina nolga aylantirardi.** `attendance_days`
+   voqealardan hosil qilinadi; voqealar o'chirilgach o'sha oyni qayta hisoblash
+   tayyor tabelni nolga aylantirardi — xatosiz, jimgina. Himoyani olib tashlab
+   sinab ko'rildi: 480 daqiqalik kun haqiqatan nolga aylandi.
+3. **`face_synced_at` da cast yo'q edi** — ustun xom satr bo'lib qaytardi va
+   xodimlar ro'yxati "Call to a member function format() on string" bilan 500
+   berardi. Testim uni o'tkazib yuborgan edi, chunki faqat `assertNotNull`
+   tekshirardi.
+
+### 🚦 Gate
+Sprint 6 ga o'tish uchun **kamida bitta haqiqiy o'rnatish** kerak. Sprint 6 —
+"pilotni mustahkamlash", va mustahkamlanadigan pilot yo'q.
 
 ---
 

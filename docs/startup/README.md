@@ -16,12 +16,17 @@ Ushbu katalog `hikvision-isapi` paketini to'laqonli mahsulotga aylantirish rejas
 | Repo | Rol | Holat |
 |---|---|---|
 | `hikvision-isapi` | MIT ochiq SDK, distribusiya kanali | v2.0.0-beta.1 |
-| `attendance-agent` | Mijoz LAN'idagi edge agent (yopiq) | Sprint 4 yakunlandi — vazifalar, backfill, kunlik audit (159 test) |
-| `attendance-cloud` | Bulut xizmati (yopiq) | Sprint 4 yakunlandi — smenalar, tabel, Excel, audit (274 test) |
+| `attendance-agent` | Mijoz LAN'idagi edge agent (yopiq) | Sprint 5 kodi — vazifalar, backfill, audit, yuz yuklash (169 test) |
+| `attendance-cloud` | Bulut xizmati (yopiq) | Sprint 5 kodi — tabel, Excel, Telegram, rozilik, saqlash muddati (396 test) |
 
-Sprint 4 bilan mahsulot **sotiladigan minimum**ga yetdi. Sprint 0 ning sotuv
-gate'i (15 intervyu, 3 pilot, 1 integrator) esa hamon nolda — texnik tomon
-sotuvdan oldinda ketmoqda.
+Mahsulot **sotiladigan minimum**dan o'tdi va Sprint 5 ning kod qismi ham tayyor.
+Ammo Sprint 5 **yopilmadi**: uning oxirgi bandi — birinchi pilot mijozga real
+o'rnatish — kod bilan yopilmaydi.
+
+Sprint 0 ning sotuv gate'i hamon **nolda** (15 intervyu, 3 pilot, 1 integrator).
+Besh sprintlik texnik ish hech kim tasdiqlamagan taxminlar ustiga qurildi. Eng
+qimmatli keyingi qadam — kod emas, bitta haqiqiy ofis:
+[`attendance-cloud/docs/ornatish-runbook.md`](../../../attendance-cloud/docs/ornatish-runbook.md).
 
 ## Qabul qilingan asosiy qarorlar
 
