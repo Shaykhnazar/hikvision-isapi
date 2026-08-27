@@ -27,6 +27,9 @@
     "larastan/larastan": "^3.0",
     "phpstan/phpstan-mockery": "^2.0"
   },
+  "bin": [
+    "bin/hikvision-probe"
+  ],
   "autoload": {
     "psr-4": {
       "Shaykhnazar\\HikvisionIsapi\\": "src/"
