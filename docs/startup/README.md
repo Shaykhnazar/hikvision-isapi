@@ -10,6 +10,7 @@ Ushbu katalog `hikvision-isapi` paketini to'laqonli mahsulotga aylantirish rejas
 | [`03-yol-xaritasi.md`](03-yol-xaritasi.md) | 6 sprint, har birida demo qilinadigan natija va o'tish mezonlari |
 | [`04-paket-mustahkamlash.md`](04-paket-mustahkamlash.md) | **Shu repoda** bajariladigan ish: CI, testlar, topilgan xatolar, SDK qo'shimchalari |
 | [`05-agent-protokoli.md`](05-agent-protokoli.md) | Agent ↔ bulut shartnomasi: enrolment, imzolash, vazifalar, voqealar |
+| [`06-mijoz-suhbati.md`](06-mijoz-suhbati.md) | **Sprint 0 gate'ini ochadigan yagona hujjat.** Telefonda o'qiladigan skript, anketa, va qaysi gipotezani qanday o'ldirish |
 
 ## Repolar
 
@@ -43,5 +44,7 @@ qimmatli keyingi qadam — kod emas, bitta haqiqiy ofis:
 ## O'qish tartibi
 
 Birinchi marta o'qiyotgan bo'lsangiz: `00` → `01` → `02` → `03` → `04`.
+
+Keyingi ish `06` da: qolgan hamma narsa kod, va kod hozir to'siq emas.
 
 `docs/superpowers/` ichidagi eski hujjatlar arxiv sifatida saqlanadi.
