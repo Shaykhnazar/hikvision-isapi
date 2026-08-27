@@ -157,6 +157,55 @@ Implementatsiya bitta: `HikvisionDriver` (mavjud servislarni o'raydi). Mahsulot 
 
 Bu bugun ~4 soat, mahsulot 10 mijozda ishlaganda ~3 hafta.
 
+### ✅ C3 — bajarildi (Sprint 8), lekin boshqa joyda
+
+**Interfeys SDK ga qo'yilmadi — ataylab.** `shaykhnazar/hikvision-isapi` —
+Hikvision mijozi, va ZKTeco drayveri hech qachon unga qo'shilmaydi; u alohida
+paket bo'ladi. Neytral kontrakt drayverlar **iste'mol qilinadigan** joyda
+turishi kerak, ya'ni agentda — va u allaqachon o'sha yerda edi.
+
+**Bajarilgandek ko'rinardi, lekin bajarilmagandi.** `DeviceCommands`,
+`EventSource`, `DeviceInventory` interfeyslari Sprint 1–7 da yozilgan edi.
+Ammo:
+
+- `Device/` dan tashqaridagi **beshta fayl** `HikvisionException` ni nomi bilan
+  tutardi;
+- **uchala kontraktning o'zi** `@throws HikvisionException` deb e'lon qilardi —
+  ikkinchi ishlab chiqaruvchi bajarishi kerak bo'lgan metodlarda.
+
+Ya'ni interfeyslar neytral, **nosozlik lug'ati esa yo'q** edi. Bu bog'liqlikning
+eng sof ko'rinishi: kontraktning o'zi birinchi vendorni nomlab turibdi.
+
+**`DeviceFailure`** — mahsulotning o'z nosozlik turi. U faqat mahsulot amal
+qiladigan ikki narsani olib yuradi: qayta urinish mantiqiymi, va bulut
+saqlaydigan qisqa sabab. Status kodlar, javob tanalari, vendor sinflari
+olib yurilmaydi — mahsulot ular bilan hech narsa qila olmaydi, ya'ni ular log
+qatorining detali, ikki ishlab chiqaruvchi bajarishi kerak bo'lgan kontraktning
+sharti emas.
+
+`FaultReason` yordamchi emas, **tarjimonga** aylandi.
+
+**Oqim shakli ham muhim.** Generator o'z ishini chaqiruvchi iteratsiya
+qilayotganda bajaradi — ya'ni uni *yaratadigan* chaqiruv atrofidagi `try/catch`
+hech narsa ushlamaydi. Vendor xatosi halqa o'rtasida chiqardi, aynan chaqiruvchi
+unga eng tayyor bo'lmagan paytda.
+
+### Qoladigan qismi — majburiy tekshiruv
+
+Hammaning esida turishiga tayangan kafolat — kafolat emas. `VendorIsolationTest`
+ikki narsani tekshiradi: vendor namespace faqat `src/Device/` ostida uchraydi,
+va **hech bir drayver kontrakti uni umuman nomlamaydi**.
+
+Import'ni qaytarib sinaldi — test fayl nomini va nima qilish kerakligini aytib
+yiqiladi. Ikkinchi ishlab chiqaruvchi qo'shilganda, ish tugaganini aytadigan
+narsa — o'sha test.
+
+**Testlarning o'zi ham bog'liqlikning bir qismi edi:** ular vendor xatolarini
+neytral interfeyslarni bajaradigan soxta obyektlarga uzatardi, ya'ni vendor turi
+har bir stsenariyda mahsulot ichidan o'tardi.
+
+Agent testlari 245 → **293**.
+
 ### C4. Xatolarni manba bo'yicha tasniflash
 Hozir `HikvisionException` bitta. Kerak:
 - `DeviceAuthenticationException` — parol noto'g'ri, qayta urinish foydasiz
@@ -169,6 +218,50 @@ Agentda retry siyosati aynan shu tasnifga tayanadi (`02-arxitektura.md` §5).
 
 ### C5. Redaction helper
 Yuz rasmi (base64) hech qachon logga, exception xabariga yoki stack trace'ga tushmasligi kerak. Markazlashtirilgan `Redactor::payload(array $data): array` va logging joylarida majburiy ishlatish + test.
+
+### ✅ C5 — tuzatildi (Sprint 8), lekin boshqa yo'l bilan
+
+`Redactor` helper yozilmadi — kerak emas edi. Muammo log qatorlarida emas,
+**stack trace'da** ekan.
+
+PHP har bir chaqiruv argumentini trace'ga yozadi, agar `zend.exception_ignore_args`
+aks holda aytmasa. Uning kompilyatsiya defaulti — **yozish**, va rasmiy
+`php:*-alpine` image'lari faol `php.ini` bilan kelmaydi. Ya'ni "hech narsa
+sozlanmagan" holat — aynan sizib chiqadigan holat, va agent image'i shunday edi.
+
+Taxmin qilinmadi, sinab ko'rildi: ini'siz PHP'da xato otilganda base64 yuz
+`getTrace()` ga **to'liq** tushadi.
+
+Yechim ikki qavatli, va ikkalasi ham kerak:
+
+1. **SDK** — o'ziga tegishli hamma narsa `#[\SensitiveParameter]` bilan
+   belgilandi (yuz baytlari, parollar, so'rov tanalari, `$options`). Bu INI
+   dan qat'i nazar ishlaydi.
+2. **Agent image'i** — `php.ini-production` faollashtirildi. SDK Guzzle'ning
+   parametrlarini belgilay olmaydi, so'rov `$options` esa ham tanani, ham
+   `auth` ma'lumotlarini olib o'tadi. O'sha chegaradan pastda faqat shu
+   sozlama qoladi.
+
+Birinchisi yolg'iz yetarli emas, ikkinchisi yolg'iz kod xossasi emas.
+
+### Test yozishda ikki marta aldandim
+
+**Birinchi test Mockery bilan yozilgan edi va befoyda chiqdi.** Mockery
+yaratgan sinf parametr atributlarini tashlab yuboradi, va bundan yomoni —
+u **qabul qilgan argumentlarni o'zida saqlaydi**. `print_r($e->getTrace())`
+mock'ning ichki daftariga kirib borib, yuzni o'sha yerdan topardi. Test
+yiqilardi, ishlab chiqarish yo'li esa toza edi.
+
+**Ikkinchisi tasodifan o'tardi.** Nazorat testi ("atributsiz parametr
+haqiqatan sizadimi") trace'ni paket sinflari bo'yicha filtrlardi — va test
+sinfining o'zi ham `Shaykhnazar\HikvisionIsapi\` prefiksida bo'lgani uchun
+filtrdan o'tib ketardi. Endi u freymdan to'g'ridan-to'g'ri o'qiydi.
+
+### Yo'l-yo'lakay topilgan nuqson
+
+`timeout` va `verify_ssl` qurilma konfiguratsiyasidan **defaultsiz** o'qilardi.
+Ularsiz konfiguratsiya butunlay yaroqli — agent ularni beradi, qo'lda yozilgani
+ko'pincha bermaydi — va bu har bir so'rovda PHP warning chiqarardi.
 
 ### C6. Batch va rate limit
 `CardService::batchAdd()` bor, lekin qurilma limitlari hisobga olinmagan. Batch o'lchami sozlanadigan bo'lsin va chaqiruvlar orasida throttle imkoniyati bo'lsin.

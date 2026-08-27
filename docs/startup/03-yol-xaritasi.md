@@ -573,9 +573,10 @@ qiladi.
 - [x] **B2 — `EventService::count()` doim 0 qaytarardi**
 - [x] **B3 — sahifalashni qachon to'xtatishni bilib bo'lmasdi** — `all()`
       generatorlari
-- [ ] Agentni yangi SDK ga o'tkazish ← **yangi beta tegi kerak**
+- [x] Agentni yangi SDK ga o'tkazish (`v2.0.0-beta.3`)
 
-SDK testlari 88 → **108**.
+PR: SDK (master), agent #6. SDK testlari 88 → **108**, agent 244 → **243**
+(sakkizta pager testi o'rniga yettita collector testi).
 
 ### Nega bu Sprint 7 bo'ldi
 
@@ -609,11 +610,57 @@ tashlab sinaldi: uchta test yiqiladi (avval ikkita edi).
 
 Bu sessiyada uchinchi marta "o'tadigan, lekin himoya qilmaydigan" test yozdim.
 
-### Keyingi qadam
+### Agent tomoni yopildi
 
-Agent SDK'ni Packagist'dan `v2.0.0-beta.1` sifatida oladi, ya'ni `all()` ni
-ishlata olmaydi. **Yangi beta tegi kerak**, keyin agent `RosterPager` o'rniga
-SDK ning to'g'ri yurishini ishlatadi.
+`RosterPager` o'chirildi. U `PersonService::search()` ishonchsiz bo'lgani uchun
+mavjud edi, va uning asosiy himoyasi — "to'liq sahifa hech kimni qo'shmadi,
+demak firmware nol-sahifani qayta beryapti" — katta ehtimol bilan **bizning
+o'z SDK'imizni** ta'riflab turgan edi. Endi qurilma bu savolga o'zi javob
+beradi, va bu yerda taxmin qilish faqat ikkinchi fikr bo'lardi.
+
+O'rniga `RosterCollector` qoldi va u faqat bitta narsani hal qiladi: **qachon
+yurishga ishonishni to'xtatish**. `searchResultPosition` ni e'tiborsiz
+qoldiradigan firmware bir xil yozuvlarni cheksiz oqizishi mumkin, va chegarasiz
+yurish agentning tick'ini ushlab qolardi — o'sha tick terminal callback'lariga
+ham javob berishi kerak.
+
+Chegaraga yetish **to'liq bo'lmagan ro'yxat** deb hisoblanadi, hech qachon
+to'liq deb emas — ya'ni bulut yo'qliklarni drift deb qabul qilmaydi. Uchta
+holat aynan shuning uchun qo'shilgan edi va refaktordan keyin ham saqlanib
+qoldi.
+
+### Reliz chiqarishda yo'qotilgan vaqt
+
+`v2.0.0-beta.2` ikki marta noto'g'ri chiqdi: birinchi marta branch master'ga
+qo'shilmasdan teg qo'yildi, ikkinchi marta teg o'chirilib qayta qo'yildi —
+lekin **Packagist allaqachon ko'rgan versiyani qayta o'qimaydi**. Uning uchun
+versiya o'zgarmas.
+
+Shuning uchun `v2.0.0-beta.3` chiqarildi. Xulosa oddiy: **chiqarilgan tegni
+hech qachon qayta ishlatmaslik kerak** — yangi raqam qo'yish arzonroq.
+
+---
+
+## Sprint 8 — Paket va chegaralarni mustahkamlash (davom etmoqda, 2026-08-27)
+
+Sprint 7 kabi, bu ham dalildan aniqlandi: `04-paket-mustahkamlash.md` §C.
+
+- [x] **C5** — yuz va parollar stack trace'ga tushishi (SDK + agent image'i)
+- [x] **C3** — vendor chegarasi haqiqiy qilindi va **majburiy tekshiruvga**
+      qo'yildi
+- [ ] C4 — xato tasnifini yakunlash
+- [ ] C6 — batch va rate limit
+- [ ] C2 — `device.profile` ← **qurilma kerak**
+
+SDK testlari 108 → **127**, agent 244 → **293**.
+
+Ikkalasi ham "allaqachon bajarilgan" ko'rinardi va ikkalasi ham bajarilmagandi.
+C5 log qatorlari haqida deb o'ylangandi — aslida stack trace haqida edi, va
+rasmiy PHP image'ining sozlamasiz holati aynan sizib chiqadigan holat ekan.
+C3 uchun interfeyslar bor edi, lekin **nosozlik lug'ati** vendorniki bo'lib
+qolgandi.
+
+Batafsili `04-paket-mustahkamlash.md` §C da.
 
 ---
 

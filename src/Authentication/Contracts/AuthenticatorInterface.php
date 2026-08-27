@@ -6,5 +6,5 @@ namespace Shaykhnazar\HikvisionIsapi\Authentication\Contracts;
 
 interface AuthenticatorInterface
 {
-    public function buildAuthOptions(string $username, string $password): array;
+    public function buildAuthOptions(string $username, #[\SensitiveParameter] string $password): array;
 }

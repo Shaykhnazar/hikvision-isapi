@@ -27,12 +27,26 @@ class HttpClient implements HttpClientInterface
         $this->client = $client ?? new Client;
     }
 
-    public function get(string $uri, array $options = []): array
+    public function get(string $uri, #[\SensitiveParameter] array $options = []): array
     {
         return $this->request('GET', $uri, $options);
     }
 
-    public function post(string $uri, array $data = [], array $options = []): array
+    /*
+     * Request bodies are marked sensitive so PHP redacts them from stack traces.
+     *
+     * Every write to a terminal carries personal data — a name, a card number, a
+     * base64 face — and PHP records call arguments in a trace unless told not
+     * to. The setting that tells it not to has a compiled default of 0 and is
+     * not set by the official `php:*-alpine` images this ships on, so the
+     * default deployment is the leaking one.
+     *
+     * Marking the entry points was not enough on its own: the assembled payload
+     * is passed onward as an ordinary argument, so the frame for *this* call
+     * recorded the face even when the caller's own parameter was redacted. This
+     * is where the body actually stops.
+     */
+    public function post(string $uri, #[\SensitiveParameter] array $data = [], #[\SensitiveParameter] array $options = []): array
     {
         $format = $options['_format'] ?? 'json';
         unset($options['_format']);
@@ -46,7 +60,7 @@ class HttpClient implements HttpClientInterface
         return $this->request('POST', $uri, $options);
     }
 
-    public function put(string $uri, array $data = [], array $options = []): array
+    public function put(string $uri, #[\SensitiveParameter] array $data = [], #[\SensitiveParameter] array $options = []): array
     {
         $format = $options['_format'] ?? 'json';
         unset($options['_format']);
@@ -60,26 +74,26 @@ class HttpClient implements HttpClientInterface
         return $this->request('PUT', $uri, $options);
     }
 
-    public function delete(string $uri, array $options = []): array
+    public function delete(string $uri, #[\SensitiveParameter] array $options = []): array
     {
         return $this->request('DELETE', $uri, $options);
     }
 
-    public function postMultipart(string $uri, array $multipart = [], array $options = []): array
+    public function postMultipart(string $uri, #[\SensitiveParameter] array $multipart = [], #[\SensitiveParameter] array $options = []): array
     {
         $options['multipart'] = $multipart;
 
         return $this->request('POST', $uri, $options);
     }
 
-    public function putMultipart(string $uri, array $multipart = [], array $options = []): array
+    public function putMultipart(string $uri, #[\SensitiveParameter] array $multipart = [], #[\SensitiveParameter] array $options = []): array
     {
         $options['multipart'] = $multipart;
 
         return $this->request('PUT', $uri, $options);
     }
 
-    private function request(string $method, string $uri, array $options): array
+    private function request(string $method, string $uri, #[\SensitiveParameter] array $options): array
     {
         try {
             $response = $this->client->request($method, $uri, $options);

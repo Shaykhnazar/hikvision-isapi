@@ -8,7 +8,7 @@ use Shaykhnazar\HikvisionIsapi\Authentication\Contracts\AuthenticatorInterface;
 
 class DigestAuthenticator implements AuthenticatorInterface
 {
-    public function buildAuthOptions(string $username, string $password): array
+    public function buildAuthOptions(string $username, #[\SensitiveParameter] string $password): array
     {
         return [
             'auth' => [$username, $password, 'digest'],
