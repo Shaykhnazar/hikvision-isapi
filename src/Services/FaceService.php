@@ -35,7 +35,18 @@ class FaceService
         return $this->client->get(self::ENDPOINT_CAPABILITIES);
     }
 
-    public function uploadFace(string $employeeNo, string $faceImageBase64, int $fdid = 1): array
+    /**
+     * Face bytes are marked sensitive so PHP redacts them from stack traces.
+     *
+     * Not a nicety. PHP's compiled default is `zend.exception_ignore_args=0`,
+     * and the official `php:*-cli-alpine` images ship no active php.ini — so in
+     * a normal deployment an exception anywhere below this call records the
+     * whole base64 face in `getTrace()`, where the first person to log a trace
+     * publishes somebody's face. `#[\SensitiveParameter]` holds regardless of
+     * how the INI is set, which is the point: this must be a property of the
+     * code and not of the machine it lands on.
+     */
+    public function uploadFace(string $employeeNo, #[\SensitiveParameter] string $faceImageBase64, int $fdid = 1): array
     {
         $endpoint = "/ISAPI/Intelligent/FDLib/{$fdid}/picture";
 
@@ -122,7 +133,7 @@ class FaceService
     public function uploadFaceDataRecord(
         int $fdid,
         string $fpid,
-        string $imageContent,
+        #[\SensitiveParameter] string $imageContent,
         string $faceLibType = 'blackFD',
         array $additionalData = []
     ): array {
@@ -210,7 +221,7 @@ class FaceService
     public function setupFaceData(
         int $fdid,
         string $fpid,
-        string $imageContent,
+        #[\SensitiveParameter] string $imageContent,
         string $faceLibType = 'blackFD',
         array $additionalData = []
     ): array {
@@ -258,7 +269,7 @@ class FaceService
     public function modifyFaceRecord(
         int $fdid,
         string $fpid,
-        string $imageContent,
+        #[\SensitiveParameter] string $imageContent,
         string $faceLibType = 'blackFD',
         array $additionalData = []
     ): array {
