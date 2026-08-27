@@ -33,6 +33,7 @@ A clean, modern Laravel package for integrating with **Hikvision ISAPI Face Reco
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Quick Start](#quick-start)
+- [Probing a device](#probing-a-device)
 - [Event Webhooks & Notifications](#event-webhooks--notifications-v140)
   - [Configure Webhook Endpoint](#configure-webhook-endpoint)
   - [Simple Webhook Setup](#simple-webhook-setup)
@@ -125,6 +126,47 @@ return [
     ],
 ];
 ```
+
+## Probing a device
+
+Terminals differ. Capacity limits, which endpoints exist, and the exact
+`subStatusCode` behind each refusal all vary by model and firmware, and the
+documentation does not say. `bin/hikvision-probe` asks a device directly and
+writes the answers to a JSON file:
+
+```bash
+HIKVISION_PASSWORD='...' php vendor/bin/hikvision-probe --host=192.168.1.100
+```
+
+```
+Capabilities
+  ok   device_info
+  ok   user_info
+  no   fingerprint — HTTP 403
+Person paging
+  ok   page 1 — 10 rows, status MORE
+  ok   page 2 — 4 rows, status OK
+Refusals
+  ok   bad_credentials — HTTP 401, subStatusCode badAuthorization
+  ok   unknown_endpoint — HTTP 404, subStatusCode notSupport
+```
+
+Two things it guarantees, both enforced by tests:
+
+**It never writes.** Every request is a read, including the ones that provoke
+refusals. It is safe to run against a terminal a business depends on.
+
+**It never carries anybody out.** The person list is read for its *shape* — row
+counts, paging fields, what a row's keys are called. Field names are kept, field
+values are not, and the address you probed is not in the report either. What the
+file does contain is the device's own identity and behaviour, which is the point
+of it.
+
+The report also lists what it could *not* answer and why — a file with ten
+answers and no mention of the eleventh question reads as complete.
+
+If you run this against a model that is not in the compatibility notes yet, the
+report is exactly what a pull request adding it needs.
 
 ## Quick Start
 

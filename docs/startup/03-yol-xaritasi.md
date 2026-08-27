@@ -648,17 +648,41 @@ Sprint 7 kabi, bu ham dalildan aniqlandi: `04-paket-mustahkamlash.md` §C.
 - [x] **C5** — yuz va parollar stack trace'ga tushishi (SDK + agent image'i)
 - [x] **C3** — vendor chegarasi haqiqiy qilindi va **majburiy tekshiruvga**
       qo'yildi
-- [ ] C4 — xato tasnifini yakunlash
-- [ ] C6 — batch va rate limit
-- [ ] C2 — `device.profile` ← **qurilma kerak**
+- [x] **Tabelni qo'lda tuzatish** (bulut) — qo'llanma o'zi birinchi nuqson deb
+      sanagan narsa
+- [x] **`bin/hikvision-probe`** — C2/C4 ni bloklab turgan savollarni bitta
+      buyruqqa aylantirdi
+- [ ] C4 — xato tasnifini yakunlash ← probe natijasi kerak
+- [ ] C2 — `device.profile` ← probe natijasi kerak
+- [ ] C6 — batch va rate limit ← **ataylab qilinmadi**, pastga qarang
 
-SDK testlari 108 → **127**, agent 244 → **293**.
+SDK testlari 108 → **139**, agent 244 → **293**, bulut 482 → **510**.
 
-Ikkalasi ham "allaqachon bajarilgan" ko'rinardi va ikkalasi ham bajarilmagandi.
-C5 log qatorlari haqida deb o'ylangandi — aslida stack trace haqida edi, va
-rasmiy PHP image'ining sozlamasiz holati aynan sizib chiqadigan holat ekan.
-C3 uchun interfeyslar bor edi, lekin **nosozlik lug'ati** vendorniki bo'lib
-qolgandi.
+C5 va C3 ikkalasi ham "allaqachon bajarilgan" ko'rinardi va ikkalasi ham
+bajarilmagandi. C5 log qatorlari haqida deb o'ylangandi — aslida stack trace
+haqida edi, va rasmiy PHP image'ining sozlamasiz holati aynan sizib chiqadigan
+holat ekan. C3 uchun interfeyslar bor edi, lekin **nosozlik lug'ati** vendorniki
+bo'lib qolgandi.
+
+### Nega C6 qilinmadi
+
+`CardService::batchAdd()` bor, lekin uni chaqiradigan **birorta iste'molchi
+yo'q**. Chegarasi noma'lum, yuklamasi noma'lum narsani optimallashtirish —
+taxminni kod qilib yozish. B1 va C4 bilan bir xil siyosat.
+
+### Qurilma to'sig'i endi bitta buyruq
+
+C2 va C4 "real qurilmada tekshirilsin" deb turardi va bu ta'rifi bo'yicha
+bajarilmasdi. `bin/hikvision-probe` o'sha savollarning hammasini bir yurishda
+so'raydi va javobni JSON qilib yozadi: sig'im, imkoniyatlar, har bir rad
+javobining `subStatusCode` si, sahifalash haqiqatan ishlayaptimi (B1), va voqea
+soni qaysi kalit ostida keladi (B2).
+
+Ikkita xossa majburlangan va ikkalasi ham test bilan qo'riqlanadi: **hech narsa
+yozmaydi** (rad javoblari ham faqat o'qish bilan chaqiriladi), va **hech kimning
+ma'lumoti chiqmaydi** — qatorlar sanaladi, maydon **nomlari** saqlanadi,
+qiymatlari saqlanmaydi. Hisobot elektron pochta bilan yuboriladi, ya'ni u
+xodimlar ro'yxati mijoz LAN'idan chiqib ketadigan yo'lga aylanmasligi kerak.
 
 Batafsili `04-paket-mustahkamlash.md` §C da.
 

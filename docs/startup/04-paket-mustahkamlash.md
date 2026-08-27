@@ -266,6 +266,89 @@ ko'pincha bermaydi — va bu har bir so'rovda PHP warning chiqarardi.
 ### C6. Batch va rate limit
 `CardService::batchAdd()` bor, lekin qurilma limitlari hisobga olinmagan. Batch o'lchami sozlanadigan bo'lsin va chaqiruvlar orasida throttle imkoniyati bo'lsin.
 
+### ⏸ C6 — ataylab qilinmadi (Sprint 8)
+
+`batchAdd()` ni chaqiradigan **birorta iste'molchi yo'q** — na agentda, na
+bulutda. Iste'molchisi yo'q narsaning batch o'lchamini "sozlanadigan" qilish
+degani — qaysi o'lcham to'g'riligini taxmin qilib, o'sha taxminni default
+qilib yozib qo'yish. Qurilma limitlari ham noma'lum (C2 shuni so'rayapti).
+
+Bu B1 va C4 bilan bir xil siyosat: ma'lum bo'lmagan narsa ustiga kod
+yozilmaydi. Birinchi haqiqiy iste'molchi paydo bo'lganda — masalan agent bir
+yo'la 500 ta karta yozishi kerak bo'lganda — o'sha paytdagi haqiqiy yuklama
+bilan qilinadi.
+
+---
+
+## C-bis. Qurilma to'sig'i: `bin/hikvision-probe` (Sprint 8)
+
+§C dagi uchta band (C2, C4, va §B dagi B1/B2 ning yakuniy tasdig'i) bitta narsa
+uchun kutib turardi: **oldida turgan haqiqiy terminal**. Ular "real qurilmada
+tekshirilsin" deb belgilangan edi, va bu amalda "hech qachon" degani edi —
+tekshiruvni qanday o'tkazish kerakligi hech qayerda yozilmagandi.
+
+`bin/hikvision-probe` shuni bitta buyruqqa aylantiradi:
+
+```
+HIKVISION_PASSWORD='...' php bin/hikvision-probe --host=192.168.1.100
+```
+
+Bir yurishda so'raydigan savollar:
+
+| Savol | Nima uchun |
+|---|---|
+| Model, firmware, seriya | Moslik matritsasining birinchi ustuni (§D) |
+| 11 ta capabilities endpoint | Sig'im, maydonlar, qo'llab-quvvatlanadigan turlar — **C2** |
+| Har bir rad javobining `subStatusCode` si | Retry siyosati shunga tayanadi — **C4** |
+| Sahifalash haqiqatan davom etadimi | **B1** ning yakuniy tasdig'i |
+| Voqea soni qaysi kalit ostida keladi | **B2** ning yakuniy tasdig'i |
+
+### Ikkita majburiy xossa
+
+**Hech narsa yozmaydi.** Rad javoblari ham faqat o'qish bilan chaqiriladi — noto'g'ri
+parol, mavjud bo'lmagan endpoint, ro'yxatda yo'q xodim, buzuq so'rov. Probe
+odatda biznes tayanadigan terminalda ishlaydi.
+
+**Hech kimning ma'lumoti chiqmaydi.** Xodimlar ro'yxati faqat **shakli** uchun
+o'qiladi — nechta qator keldi, sahifalash maydonlari nima dedi, qator qanday
+kalitlangan — qatorlarning o'zi sanaladi va tashlanadi. Maydon **nomlari**
+saqlanadi, **qiymatlari** hech qachon. Hisobot elektron pochta bilan
+yuboriladi, ya'ni u xodimlar ro'yxati mijoz LAN'idan chiqadigan yo'lga
+aylanmasligi kerak.
+
+Ikkalasi ham test bilan qo'riqlanadi, va ikkalasi ham himoyani olib tashlab
+tasdiqlandi: qatorlarni saqlab qo'ysa — maxfiylik testi yiqiladi; `delete()`
+chaqirsa — "faqat o'qish" testi yiqiladi.
+
+### Nima hamon javobsiz qoladi
+
+Hisobotning o'zi buni yozib qo'yadi (`not_probed` bo'limi), chunki o'nta javob
+berib o'n birinchi savolni jimgina tashlab ketgan fayl **tugallangan** ko'rinadi:
+
+- **sig'im to'lganda** qurilma nima deydi — buni provokatsiya qilish qurilmani
+  to'ldirish, ya'ni yozish demakdir. Zaxira qurilma kerak.
+- **qo'llab-quvvatlanmagan yozuv** qanday rad etiladi — kartaga yuz qo'shish,
+  masalan. Bu yerdagi hamma probe — o'qish.
+- **uzoq yurish** — sessiya katta ob'ektda daqiqalar davomida yashaydimi.
+  Probe 3 sahifa × 10 qator yuradi.
+
+### Mantiq `src/` da, `bin/` da emas
+
+Boshida hammasi `bin/` da yozildi — ya'ni testsiz va PHPStan'siz. `DeviceProbe`
+`src/Probe/` ga ko'chirildi, `bin/` esa faqat argument, parol va fayl bilan
+shug'ullanadigan qobiq bo'lib qoldi. Parol **hech qachon argumentdan** olinmaydi:
+argumentlar `ps` da har bir foydalanuvchiga ko'rinadi va shell ularni tarixga
+yozadi.
+
+Yo'l-yo'lakay ikkita xato topildi — ikkalasi ham skriptni haqiqiy soxta terminal
+ustida yurgizganda:
+
+1. Endpoint satrlariga qo'lda `?format=json` yozilgan edi, klient esa uni
+   o'zi qo'shadi — natijada `?format=json?format=json`.
+2. Testdagi soxta javoblarda `Content-Type` yo'q edi, klient esa onsiz parse
+   qilmaydi. Ya'ni test o'tayotgandek ko'rinib, aslida bo'sh massivlarni
+   tekshirayotgandi.
+
 ---
 
 ## D. Marketing kanali sifatida (arzon, lekin muhim)
