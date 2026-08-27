@@ -157,6 +157,55 @@ Implementatsiya bitta: `HikvisionDriver` (mavjud servislarni o'raydi). Mahsulot 
 
 Bu bugun ~4 soat, mahsulot 10 mijozda ishlaganda ~3 hafta.
 
+### ✅ C3 — bajarildi (Sprint 8), lekin boshqa joyda
+
+**Interfeys SDK ga qo'yilmadi — ataylab.** `shaykhnazar/hikvision-isapi` —
+Hikvision mijozi, va ZKTeco drayveri hech qachon unga qo'shilmaydi; u alohida
+paket bo'ladi. Neytral kontrakt drayverlar **iste'mol qilinadigan** joyda
+turishi kerak, ya'ni agentda — va u allaqachon o'sha yerda edi.
+
+**Bajarilgandek ko'rinardi, lekin bajarilmagandi.** `DeviceCommands`,
+`EventSource`, `DeviceInventory` interfeyslari Sprint 1–7 da yozilgan edi.
+Ammo:
+
+- `Device/` dan tashqaridagi **beshta fayl** `HikvisionException` ni nomi bilan
+  tutardi;
+- **uchala kontraktning o'zi** `@throws HikvisionException` deb e'lon qilardi —
+  ikkinchi ishlab chiqaruvchi bajarishi kerak bo'lgan metodlarda.
+
+Ya'ni interfeyslar neytral, **nosozlik lug'ati esa yo'q** edi. Bu bog'liqlikning
+eng sof ko'rinishi: kontraktning o'zi birinchi vendorni nomlab turibdi.
+
+**`DeviceFailure`** — mahsulotning o'z nosozlik turi. U faqat mahsulot amal
+qiladigan ikki narsani olib yuradi: qayta urinish mantiqiymi, va bulut
+saqlaydigan qisqa sabab. Status kodlar, javob tanalari, vendor sinflari
+olib yurilmaydi — mahsulot ular bilan hech narsa qila olmaydi, ya'ni ular log
+qatorining detali, ikki ishlab chiqaruvchi bajarishi kerak bo'lgan kontraktning
+sharti emas.
+
+`FaultReason` yordamchi emas, **tarjimonga** aylandi.
+
+**Oqim shakli ham muhim.** Generator o'z ishini chaqiruvchi iteratsiya
+qilayotganda bajaradi — ya'ni uni *yaratadigan* chaqiruv atrofidagi `try/catch`
+hech narsa ushlamaydi. Vendor xatosi halqa o'rtasida chiqardi, aynan chaqiruvchi
+unga eng tayyor bo'lmagan paytda.
+
+### Qoladigan qismi — majburiy tekshiruv
+
+Hammaning esida turishiga tayangan kafolat — kafolat emas. `VendorIsolationTest`
+ikki narsani tekshiradi: vendor namespace faqat `src/Device/` ostida uchraydi,
+va **hech bir drayver kontrakti uni umuman nomlamaydi**.
+
+Import'ni qaytarib sinaldi — test fayl nomini va nima qilish kerakligini aytib
+yiqiladi. Ikkinchi ishlab chiqaruvchi qo'shilganda, ish tugaganini aytadigan
+narsa — o'sha test.
+
+**Testlarning o'zi ham bog'liqlikning bir qismi edi:** ular vendor xatolarini
+neytral interfeyslarni bajaradigan soxta obyektlarga uzatardi, ya'ni vendor turi
+har bir stsenariyda mahsulot ichidan o'tardi.
+
+Agent testlari 245 → **293**.
+
 ### C4. Xatolarni manba bo'yicha tasniflash
 Hozir `HikvisionException` bitta. Kerak:
 - `DeviceAuthenticationException` — parol noto'g'ri, qayta urinish foydasiz

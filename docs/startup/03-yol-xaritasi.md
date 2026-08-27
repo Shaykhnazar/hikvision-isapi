@@ -641,6 +641,29 @@ hech qachon qayta ishlatmaslik kerak** — yangi raqam qo'yish arzonroq.
 
 ---
 
+## Sprint 8 — Paket va chegaralarni mustahkamlash (davom etmoqda, 2026-08-27)
+
+Sprint 7 kabi, bu ham dalildan aniqlandi: `04-paket-mustahkamlash.md` §C.
+
+- [x] **C5** — yuz va parollar stack trace'ga tushishi (SDK + agent image'i)
+- [x] **C3** — vendor chegarasi haqiqiy qilindi va **majburiy tekshiruvga**
+      qo'yildi
+- [ ] C4 — xato tasnifini yakunlash
+- [ ] C6 — batch va rate limit
+- [ ] C2 — `device.profile` ← **qurilma kerak**
+
+SDK testlari 108 → **127**, agent 244 → **293**.
+
+Ikkalasi ham "allaqachon bajarilgan" ko'rinardi va ikkalasi ham bajarilmagandi.
+C5 log qatorlari haqida deb o'ylangandi — aslida stack trace haqida edi, va
+rasmiy PHP image'ining sozlamasiz holati aynan sizib chiqadigan holat ekan.
+C3 uchun interfeyslar bor edi, lekin **nosozlik lug'ati** vendorniki bo'lib
+qolgandi.
+
+Batafsili `04-paket-mustahkamlash.md` §C da.
+
+---
+
 ## Umumiy vaqt jadvali
 
 | Bosqich | Sprint | Taxminiy sana |
