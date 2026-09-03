@@ -54,6 +54,7 @@ A clean, modern Laravel package for integrating with **Hikvision ISAPI Face Reco
 - [Advanced Usage](#advanced-usage)
 - [Testing](#testing)
 - [Troubleshooting](#troubleshooting)
+- [Architecture](#architecture)
 - [Security](#security)
 - [Contributing](#contributing)
 - [Changelog](#changelog)
@@ -1376,6 +1377,10 @@ curl -v --digest -u admin:password http://192.168.1.100/ISAPI/System/deviceInfo
 - Check IP address in `.env`
 - Verify device is powered on
 - Ensure device is on same network
+
+## Architecture
+
+A C4 model of the package (System Context, Container, Component and Code views, plus a deployment view) lives in [`docs/architecture/c4-model.md`](docs/architecture/c4-model.md). The same model is available as Structurizr DSL in [`docs/architecture/workspace.dsl`](docs/architecture/workspace.dsl).
 
 ## Security
 
