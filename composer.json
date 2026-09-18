@@ -1,9 +1,15 @@
 {
   "name": "shaykhnazar/hikvision-isapi",
-  "description": "Laravel package for Hikvision ISAPI Face Recognition Terminals integration",
+  "description": "Talk to Hikvision access-control terminals from Laravel: enrol people, push cards and faces, read door events.",
   "type": "library",
   "license": "MIT",
-  "keywords": ["laravel", "hikvision", "isapi", "face-recognition", "access-control"],
+  "keywords": ["laravel", "hikvision", "isapi", "face-recognition", "access-control", "attendance", "time-tracking", "acs"],
+  "homepage": "https://github.com/shaykhnazar/hikvision-isapi",
+  "support": {
+    "issues": "https://github.com/shaykhnazar/hikvision-isapi/issues",
+    "source": "https://github.com/shaykhnazar/hikvision-isapi",
+    "docs": "https://github.com/shaykhnazar/hikvision-isapi#readme"
+  },
   "authors": [
     {
       "name": "Shaykhnazar",

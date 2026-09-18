@@ -11,14 +11,17 @@ Ushbu katalog `hikvision-isapi` paketini to'laqonli mahsulotga aylantirish rejas
 | [`04-paket-mustahkamlash.md`](04-paket-mustahkamlash.md) | **Shu repoda** bajariladigan ish: CI, testlar, topilgan xatolar, SDK qo'shimchalari |
 | [`05-agent-protokoli.md`](05-agent-protokoli.md) | Agent ↔ bulut shartnomasi: enrolment, imzolash, vazifalar, voqealar |
 | [`06-mijoz-suhbati.md`](06-mijoz-suhbati.md) | **Sprint 0 gate'ini ochadigan yagona hujjat.** Telefonda o'qiladigan skript, anketa, va qaysi gipotezani qanday o'ldirish |
+| [`07-narx-varaqasi.md`](07-narx-varaqasi.md) | **Ichki.** Narx, chegirma chegarasi, va suhbatda beriladigan savollarga tayyor javoblar |
+| [`08-integrator-taklifi.md`](08-integrator-taklifi.md) | Integratorga beriladigan bir varaq: 25% komissiya, o'rnatish ishi ularniki |
+| [`09-mijoz-varaqasi.md`](09-mijoz-varaqasi.md) | Mijozga beriladigan bir varaq — **suhbatdan keyin**, oldin emas |
 
 ## Repolar
 
 | Repo | Rol | Holat |
 |---|---|---|
-| `hikvision-isapi` | MIT ochiq SDK, distribusiya kanali | v2.0.0-beta.1 |
-| `attendance-agent` | Mijoz LAN'idagi edge agent (yopiq) | Sprint 6 — vazifalar, backfill, audit, yuz, drift, o'z-o'zini yangilash (244 test) |
-| `attendance-cloud` | Bulut xizmati (yopiq) | Sprint 6 — tabel, Telegram, rozilik, inventarizatsiya, zaxira, reliz tarqatish (482 test) |
+| `hikvision-isapi` | MIT ochiq SDK, distribusiya kanali | v2.0.0-beta.3 (139 test) |
+| `attendance-agent` | Mijoz LAN'idagi edge agent (yopiq) | Sprint 6 — vazifalar, backfill, audit, yuz, drift, o'z-o'zini yangilash (293 test) |
+| `attendance-cloud` | Bulut xizmati (yopiq) | Sprint 6 — tabel, Telegram, rozilik, inventarizatsiya, zaxira, reliz tarqatish (542 test) |
 
 Mahsulot **sotiladigan minimum**dan ancha o'tdi. Sprint 5 va 6 ning kod qismi
 tayyor, ammo **ikkalasi ham yopilmadi**, va ikkalasining ham yopilmagan bandi
@@ -46,5 +49,10 @@ qimmatli keyingi qadam — kod emas, bitta haqiqiy ofis:
 Birinchi marta o'qiyotgan bo'lsangiz: `00` → `01` → `02` → `03` → `04`.
 
 Keyingi ish `06` da: qolgan hamma narsa kod, va kod hozir to'siq emas.
+
+`07`–`09` — sotuv to'plami. Ular `06` dagi suhbatlardan **keyin** ishlatiladi,
+chunki ulardagi hamma raqam hamon gipoteza; uchta to'lovchi mijozdan keyin
+qayta yoziladi. Meeting uchun demo bazasi:
+`attendance-cloud` da `php artisan attendance:seed-demo`.
 
 `docs/superpowers/` ichidagi eski hujjatlar arxiv sifatida saqlanadi.

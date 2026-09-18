@@ -1,11 +1,40 @@
-# Hikvision ISAPI Laravel Package
+# Hikvision ISAPI for Laravel
 
-[![Latest Version](https://img.shields.io/badge/version-v1.5.4-brightgreen.svg)](https://github.com/shaykhnazar/hikvision-isapi/releases)
+[![Latest Version](https://img.shields.io/packagist/v/shaykhnazar/hikvision-isapi?include_prereleases&label=version)](https://packagist.org/packages/shaykhnazar/hikvision-isapi)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PHP Version](https://img.shields.io/badge/PHP-%5E8.2-blue.svg)](https://www.php.net/)
-[![Laravel Version](https://img.shields.io/badge/Laravel-11%20%7C%2012%20%7C%2013-red.svg)](https://laravel.com/)
+[![Laravel Version](https://img.shields.io/badge/Laravel-12%20%7C%2013-red.svg)](https://laravel.com/)
 
-A clean, modern Laravel package for integrating with **Hikvision ISAPI Face Recognition Terminals** and access control devices. Supports multi-device management, universal device providers (config, database, API), multi-tenant architectures, and real-time event webhooks.
+Talk to Hikvision access-control terminals from Laravel: enrol people, push cards
+and faces, and read who went through which door.
+
+## Why this exists
+
+A Hikvision terminal already holds everything an attendance or access system
+needs. Getting it out is the problem. ISAPI is XML over digest auth, sparsely
+documented, and inconsistent between models — and the parts that go wrong go
+wrong quietly:
+
+- **Paging.** A search is a *session*: every page has to carry the same
+  `searchID`, and a device given a new one starts over and serves page one
+  again. Nothing errors. You read plausible records and simply never reach the
+  end of the list. This package holds one session for a whole walk and stops on
+  what the device reports, not on a guess.
+- **Totals.** An event count comes back under `AcsEventTotalNum` on some
+  firmware and flat on others, sometimes as a string. Read one shape and you
+  get a confident zero forever.
+- **Faces in stack traces.** PHP records call arguments in a trace unless
+  `zend.exception_ignore_args` says otherwise; its compiled default is to
+  record them and the official `php:*-alpine` images set no ini at all. One
+  logged trace publishes somebody's face. Everything this package owns is
+  marked `#[\SensitiveParameter]`.
+- **Model differences.** Capacity limits, which endpoints exist, and the
+  `subStatusCode` behind each refusal vary by model and firmware, and the
+  documentation does not say. `bin/hikvision-probe` asks a device and writes
+  the answers down.
+
+Where the device's behaviour genuinely cannot be known without hardware, this
+package says so rather than guessing — see [Device compatibility](#device-compatibility).
 
 ## Features
 
@@ -29,6 +58,7 @@ A clean, modern Laravel package for integrating with **Hikvision ISAPI Face Reco
 
 ## Table of Contents
 
+- [Device compatibility](#device-compatibility)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Configuration](#configuration)
@@ -57,6 +87,35 @@ A clean, modern Laravel package for integrating with **Hikvision ISAPI Face Reco
 - [Security](#security)
 - [Contributing](#contributing)
 - [Changelog](#changelog)
+
+## Device compatibility
+
+**No model in this table has been confirmed yet.** The package is written
+against the ISAPI specification and its own test suite; nobody has run it
+against a terminal and reported back. Saying so is more useful than an
+unsourced list — if this table claimed five models and was wrong about one,
+every row would stop being worth reading.
+
+| Model | Firmware | Paging | Event total | Faces | Reported by |
+|---|---|---|---|---|---|
+| _(nothing confirmed yet)_ | | | | | |
+
+### Adding a row
+
+Run the probe against your device and open a pull request with the result:
+
+```bash
+HIKVISION_PASSWORD='...' php vendor/bin/hikvision-probe --host=192.168.1.100
+```
+
+It is read-only — it never creates, updates or deletes anything, and the
+refusals it records are provoked with reads. It puts no employee name, card or
+number in the report; the person list is read for its *shape* only. Read the
+file before attaching it, as the tool tells you to.
+
+The report answers every column above, including the two this package could
+not settle on its own: whether the device honours a search session across
+pages, and which key it returns an event total under.
 
 ## Requirements
 
@@ -1393,13 +1452,12 @@ See [SECURITY.md](SECURITY.md) for supported versions, vulnerability reporting i
 
 ## Contributing
 
-Contributions are welcome! Please follow these guidelines:
+Two contributions are worth more than the rest: **a compatibility report from a
+real device**, and **a failure where nothing threw**. Both are explained in
+[CONTRIBUTING.md](CONTRIBUTING.md), along with how to run the tests.
 
-1. Fork the repository
-2. Create a feature branch
-3. Write tests for new features
-4. Follow PSR-12 coding standards
-5. Submit a pull request
+Nobody has confirmed this package against a terminal yet. If you have one, the
+probe takes a minute and answers questions the specification does not.
 
 ## Changelog
 
@@ -1483,6 +1541,17 @@ This package is open-sourced software licensed under the [MIT license](LICENSE).
 For issues, questions, or contributions:
 - GitHub Issues: https://github.com/shaykhnazar/hikvision-isapi/issues
 - Email: shaykhnazar@gmail.com
+
+## Built on this package
+
+**Davomat** — a finished attendance product for companies that already own
+Hikvision terminals (closed source; this package is the part that is not): an
+on-site agent that reaches the devices behind NAT, a multi-tenant cloud that
+turns swipes into a monthly timesheet, Excel export, and a daily Telegram
+summary for the director.
+
+If you are reading this because you were asked to "get the timesheet out of the
+terminal", that is the same problem, already solved. Ask: shaykhnazar@gmail.com.
 
 ## Disclaimer
 

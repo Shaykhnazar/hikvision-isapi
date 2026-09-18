@@ -351,12 +351,33 @@ ustida yurgizganda:
 
 ---
 
-## D. Marketing kanali sifatida (arzon, lekin muhim)
+## D. Marketing kanali sifatida (arzon, lekin muhim) — ✅ BAJARILDI
 
-- [ ] README boshiga qisqa "nima uchun kerak" bloki (hozir darhol xususiyatlar ro'yxati boshlanadi)
-- [ ] README oxiriga: "Ushbu paket asosida qurilgan tayyor davomat tizimi — [havola]" (mahsulot tayyor bo'lgach)
-- [ ] Qurilma moslik matritsasi jadvali — sinalgan modellar va firmware versiyalari. Bu qidiruvda kuchli, chunki hech kimda yo'q
-- [ ] `CONTRIBUTING.md`
+- [x] README boshiga "nima uchun kerak" bloki
+- [x] README oxiriga mahsulot havolasi
+- [x] Qurilma moslik matritsasi jadvali
+- [x] `CONTRIBUTING.md`
+
+### Yo'l-yo'lakay topilgan narsa
+
+README badge'i **`v1.5.4`** deb turardi, nashr qilingani esa `v2.0.0-beta.3`;
+Laravel badge'i hamon "11" derdi, Laravel 11 esa BREAKING o'zgarish bilan olib
+tashlangan. Ya'ni ochiq vitrina **ikki joyda noto'g'ri** edi va uni faqat
+qaragan odam sezardi. Versiya badge'i endi Packagist'dan o'zi oladi —
+qo'lda yangilanadigan raqam ertami-kechmi yana eskiradi.
+
+`composer.json` da `homepage` va `support` yo'q edi — Packagist sahifasida
+aynan shular ko'rinadi.
+
+### Moslik matritsasi bo'sh, va shunday deb turibdi
+
+Birorta model tasdiqlanmagan. Jadval buni **ochiq aytadi**: manbasiz ro'yxat
+beshta model da'vo qilib, bittasida xato bo'lsa, qolgan to'rttasi ham o'qishga
+arzimay qoladi. `bin/hikvision-probe` aynan shu ustunlarni to'ldiradi, va
+`CONTRIBUTING.md` qatorni qanday qo'shishni aytadi.
+
+Bu §6 dagi ikkinchi kanal (inbound): paketni yuklab olayotgan dasturchi —
+mijozi uchun aynan shu masalani yechayotgan odam.
 
 ---
 
