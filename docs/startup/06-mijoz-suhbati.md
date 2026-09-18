@@ -10,6 +10,11 @@ kerak; o'zgarmasa, demak siz noto'g'ri savol berdingiz.
 
 `00`–`05` texnik hujjatlar. Bu — birinchi navbatdagisi.
 
+> Qo'ng'iroq paytida ushlab turiladigan **izohsiz savollar**:
+> [`10-suhbat-varaqalari.md`](10-suhbat-varaqalari.md). U yerda integrator va
+> buxgalter suhbatlari ham bor — bu hujjat faqat HR/direktorni qamraydi,
+> lekin gate 20 ta integratorni ham talab qiladi.
+
 ---
 
 ## Bitta qoida

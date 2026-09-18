@@ -14,6 +14,7 @@ Ushbu katalog `hikvision-isapi` paketini to'laqonli mahsulotga aylantirish rejas
 | [`07-narx-varaqasi.md`](07-narx-varaqasi.md) | **Ichki.** Narx, chegirma chegarasi, va suhbatda beriladigan savollarga tayyor javoblar |
 | [`08-integrator-taklifi.md`](08-integrator-taklifi.md) | Integratorga beriladigan bir varaq: 25% komissiya, o'rnatish ishi ularniki |
 | [`09-mijoz-varaqasi.md`](09-mijoz-varaqasi.md) | Mijozga beriladigan bir varaq — **suhbatdan keyin**, oldin emas |
+| [`10-suhbat-varaqalari.md`](10-suhbat-varaqalari.md) | **Qo'ng'iroq paytida ushlanadigan varaqalar.** HR, **integrator** va **buxgalter** uchun izohsiz savollar, yozib olish shakli va gipoteza hisobi |
 
 ## Repolar
 
@@ -48,7 +49,8 @@ qimmatli keyingi qadam — kod emas, bitta haqiqiy ofis:
 
 Birinchi marta o'qiyotgan bo'lsangiz: `00` → `01` → `02` → `03` → `04`.
 
-Keyingi ish `06` da: qolgan hamma narsa kod, va kod hozir to'siq emas.
+Keyingi ish `06` da (nega va qanday), savollarning o'zi esa `10` da. Qolgan
+hamma narsa kod, va kod hozir to'siq emas.
 
 `07`–`09` — sotuv to'plami. Ular `06` dagi suhbatlardan **keyin** ishlatiladi,
 chunki ulardagi hamma raqam hamon gipoteza; uchta to'lovchi mijozdan keyin
