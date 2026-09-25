@@ -1,0 +1,376 @@
+<title>Davomat Narxlari</title>
+<meta name="description" content="Har bir muassasa turi uchun alohida tariflar: bog'cha, maktab, o'quv markazi, klinika, ofis, ishlab chiqarish, savdo tarmog'i.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Onest:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+  :root {
+    --bg: #F3F7F5;
+    --surface: #FFFFFF;
+    --surface-2: #E6EFEB;
+    --ink: #14302E;
+    --ink-2: #4B625F;
+    --ink-3: #6F8581;
+    --line: #CEDCD6;
+    --accent: #E39B12;
+    --accent-ink: #8F5B00;
+    --accent-soft: #FCEFD2;
+    --teal: #1F7A6D;
+    --teal-soft: #D8EEE9;
+    --ok: #2C8753;
+    --ok-soft: #DDF1E4;
+    --warn: #B96E00;
+    --warn-soft: #FBEBCB;
+    --bad: #C0402B;
+    --bad-soft: #F8DEDA;
+    --tg: #2F6DAA;
+    --tg-soft: #DDEAF6;
+    --shadow: 0 1px 2px rgba(20,48,46,.06), 0 6px 20px rgba(20,48,46,.06);
+    --display: "Fredoka", "Nunito", "Trebuchet MS", system-ui, sans-serif;
+    --body: "Onest", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0E1B1A;
+      --surface: #142523;
+      --surface-2: #1B302D;
+      --ink: #E4EFEB;
+      --ink-2: #A6BAB5;
+      --ink-3: #82978F;
+      --line: #2A4440;
+      --accent: #F2B23A;
+      --accent-ink: #F2B23A;
+      --accent-soft: #3A2E14;
+      --teal: #4EC3AE;
+      --teal-soft: #173A35;
+      --ok: #62CB8E;
+      --ok-soft: #173826;
+      --warn: #F1AA3C;
+      --warn-soft: #3A2B12;
+      --bad: #F17D69;
+      --bad-soft: #3E1F1A;
+      --tg: #82B3E8;
+      --tg-soft: #1A2D42;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.25);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0E1B1A;
+    --surface: #142523;
+    --surface-2: #1B302D;
+    --ink: #E4EFEB;
+    --ink-2: #A6BAB5;
+    --ink-3: #82978F;
+    --line: #2A4440;
+    --accent: #F2B23A;
+    --accent-ink: #F2B23A;
+    --accent-soft: #3A2E14;
+    --teal: #4EC3AE;
+    --teal-soft: #173A35;
+    --ok: #62CB8E;
+    --ok-soft: #173826;
+    --warn: #F1AA3C;
+    --warn-soft: #3A2B12;
+    --bad: #F17D69;
+    --bad-soft: #3E1F1A;
+    --tg: #82B3E8;
+    --tg-soft: #1A2D42;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.25);
+  }
+
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.6; padding-inline: 16px; }
+  .wrap { max-width: 1080px; margin-inline: auto; padding-block: 48px 40px; }
+  h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.15; text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(2rem, 4.8vw, 3.1rem); }
+  h2 { font-size: clamp(1.45rem, 3vw, 2rem); }
+  h3 { font-size: 1.12rem; }
+  p { margin: 0; }
+  .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .muted { color: var(--ink-2); }
+  .eyebrow { font-size: .78rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--teal); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  header { display: grid; gap: 14px; max-width: 720px; }
+  header .lead { font-size: 1.1rem; color: var(--ink-2); }
+  section { margin-top: 56px; }
+  .sec-head { display: grid; gap: 8px; max-width: 700px; margin-bottom: 22px; }
+  .sec-head p { color: var(--ink-2); }
+
+  .seg-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .seg-tabs button {
+    font: inherit; font-size: .93rem; font-weight: 500; cursor: pointer;
+    padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--ink);
+  }
+  .seg-tabs button:hover { border-color: var(--teal); }
+  .seg-tabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+  .seg-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 22px; box-shadow: var(--shadow); display: grid; gap: 20px; }
+  .seg-top { display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px; align-items: start; }
+  .seg-top h2 { margin-bottom: 6px; }
+  .seg-staff { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .seg-staff span { font-size: .82rem; padding: 3px 10px; border-radius: 999px; background: var(--teal-soft); }
+  .why { background: var(--surface-2); border-radius: 14px; padding: 14px 16px; font-size: .93rem; color: var(--ink-2); display: grid; gap: 6px; }
+  .why b { color: var(--ink); }
+  .tariffs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .tariff { border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; gap: 2px; align-content: start; background: var(--bg); }
+  .tariff.on { border: 2px solid var(--accent); background: var(--accent-soft); }
+  .t-name { font-family: var(--display); font-weight: 600; font-size: 1.1rem; }
+  .t-for { color: var(--ink-2); font-size: .9rem; margin-bottom: 8px; }
+  .t-price { font-family: var(--mono); font-size: 1.4rem; line-height: 1.25; }
+  .tariff.on .t-price { color: var(--accent-ink); }
+  .t-unit { color: var(--ink-3); font-size: .83rem; }
+  .calc { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; align-items: center; border-top: 1px solid var(--line); padding-top: 18px; }
+  .calc label { font-weight: 500; display: block; margin-bottom: 8px; }
+  .calc input[type=range] { width: 100%; accent-color: var(--accent); }
+  .calc-out { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .calc-out div { background: var(--surface-2); border-radius: 12px; padding: 10px 12px; display: grid; }
+  .calc-out small { color: var(--ink-3); font-size: .78rem; }
+  .calc-out b { font-family: var(--mono); font-weight: 500; font-size: 1.05rem; }
+
+  .table-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+  th { text-align: left; font-weight: 600; font-size: .76rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); padding: 9px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 11px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.seg { font-weight: 600; white-space: nowrap; }
+  tr.cur td { background: var(--accent-soft); }
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  ul.clean { margin: 0; padding-left: 18px; display: grid; gap: 6px; color: var(--ink-2); }
+  .honest { background: var(--ink); color: var(--bg); border-radius: 18px; padding: 20px; display: grid; gap: 10px; }
+  .honest h3 { color: var(--bg); }
+  .honest p, .honest li { color: color-mix(in srgb, var(--bg) 82%, var(--ink)); font-size: .95rem; }
+  .honest ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+  .honest b { color: var(--bg); }
+  .fine { font-size: .82rem; color: var(--ink-3); margin-top: 10px; }
+  footer { margin-top: 56px; padding-top: 22px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+  footer code { font-family: var(--mono); background: var(--surface); border: 1px solid var(--line); padding: 6px 10px; border-radius: 8px; user-select: all; }
+
+  @media (max-width: 860px) {
+    .seg-top, .calc, .grid2 { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .tariffs, .calc-out { grid-template-columns: 1fr; }
+    .seg-panel { padding: 16px; }
+  }
+</style>
+
+<main class="wrap">
+  <header>
+    <span class="eyebrow">Davomat · narxlar</span>
+    <h1>Har bir muassasa uchun o'z tarifi</h1>
+    <p class="lead">Bog'chada 20 xodim, zavodda 300. Ularning ish tartibi ham, to'lov imkoniyati ham boshqacha, shuning uchun har bir muassasa turining o'z tarifi bor. Muassasa turini tanlang, pastda xodimlar sonini kiritib oylik to'lovni ko'ring.</p>
+  </header>
+
+  <section id="tanlash" style="margin-top:36px">
+    <div class="seg-tabs" role="tablist" aria-label="Muassasa turi" id="segTabs"></div>
+    <div class="seg-panel" role="tabpanel" id="segPanel">
+      <div class="seg-top">
+        <div>
+          <h2 id="sTitle"></h2>
+          <p class="muted" id="sLead"></p>
+          <div class="seg-staff" id="sStaff"></div>
+        </div>
+        <div class="why" id="sWhy"></div>
+      </div>
+      <div class="tariffs" id="sTariffs"></div>
+      <div class="calc">
+        <div>
+          <label for="staff">Xodimlar soni: <b class="mono" id="staffOut"></b></label>
+          <input type="range" id="staff" min="5" max="400" step="1" value="20">
+        </div>
+        <div class="calc-out">
+          <div><small>Oyiga</small><b id="cMonth"></b></div>
+          <div><small>Bir xodimga</small><b id="cPer"></b></div>
+          <div><small>Yiliga oldindan, 14 oy</small><b id="cYear"></b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="eyebrow">Hammasi bir jadvalda</span>
+      <h2>Barcha muassasalar tariflari</h2>
+    </div>
+    <div class="panel">
+      <div class="table-scroll">
+        <table id="allTable" aria-label="Barcha tariflar"></table>
+      </div>
+    </div>
+    <p class="fine">Oxirgi pog'onadagi narx faqat chegaradan oshgan xodimlarga qo'llanadi. Masalan, ofisda 250 xodim: 200 × 8 000 + 50 × 6 000 = 1 900 000 so'm.</p>
+  </section>
+
+  <section>
+    <div class="grid2">
+      <div class="panel">
+        <h3 style="margin-bottom:12px">Bir martalik o'rnatish</h3>
+        <p class="muted" style="font-size:.92rem;margin-bottom:10px">Barcha muassasalar uchun bir xil. Narx muassasa turiga emas, ish hajmiga bog'liq.</p>
+        <div class="table-scroll">
+          <table>
+            <tbody>
+              <tr><td>1 terminal</td><td class="num">1 000 000 so'm</td></tr>
+              <tr><td>2–3 terminal</td><td class="num">1 500 000 so'm</td></tr>
+              <tr><td>4+ terminal yoki bir nechta filial</td><td class="num">3 000 000 so'm dan</td></tr>
+              <tr><td>Har bir qo'shimcha filial</td><td class="num">+1 000 000 so'm</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted" style="font-size:.9rem;margin-top:12px">Kiradi: agentni o'rnatish, terminallarni ulash, xodimlarni import qilish, smenalarni sozlash, rahbar va HR ni o'qitish.</p>
+      </div>
+      <div class="panel">
+        <h3 style="margin-bottom:12px">Hamma tariflarda bir xil</h3>
+        <ul class="clean">
+          <li>Terminallar soni cheklanmaydi va narxga ta'sir qilmaydi.</li>
+          <li>Foydalanuvchilar soni cheklanmaydi: rahbar, HR, buxgalter.</li>
+          <li>Telegram xabarlar, kunlik va oylik tabel, Excel.</li>
+          <li>Kunlik zaxira nusxa va yangilanishlar.</li>
+          <li>Xodimlar soni oy oxiridagi faol xodimlar bo'yicha sanaladi. Ishdan ketgan xodim keyingi oydan hisobdan chiqadi.</li>
+          <li>Yiliga oldindan to'lansa: 12 oy narxiga 14 oy.</li>
+          <li>Sizniki: terminal, internet va har bir filialda agent uchun kompyuter (mini-PC taxminan 2 mln so'm yoki doim yoniq mavjud kompyuter).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="honest">
+      <h3>Ochiq gapiramiz</h3>
+      <p>Bu mahsulot yangi. <b>Bugun uning to'lovchi mijozi yo'q</b>, siz birinchilardan bo'lasiz. Shuning uchun birinchi uchta mijoz uchun, muassasa turidan qat'i nazar, shart boshqacha:</p>
+      <ul>
+        <li><b>3 oy abonent to'lovi 0.</b> O'rnatish to'lanadi: bepul o'rnatilgan tizim ishlatilmay qoladi.</li>
+        <li>Evaziga: oyiga 30 daqiqa suhbat va biror narsa buzilsa darhol xabar.</li>
+        <li>Uch oydan keyin yoqmasa, to'xtatasiz va ma'lumotingizni Excel'da olib ketasiz.</li>
+      </ul>
+      <p>Tizim barcha muassasalarda faqat <b>xodimlar</b> davomatini yuritadi: bolalar, o'quvchilar, bemorlar yoki mijozlarni emas.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span class="muted">Savollar va demo uchun: <code>shaykhnazar@gmail.com</code></span>
+  </footer>
+</main>
+
+<script>
+(function () {
+  // tiers: {to, price} fixed up to N staff; {to, rate, min} per staff with a floor; {rate} marginal above previous limit
+  var S = [
+    { id: 'bogcha', tab: "Bog'cha", title: "Bog'chalar", lead: "Xususiy bog'chalar va maktabgacha ta'lim tashkilotlari.",
+      staff: ['tarbiyachi', 'enaga', 'oshpaz', 'hamshira', 'qorovul'], def: 22, max: 150,
+      why: "<b>Nega arzonroq:</b> jamoa kichik, odatda bitta terminal va bir-ikki smena. Qo'llab-quvvatlash kam vaqt oladi.",
+      tiers: [{ n: "Kichik bog'cha", to: 25, price: 390000 }, { n: "Bog'cha", to: 50, price: 590000 }, { n: "Katta bog'cha", rate: 8000, min: 590000 }] },
+    { id: 'maktab', tab: 'Xususiy maktab', title: 'Xususiy maktablar', lead: "Xususiy umumta'lim maktablari va litseylar.",
+      staff: ["o'qituvchi", 'direktor o\'rinbosari', 'texnik xodim', 'oshxona', 'qorovul'], def: 55, max: 250,
+      why: "<b>Xususiyati:</b> o'qituvchilar dars jadvali bo'yicha keladi, har kuni boshqa vaqtda. Ular suzuvchi smena bilan hisoblanadi.",
+      tiers: [{ n: 'Kichik maktab', to: 40, price: 490000 }, { n: 'Maktab', to: 80, price: 690000 }, { n: 'Katta maktab', rate: 8000, min: 690000 }] },
+    { id: 'oquv', tab: "O'quv markazi", title: "O'quv markazlari", lead: "Til, IT va tayyorlov kurslari.",
+      staff: ["o'qituvchi", 'administrator', 'menejer'], def: 15, max: 120,
+      why: "<b>Nega eng arzon:</b> ko'p o'qituvchi yarim stavkada ishlaydi, jamoa kichik va bitta binoda.",
+      tiers: [{ n: 'Kichik markaz', to: 20, price: 290000 }, { n: 'Markaz', to: 50, price: 490000 }, { n: 'Markazlar tarmog\'i', rate: 8000, min: 490000 }] },
+    { id: 'klinika', tab: 'Klinika', title: 'Xususiy klinikalar', lead: "Klinikalar, diagnostika markazlari, stomatologiya.",
+      staff: ['shifokor', 'hamshira', 'registratura', 'sanitar', 'laborant'], def: 45, max: 300,
+      why: "<b>Nega qimmatroq:</b> tungi navbatchilik va 24 soatlik smenalar ko'p, sozlash va tekshirish ko'proq vaqt oladi. Kechki smena bitta kun hisoblanadi.",
+      tiers: [{ n: 'Kichik klinika', to: 30, price: 590000 }, { n: 'Klinika', to: 60, price: 890000 }, { n: 'Katta klinika', rate: 12000, min: 890000 }] },
+    { id: 'ofis', tab: 'Ofis va IT', title: 'Ofislar va IT kompaniyalar', lead: "Ofislar, IT va BPO kompaniyalar, xizmat ko'rsatish.",
+      staff: ['menejer', 'operator', 'dasturchi', 'buxgalter'], def: 80, max: 400,
+      why: "<b>Asosiy tarif.</b> Mahsulot dastlab shu segment uchun qurilgan: 5/2 ish haftasi, bir nechta filial bitta ekranda.",
+      tiers: [{ n: 'Start', to: 50, price: 690000 }, { n: 'Biznes', to: 200, rate: 8000, min: 690000 }, { n: 'Korporativ', rate: 6000 }] },
+    { id: 'zavod', tab: 'Ishlab chiqarish', title: 'Ishlab chiqarish, logistika, qurilish', lead: "Zavodlar, sexlar, omborlar va qurilish obyektlari.",
+      staff: ['ishchi', 'usta', 'haydovchi', 'omborchi', 'smena boshlig\'i'], def: 180, max: 400,
+      why: "<b>Nega xodimga arzonroq:</b> jamoa katta, xodim boshiga daromad past. Ko'p smena va kechki smena qo'llab-quvvatlanadi.",
+      tiers: [{ n: 'Start', to: 50, price: 690000 }, { n: 'Sanoat', to: 300, rate: 7000, min: 690000 }, { n: 'Yirik korxona', rate: 5000 }] },
+    { id: 'savdo', tab: "Savdo tarmog'i", title: "Savdo tarmoqlari", lead: "Do'konlar, supermarketlar, dorixonalar va restoranlar tarmog'i.",
+      staff: ['sotuvchi', 'kassir', 'omborchi', 'oshpaz', 'administrator'], def: 120, max: 400,
+      why: "<b>Xususiyati:</b> ko'p filial, har birida kichik jamoa. Barcha filiallar bitta panelda, narx faqat xodimlar soniga bog'liq. Har bir filialda agent uchun kompyuter kerak.",
+      tiers: [{ n: 'Start', to: 50, price: 690000 }, { n: 'Tarmoq', to: 300, rate: 9000, min: 690000 }, { n: 'Yirik tarmoq', rate: 6000 }] }
+  ];
+
+  function fmt(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+  function cost(seg, n) {
+    var t = seg.tiers, prevTo = 0;
+    for (var i = 0; i < t.length; i++) {
+      var x = t[i];
+      if (x.to === undefined || n <= x.to) {
+        if (x.price) return { tier: i, v: x.price };
+        if (x.min !== undefined) return { tier: i, v: Math.max(x.min, x.rate * n) };
+        var prev = t[i - 1];
+        return { tier: i, v: prev.rate * prev.to + x.rate * (n - prev.to) };
+      }
+      prevTo = x.to;
+    }
+  }
+  function range(seg, i) {
+    var t = seg.tiers, from = i === 0 ? 1 : t[i - 1].to + 1;
+    if (i === 0) return t[i].to + ' xodimgacha';
+    if (t[i].to !== undefined) return from + '–' + t[i].to + ' xodim';
+    return (from - 1) + ' xodimdan ko\'p';
+  }
+  function priceText(seg, i) {
+    var x = seg.tiers[i];
+    if (x.price) return [fmt(x.price), "so'm / oy"];
+    if (x.min !== undefined) return [fmt(x.rate) + ' × xodim', "so'm / oy, kamida " + fmt(x.min)];
+    return [fmt(x.rate) + ' × xodim', "so'm, " + seg.tiers[i - 1].to + ' dan oshgan har biriga'];
+  }
+
+  var tabs = document.getElementById('segTabs');
+  var rangeEl = document.getElementById('staff');
+  var cur = S[0];
+
+  S.forEach(function (s) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.role = 'tab'; b.id = 'tab-' + s.id; b.textContent = s.tab;
+    b.setAttribute('role', 'tab'); b.setAttribute('aria-controls', 'segPanel');
+    b.addEventListener('click', function () { select(s, true); });
+    tabs.appendChild(b);
+  });
+
+  function renderTariffs() {
+    var r = cost(cur, +rangeEl.value);
+    document.getElementById('sTariffs').innerHTML = cur.tiers.map(function (x, i) {
+      var p = priceText(cur, i);
+      return '<div class="tariff' + (i === r.tier ? ' on' : '') + '"><span class="t-name">' + x.n + '</span><span class="t-for">' + range(cur, i) +
+        '</span><span class="t-price">' + p[0] + '</span><span class="t-unit">' + p[1] + '</span></div>';
+    }).join('');
+    var n = +rangeEl.value;
+    document.getElementById('staffOut').textContent = n;
+    document.getElementById('cMonth').textContent = fmt(r.v) + " so'm";
+    document.getElementById('cPer').textContent = '≈ ' + fmt(Math.round(r.v / n / 100) * 100) + " so'm";
+    document.getElementById('cYear').textContent = fmt(r.v * 12) + " so'm";
+  }
+
+  function select(s, keepHash) {
+    cur = s;
+    Array.prototype.forEach.call(tabs.children, function (b) { b.setAttribute('aria-selected', b.id === 'tab-' + s.id ? 'true' : 'false'); });
+    document.getElementById('sTitle').textContent = s.title;
+    document.getElementById('sLead').textContent = s.lead;
+    document.getElementById('sStaff').innerHTML = s.staff.map(function (x) { return '<span>' + x + '</span>'; }).join('');
+    document.getElementById('sWhy').innerHTML = s.why;
+    rangeEl.max = s.max; rangeEl.value = s.def;
+    renderTariffs();
+    Array.prototype.forEach.call(document.querySelectorAll('#allTable tbody tr'), function (tr) { tr.classList.toggle('cur', tr.getAttribute('data-id') === s.id); });
+    if (keepHash) { try { history.replaceState(null, '', '#' + s.id); } catch (e) {} }
+  }
+  rangeEl.addEventListener('input', renderTariffs);
+
+  // full table
+  var html = '<thead><tr><th>Muassasa</th><th>1-pog\'ona</th><th>2-pog\'ona</th><th>3-pog\'ona</th><th>Masalan</th></tr></thead><tbody>';
+  S.forEach(function (s) {
+    html += '<tr data-id="' + s.id + '"><td class="seg">' + s.tab + '</td>';
+    s.tiers.forEach(function (x, i) {
+      var p = priceText(s, i);
+      html += '<td><span class="muted" style="font-size:.82rem">' + range(s, i) + '</span><br><span class="mono">' + p[0] + '</span></td>';
+    });
+    html += '<td class="num">' + s.def + ' xodim: ' + fmt(cost(s, s.def).v) + '</td></tr>';
+  });
+  document.getElementById('allTable').innerHTML = html + '</tbody>';
+
+  var start = S[0], h = (location.hash || '').slice(1);
+  S.forEach(function (s) { if (s.id === h) start = s; });
+  select(start, false);
+})();
+</script>
