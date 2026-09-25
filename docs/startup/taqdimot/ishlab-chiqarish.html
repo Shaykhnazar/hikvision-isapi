@@ -1,0 +1,1046 @@
+<title>Korxona Davomati</title>
+<meta name="description" content="Zavod, sex, ombor va qurilish uchun xodimlar davomati: uch smena, tungi smena, tabel, Telegram, Excel.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Onest:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+  :root {
+    --bg: #F3F7F5;
+    --surface: #FFFFFF;
+    --surface-2: #E6EFEB;
+    --ink: #14302E;
+    --ink-2: #4B625F;
+    --ink-3: #6F8581;
+    --line: #CEDCD6;
+    --accent: #E39B12;
+    --accent-ink: #8F5B00;
+    --accent-soft: #FCEFD2;
+    --teal: #1F7A6D;
+    --teal-soft: #D8EEE9;
+    --ok: #2C8753;
+    --ok-soft: #DDF1E4;
+    --warn: #B96E00;
+    --warn-soft: #FBEBCB;
+    --bad: #C0402B;
+    --bad-soft: #F8DEDA;
+    --tg: #2F6DAA;
+    --tg-soft: #DDEAF6;
+    --shadow: 0 1px 2px rgba(20,48,46,.06), 0 6px 20px rgba(20,48,46,.06);
+    --display: "Fredoka", "Nunito", "Trebuchet MS", system-ui, sans-serif;
+    --body: "Onest", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0E1B1A;
+      --surface: #142523;
+      --surface-2: #1B302D;
+      --ink: #E4EFEB;
+      --ink-2: #A6BAB5;
+      --ink-3: #82978F;
+      --line: #2A4440;
+      --accent: #F2B23A;
+      --accent-ink: #F2B23A;
+      --accent-soft: #3A2E14;
+      --teal: #4EC3AE;
+      --teal-soft: #173A35;
+      --ok: #62CB8E;
+      --ok-soft: #173826;
+      --warn: #F1AA3C;
+      --warn-soft: #3A2B12;
+      --bad: #F17D69;
+      --bad-soft: #3E1F1A;
+      --tg: #82B3E8;
+      --tg-soft: #1A2D42;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.25);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0E1B1A;
+    --surface: #142523;
+    --surface-2: #1B302D;
+    --ink: #E4EFEB;
+    --ink-2: #A6BAB5;
+    --ink-3: #82978F;
+    --line: #2A4440;
+    --accent: #F2B23A;
+    --accent-ink: #F2B23A;
+    --accent-soft: #3A2E14;
+    --teal: #4EC3AE;
+    --teal-soft: #173A35;
+    --ok: #62CB8E;
+    --ok-soft: #173826;
+    --warn: #F1AA3C;
+    --warn-soft: #3A2B12;
+    --bad: #F17D69;
+    --bad-soft: #3E1F1A;
+    --tg: #82B3E8;
+    --tg-soft: #1A2D42;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.25);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.6;
+    padding-inline: 16px;
+  }
+  .wrap { max-width: 1080px; margin-inline: auto; }
+  h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.15; text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(2.1rem, 5.2vw, 3.5rem); letter-spacing: -.01em; }
+  h2 { font-size: clamp(1.6rem, 3.4vw, 2.3rem); }
+  h3 { font-size: 1.2rem; }
+  p { margin: 0; }
+  .muted { color: var(--ink-2); }
+  .eyebrow {
+    font-size: .78rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--teal);
+  }
+  .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  a { color: var(--teal); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+  /* nav */
+  .topnav {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    margin-inline: -16px; padding-inline: 16px;
+  }
+  .topnav ul {
+    list-style: none; margin: 0 auto; padding: 10px 0; max-width: 1080px;
+    display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none;
+  }
+  .topnav ul::-webkit-scrollbar { display: none; }
+  .topnav a {
+    display: block; white-space: nowrap; text-decoration: none; color: var(--ink-2);
+    font-size: .88rem; font-weight: 500; padding: 5px 11px; border-radius: 999px;
+  }
+  .topnav a:hover { background: var(--surface-2); color: var(--ink); }
+
+  section { padding-block: 64px 8px; scroll-margin-top: 60px; }
+  .sec-head { display: grid; gap: 10px; max-width: 700px; margin-bottom: 28px; }
+  .sec-head p { color: var(--ink-2); font-size: 1.05rem; }
+
+  /* hero */
+  .hero { padding-block: 56px 16px; display: grid; gap: 28px; }
+  .hero-text { display: grid; gap: 18px; max-width: 760px; }
+  .hero-text .lead { font-size: 1.15rem; color: var(--ink-2); max-width: 62ch; }
+  .hero h1 em { font-style: normal; color: var(--accent-ink); }
+  .chain { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .chain .step {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 10px 14px; font-weight: 500;
+  }
+  .chain .step b { font-family: var(--mono); font-weight: 500; font-size: .85rem; color: var(--teal); }
+  .chain .arrow { color: var(--ink-3); font-size: 1.2rem; }
+  .who { display: flex; flex-wrap: wrap; gap: 8px; }
+  .who span {
+    font-size: .85rem; padding: 4px 10px; border-radius: 999px;
+    background: var(--teal-soft); color: var(--ink);
+  }
+
+  /* diagram */
+  .diagram-box {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 22px;
+    box-shadow: var(--shadow); padding: 16px;
+  }
+  .diagram-scroll { overflow-x: auto; }
+  .diagram-scroll svg { display: block; width: 100%; min-width: 760px; height: auto; }
+  svg text { font-family: var(--body); fill: var(--ink); }
+  svg .t-title { font-family: var(--display); font-weight: 600; font-size: 19px; }
+  svg .t-sub { font-size: 13px; fill: var(--ink-2); }
+  svg .t-zone { font-size: 11.5px; font-weight: 600; letter-spacing: .12em; fill: var(--ink-3); }
+  svg .t-edge { font-size: 12.5px; fill: var(--ink-2); }
+  svg .zone { fill: var(--surface-2); }
+  svg .node rect.box { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; transition: stroke .2s, fill .2s; }
+  svg .node { cursor: pointer; }
+  svg .node:hover rect.box, svg .node.is-active rect.box { stroke: var(--accent); stroke-width: 2.5; }
+  svg .node.is-active rect.box { fill: var(--accent-soft); }
+  svg .ico { fill: none; stroke: var(--teal); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  svg .ico-fill { fill: var(--teal); }
+  svg .edge { fill: none; stroke: var(--teal); stroke-width: 2; }
+  svg .edge-dash { fill: none; stroke: var(--ink-3); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  svg .arrowhead { fill: var(--teal); }
+  svg .pulse { fill: var(--accent); }
+  .diagram-hint { font-size: .85rem; color: var(--ink-3); margin: 8px 4px 0; }
+
+  .node-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 18px; }
+  .node-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    padding: 16px 18px; display: grid; gap: 6px; align-content: start;
+    transition: border-color .2s, background .2s;
+  }
+  .node-card.is-active { border-color: var(--accent); background: var(--accent-soft); }
+  .node-card .where { font-size: .76rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+  .node-card p { color: var(--ink-2); font-size: .95rem; }
+
+  /* timeline */
+  .timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; position: relative; }
+  .timeline li { display: grid; grid-template-columns: 92px 28px 1fr; gap: 0 14px; }
+  .timeline .time { font-family: var(--mono); font-size: 1rem; padding-top: 14px; text-align: right; color: var(--ink); }
+  .timeline .rail { position: relative; }
+  .timeline .rail::before { content: ""; position: absolute; left: 13px; top: 0; bottom: 0; width: 2px; background: var(--line); }
+  .timeline li:first-child .rail::before { top: 20px; }
+  .timeline li:last-child .rail::before { bottom: calc(100% - 20px); }
+  .timeline .dot { position: absolute; left: 6px; top: 16px; width: 16px; height: 16px; border-radius: 50%; background: var(--surface); border: 3px solid var(--teal); }
+  .timeline .dot.warn { border-color: var(--warn); }
+  .timeline .dot.bad { border-color: var(--bad); }
+  .timeline .dot.ok { border-color: var(--ok); }
+  .timeline .dot.acc { border-color: var(--accent); background: var(--accent); }
+  .timeline .body { padding: 10px 0 22px; display: grid; gap: 4px; }
+  .timeline .body h3 { font-size: 1.08rem; }
+  .timeline .body p { color: var(--ink-2); max-width: 64ch; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 6px; width: fit-content;
+    font-size: .78rem; font-weight: 600; padding: 2px 9px; border-radius: 999px;
+    background: var(--teal-soft); color: var(--teal);
+  }
+  .tag.warn { background: var(--warn-soft); color: var(--warn); }
+  .tag.bad { background: var(--bad-soft); color: var(--bad); }
+  .tag.ok { background: var(--ok-soft); color: var(--ok); }
+  .tag.tg { background: var(--tg-soft); color: var(--tg); }
+  .tag.acc { background: var(--accent-soft); color: var(--accent-ink); }
+
+  /* enrol flow */
+  .flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; counter-reset: fl; }
+  .flow > div {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    padding: 14px; display: grid; gap: 6px; align-content: start; position: relative;
+  }
+  .flow > div::before {
+    counter-increment: fl; content: counter(fl);
+    font-family: var(--display); font-weight: 600; font-size: .95rem;
+    width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--teal); color: var(--surface);
+  }
+  .flow h3 { font-size: 1rem; }
+  .flow p { font-size: .9rem; color: var(--ink-2); }
+  .flow .where { font-size: .74rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+
+  .two { display: grid; grid-template-columns: 1.25fr 1fr; gap: 18px; margin-top: 22px; align-items: start; }
+  .panel {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+    padding: 18px; box-shadow: var(--shadow);
+  }
+  .panel-title { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .panel-title h3 { font-size: 1.05rem; }
+  .panel-title small { color: var(--ink-3); font-size: .8rem; }
+  .table-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+  th { text-align: left; font-weight: 600; font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  .err { font-size: .85rem; color: var(--bad); margin-top: 4px; }
+  .list-plain { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+  .list-plain li { display: grid; gap: 2px; }
+  .list-plain b { font-weight: 600; }
+  .list-plain span { color: var(--ink-2); font-size: .95rem; }
+
+  /* timesheet */
+  .ts-rules { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+  .rule { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 4px; align-content: start; }
+  .rule b { font-family: var(--display); font-weight: 600; font-size: 1.02rem; }
+  .rule span { font-size: .9rem; color: var(--ink-2); }
+  .ts table { font-size: .86rem; min-width: 900px; }
+  .ts th, .ts td { padding: 7px 6px; text-align: center; }
+  .ts th:first-child, .ts td:first-child { text-align: left; padding-left: 10px; white-space: nowrap; position: sticky; left: 0; background: var(--surface); z-index: 1; }
+  .ts td.c { font-family: var(--mono); font-variant-numeric: tabular-nums; border-radius: 6px; }
+  .ts td.late { background: var(--warn-soft); color: var(--warn); }
+  .ts td.abs { background: var(--bad-soft); color: var(--bad); font-weight: 600; }
+  .ts td.off { color: var(--ink-3); background: var(--surface-2); }
+  .ts td.fix { box-shadow: inset 0 0 0 2px var(--accent); }
+  .ts td.tot { font-family: var(--mono); font-weight: 500; background: var(--surface-2); }
+  .ts th.we { color: var(--ink-3); }
+  .ts .role { display: block; font-size: .75rem; color: var(--ink-3); }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 14px; font-size: .86rem; color: var(--ink-2); }
+  .legend i { display: inline-block; width: 22px; height: 16px; border-radius: 4px; vertical-align: -3px; margin-right: 6px; font-style: normal; font-family: var(--mono); font-size: .72rem; text-align: center; line-height: 16px; }
+  .fixcard { display: grid; gap: 10px; }
+  .fixrow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-family: var(--mono); font-size: 1rem; }
+  .fixrow .from { background: var(--bad-soft); color: var(--bad); padding: 2px 10px; border-radius: 6px; }
+  .fixrow .to { background: var(--accent-soft); color: var(--accent-ink); padding: 2px 10px; border-radius: 6px; box-shadow: inset 0 0 0 2px var(--accent); }
+  dl.kv { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 0; font-size: .93rem; }
+  dl.kv dt { color: var(--ink-3); }
+  dl.kv dd { margin: 0; }
+
+  /* telegram */
+  .chats { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .chat { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; overflow: hidden; box-shadow: var(--shadow); }
+  .chat-head { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  .avatar { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-family: var(--display); font-weight: 600; background: var(--tg); color: var(--surface); flex: none; }
+  .chat-head b { display: block; font-size: .98rem; }
+  .chat-head small { color: var(--ink-3); font-size: .8rem; }
+  .chat-body { padding: 16px; display: grid; gap: 12px; background: var(--surface-2); }
+  .msg { background: var(--surface); border-radius: 4px 16px 16px 16px; padding: 12px 14px; max-width: 94%; font-size: .93rem; display: grid; gap: 6px; box-shadow: 0 1px 1px rgba(0,0,0,.05); }
+  .msg .mt { font-weight: 600; }
+  .msg .row { display: flex; justify-content: space-between; gap: 12px; }
+  .msg .row span:last-child { font-family: var(--mono); }
+  .msg .meta { font-size: .72rem; color: var(--ink-3); text-align: right; font-family: var(--mono); }
+  .msg ul { margin: 0; padding-left: 18px; color: var(--ink-2); }
+  .chat-note { padding: 12px 16px; font-size: .87rem; color: var(--ink-2); border-top: 1px solid var(--line); }
+
+  /* reliability */
+  .layers { display: grid; gap: 12px; }
+  .layer { display: grid; grid-template-columns: 170px 1fr; gap: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; align-items: start; }
+  .layer .when { font-family: var(--display); font-weight: 600; font-size: 1.15rem; color: var(--teal); }
+  .layer .when small { display: block; font-family: var(--body); font-weight: 500; font-size: .8rem; color: var(--ink-3); letter-spacing: .02em; }
+  .layer p { color: var(--ink-2); }
+  .layer h3 { font-size: 1.05rem; margin-bottom: 4px; }
+  .callout {
+    margin-top: 16px; display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center;
+    background: var(--accent-soft); border-radius: 16px; padding: 16px 18px;
+  }
+  .callout .big { font-family: var(--display); font-weight: 600; font-size: 2rem; color: var(--accent-ink); line-height: 1; }
+  .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 18px; }
+  .fact { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; gap: 6px; align-content: start; }
+  .fact h3 { font-size: 1.02rem; }
+  .fact p { color: var(--ink-2); font-size: .93rem; }
+
+  /* security */
+  .sec-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .sec-item { display: grid; grid-template-columns: 44px 1fr; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+  .sec-item svg { width: 44px; height: 44px; }
+  .sec-item h3 { font-size: 1.04rem; margin-bottom: 4px; }
+  .sec-item p { color: var(--ink-2); font-size: .94rem; }
+  .roles { margin-top: 18px; }
+  .roles td:first-child { font-weight: 600; white-space: nowrap; }
+  .yes { color: var(--ok); font-weight: 600; }
+  .no { color: var(--ink-3); }
+
+  /* limits */
+  .limits { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .limit { border: 1.5px dashed var(--line); border-radius: 16px; padding: 16px 18px; display: grid; gap: 6px; background: var(--bg); }
+  .limit h3 { font-size: 1.04rem; }
+  .limit p { color: var(--ink-2); font-size: .94rem; }
+  .limit.first { border-color: var(--accent); background: var(--accent-soft); }
+
+  /* setup */
+  .needs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 22px; }
+  .need { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; gap: 4px; }
+  .need b { font-family: var(--display); font-weight: 600; font-size: 1.05rem; }
+  .need span { color: var(--ink-2); font-size: .93rem; }
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px 20px; counter-reset: st; }
+  .steps li { display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start; }
+  .steps li::before {
+    counter-increment: st; content: counter(st);
+    width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center;
+    font-family: var(--display); font-weight: 600; background: var(--accent-soft); color: var(--accent-ink);
+  }
+  .steps b { display: block; }
+  .steps span { color: var(--ink-2); font-size: .93rem; }
+
+  /* price */
+  .price-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 18px; align-items: start; }
+  .tariffs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
+  .tariff { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px; display: grid; gap: 2px; align-content: start; }
+  .tariff.hl { border: 2px solid var(--accent); background: var(--accent-soft); }
+  .t-name { font-family: var(--display); font-weight: 600; font-size: 1.2rem; }
+  .t-for { color: var(--ink-2); font-size: .92rem; margin-bottom: 10px; }
+  .t-price { font-size: 1.6rem; font-weight: 500; color: var(--ink); line-height: 1.2; }
+  .tariff.hl .t-price { color: var(--accent-ink); }
+  .t-unit { color: var(--ink-3); font-size: .85rem; }
+  .calc { display: grid; gap: 12px; }
+  .calc-label { font-weight: 500; }
+  .calc input[type=range] { width: 100%; accent-color: var(--accent); }
+  .calc-out dd { font-weight: 600; }
+  .price td:last-child { font-family: var(--mono); text-align: right; white-space: nowrap; }
+  .price tr.hl td { background: var(--accent-soft); }
+  .price tr.hl td:first-child { border-radius: 8px 0 0 8px; }
+  .price tr.hl td:last-child { border-radius: 0 8px 8px 0; }
+  .honest { background: var(--ink); color: var(--bg); border-radius: 18px; padding: 20px; display: grid; gap: 12px; }
+  .honest h3 { color: var(--bg); }
+  .honest p, .honest li { color: color-mix(in srgb, var(--bg) 82%, var(--ink)); font-size: .95rem; }
+  .honest ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+  .honest b { color: var(--bg); }
+
+  /* faq */
+  .faq { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .qa { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; }
+  .qa h3 { font-size: 1.02rem; }
+  .qa p { color: var(--ink-2); font-size: .94rem; }
+
+  footer { margin-block: 64px 40px; padding-top: 28px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 18px; justify-content: space-between; align-items: center; }
+  .contact { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .contact code { font-family: var(--mono); font-size: 1rem; background: var(--surface); border: 1px solid var(--line); padding: 6px 10px; border-radius: 8px; user-select: all; }
+  button.copy { font: inherit; font-size: .88rem; font-weight: 600; padding: 7px 14px; border-radius: 8px; border: 0; background: var(--teal); color: var(--surface); cursor: pointer; }
+  button.copy:hover { filter: brightness(1.08); }
+  .fine { font-size: .82rem; color: var(--ink-3); max-width: 60ch; }
+
+  @media (max-width: 900px) {
+    .node-cards, .facts { grid-template-columns: repeat(2, 1fr); }
+    .flow { grid-template-columns: repeat(2, 1fr); }
+    .ts-rules { grid-template-columns: repeat(2, 1fr); }
+    .two, .price-grid, .chats { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .node-cards, .facts, .flow, .ts-rules, .tariffs, .sec-grid, .limits, .needs, .steps, .faq { grid-template-columns: 1fr; }
+    .timeline li { grid-template-columns: 58px 24px 1fr; gap: 0 10px; }
+    .timeline .time { font-size: .88rem; }
+    .timeline .rail::before { left: 11px; }
+    .timeline .dot { left: 4px; }
+    .layer { grid-template-columns: 1fr; gap: 6px; }
+    section { padding-block: 48px 4px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+  :root { --accent: #C8641E; --accent-ink: #944610; --accent-soft: #F8E4D4; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #EE9A5C; --accent-ink: #EE9A5C; --accent-soft: #3D2615; } }
+  :root[data-theme="dark"] { --accent: #EE9A5C; --accent-ink: #EE9A5C; --accent-soft: #3D2615; }
+</style>
+
+<nav class="topnav" aria-label="Bo'limlar">
+  <ul>
+    <li><a href="#sxema">Umumiy sxema</a></li>
+    <li><a href="#kun">Bir kun</a></li>
+    <li><a href="#xodim">Xodim qo'shish</a></li>
+    <li><a href="#tabel">Tabel</a></li>
+    <li><a href="#telegram">Telegram</a></li>
+    <li><a href="#ishonch">Ishonchlilik</a></li>
+    <li><a href="#xavfsizlik">Xavfsizlik</a></li>
+    <li><a href="#cheklov">Nima qilmaydi</a></li>
+    <li><a href="#ornatish">O'rnatish</a></li>
+    <li><a href="#narx">Narx</a></li>
+    <li><a href="#savollar">Savollar</a></li>
+  </ul>
+</nav>
+
+<main class="wrap">
+
+  <header class="hero">
+    <div class="hero-text">
+      <span class="eyebrow">Ishlab chiqarish, logistika, qurilish · xodimlar davomati</span>
+      <h1>Uch smena, yuzlab ishchi, <em>bitta aniq tabel</em></h1>
+      <p class="lead">Ishchi sex yoki ombor darvozasidan o'tganda terminalga yuzini ko'rsatadi. Tizim o'tishni yozadi, har bir smenani, jumladan tungi smenani to'g'ri hisoblaydi, direktorga Telegram'da xulosa yuboradi va oy oxirida Excel tabel beradi.</p>
+    </div>
+    <div class="chain" aria-label="Qisqa zanjir"><div class="step"><b>06:52</b> Yuz ko'rsatildi</div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="step"><b>06:52</b> Bulutga tushdi</div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="step"><b>08:00</b> Direktor Telegram'da ko'rdi</div>
+      <span class="arrow" aria-hidden="true">→</span>
+      <div class="step"><b>oy oxiri</b> Excel tabel tayyor</div></div>
+    <div class="who" aria-label="Kimlar foydalanadi"><span>Direktor: kunlik xulosa</span><span>HR / tabelchi: xodimlar va tabel</span><span>Buxgalter: oylik Excel</span><span>Ishchilar: faqat yuz yoki karta</span></div>
+  </header>
+
+  <!-- ===================== SXEMA ===================== -->
+  <section id="sxema">
+    <div class="sec-head">
+      <span class="eyebrow">Umumiy sxema</span>
+      <h2>Tizim to'rt qismdan iborat</h2>
+      <p>Ikkitasi korxonangizda turadi (terminal va kichik kompyuter), bittasi bulutda, bittasi esa telefoningiz va brauzeringizda. Sxemadagi istalgan qismni bosing, pastda uning vazifasi ajratib ko'rsatiladi.</p>
+    </div>
+
+    <div class="diagram-box">
+      <div class="diagram-scroll">
+        <svg viewBox="0 0 1000 470" role="img" aria-labelledby="dg-t dg-d">
+          <title id="dg-t">Davomat tizimi sxemasi</title>
+          <desc id="dg-d">Terminal o'tishni korxonada turgan agentga yuboradi, agent uni internet orqali bulutga uzatadi, bulut tabelni hisoblaydi va Telegram, panel hamda Excel orqali natijani beradi.</desc>
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" class="arrowhead"/>
+            </marker>
+          </defs>
+
+          <rect class="zone" x="10" y="24" width="400" height="430" rx="20"/>
+          <text class="t-zone" x="32" y="54">KORXONA HUDUDI · ICHKI TARMOQ</text>
+          <text class="t-zone" x="505" y="54" text-anchor="middle">INTERNET</text>
+          <text class="t-zone" x="705" y="54" text-anchor="middle">BULUT</text>
+          <text class="t-zone" x="915" y="54" text-anchor="middle">SIZ KO'RASIZ</text>
+
+          <path class="edge" d="M95 212 V292" marker-end="url(#ah)"/>
+          <path class="edge" d="M160 292 V212" marker-end="url(#ah)"/>
+          <text class="t-edge" x="176" y="250">o'tishlar ↓</text>
+          <text class="t-edge" x="176" y="268">yangi xodim, yuz ↑</text>
+
+          <path class="edge" d="M240 370 H280" marker-end="url(#ah)"/>
+
+          <path class="edge" d="M398 370 C480 370 520 300 602 300" marker-end="url(#ah)"/>
+          <text class="t-edge" x="500" y="382" text-anchor="middle">faqat chiquvchi</text>
+          <text class="t-edge" x="500" y="400" text-anchor="middle">shifrlangan ulanish</text>
+          <path class="edge-dash" d="M410 88 V440"/>
+
+          <path class="edge" d="M800 180 H836" marker-end="url(#ah)"/>
+          <path class="edge" d="M800 280 H836" marker-end="url(#ah)"/>
+          <path class="edge" d="M800 380 H836" marker-end="url(#ah)"/>
+
+          <g class="node" data-k="terminal" tabindex="0" role="button" aria-label="Terminal">
+            <rect class="box" x="36" y="84" width="204" height="126" rx="16"/>
+            <rect class="ico" x="54" y="104" width="44" height="74" rx="7"/>
+            <circle class="ico" cx="76" cy="128" r="10"/>
+            <path class="ico" d="M62 160 q14 -12 28 0"/>
+            <text class="t-title" x="112" y="128">Terminal</text>
+            <text class="t-sub" x="112" y="150">nazorat punktida</text>
+            <text class="t-sub" x="112" y="168">yuz yoki karta</text>
+          </g>
+
+          <g class="node" data-k="agent" tabindex="0" role="button" aria-label="Agent">
+            <rect class="box" x="36" y="294" width="204" height="140" rx="16"/>
+            <rect class="ico" x="54" y="322" width="46" height="32" rx="5"/>
+            <path class="ico" d="M68 362 h18 M77 354 v8"/>
+            <text class="t-title" x="112" y="340">Agent</text>
+            <text class="t-sub" x="112" y="362">kichik kompyuter</text>
+            <text class="t-sub" x="112" y="380">korxonada turadi</text>
+            <text class="t-sub" x="54" y="414">parollar shu yerda</text>
+          </g>
+
+          <g class="node" data-k="router" tabindex="0" role="button" aria-label="Router">
+            <rect class="box" x="282" y="330" width="116" height="82" rx="14"/>
+            <path class="ico" d="M300 362 h36 M308 362 v-12 M328 362 v-12"/>
+            <text class="t-title" x="298" y="390" style="font-size:16px">Router</text>
+            <text class="t-sub" x="298" y="405" style="font-size:11.5px">port ochilmaydi</text>
+          </g>
+
+          <g class="node" data-k="cloud" tabindex="0" role="button" aria-label="Bulut">
+            <rect class="box" x="604" y="96" width="196" height="330" rx="18"/>
+            <path class="ico" d="M630 140 a14 14 0 0 1 14 -16 a20 20 0 0 1 36 4 a12 12 0 0 1 4 24 h-44 a12 12 0 0 1 -10 -12z"/>
+            <text class="t-title" x="700" y="142">Bulut</text>
+            <text class="t-sub" x="626" y="178">O'zbekistondagi server</text>
+            <g>
+              <circle class="ico-fill" cx="632" cy="214" r="3.5"/><text class="t-sub" x="644" y="219">Xodimlar bazasi</text>
+              <circle class="ico-fill" cx="632" cy="248" r="3.5"/><text class="t-sub" x="644" y="253">Smenalar</text>
+              <circle class="ico-fill" cx="632" cy="282" r="3.5"/><text class="t-sub" x="644" y="287">Tabel hisoblash</text>
+              <circle class="ico-fill" cx="632" cy="316" r="3.5"/><text class="t-sub" x="644" y="321">Terminal nazorati</text>
+              <circle class="ico-fill" cx="632" cy="350" r="3.5"/><text class="t-sub" x="644" y="355">Kunlik zaxira</text>
+              <circle class="ico-fill" cx="632" cy="384" r="3.5"/><text class="t-sub" x="644" y="389">Amallar jurnali</text>
+            </g>
+          </g>
+
+          <g class="node" data-k="telegram" tabindex="0" role="button" aria-label="Telegram">
+            <rect class="box" x="838" y="136" width="152" height="88" rx="14"/>
+            <path class="ico" d="M856 172 l30 -12 l-6 30 l-9 -8 l-6 6 v-10z"/>
+            <text class="t-title" x="896" y="170" style="font-size:17px">Telegram</text>
+            <text class="t-sub" x="896" y="190" style="font-size:12px">direktor, HR</text>
+          </g>
+          <g class="node" data-k="panel" tabindex="0" role="button" aria-label="Panel">
+            <rect class="box" x="838" y="236" width="152" height="88" rx="14"/>
+            <rect class="ico" x="854" y="256" width="34" height="26" rx="4"/>
+            <path class="ico" d="M860 290 h22"/>
+            <text class="t-title" x="896" y="272" style="font-size:17px">Panel</text>
+            <text class="t-sub" x="896" y="292" style="font-size:12px">brauzerda</text>
+          </g>
+          <g class="node" data-k="excel" tabindex="0" role="button" aria-label="Excel tabel">
+            <rect class="box" x="838" y="336" width="152" height="88" rx="14"/>
+            <rect class="ico" x="856" y="354" width="28" height="34" rx="3"/>
+            <path class="ico" d="M862 366 h16 M862 374 h16 M862 382 h10"/>
+            <text class="t-title" x="896" y="372" style="font-size:17px">Excel</text>
+            <text class="t-sub" x="896" y="392" style="font-size:12px">oylik tabel</text>
+          </g>
+
+          <circle class="pulse" id="pulse" r="7" aria-hidden="true">
+            <animateMotion dur="6s" repeatCount="indefinite" path="M95 212 L95 370 L282 370 L398 370 C480 370 520 300 602 300 L700 300 L700 180 L836 180"/>
+          </circle>
+        </svg>
+      </div>
+      <p class="diagram-hint">Rangli nuqta bitta o'tishning yo'lini ko'rsatadi: terminal → agent → router → bulut → Telegram.</p>
+    </div>
+
+    <div class="node-cards" id="nodeCards">
+      <article class="node-card is-active" data-k="terminal">
+        <span class="where">Korxonada</span>
+        <h3>Terminal</h3>
+        <p>Nazorat punkti yoki sex kirishidagi Hikvision terminali. Ishchi yuzini ko'rsatadi yoki kartasini tutadi, terminal o'tishni yozadi. Sizda bor terminal ishlatiladi, unga internet kerak emas.</p>
+      </article>
+      <article class="node-card" data-k="agent">
+        <span class="where">Korxonada</span>
+        <h3>Agent</h3>
+        <p>Kichik kompyuterdagi dastur. O'tishlarni terminaldan olib bulutga uzatadi, yangi xodimlarni terminalga yozadi. Terminal paroli faqat shu yerda, shifrlangan holda turadi. Internet uzilsa, o'tishlarni o'zida saqlab turadi. Bir nechta sex va ombor bitta agentga ulanadi, agar ular bitta tarmoqda bo'lsa.</p>
+      </article>
+      <article class="node-card" data-k="router">
+        <span class="where">Korxonada</span>
+        <h3>Router</h3>
+        <p>Agent internetga o'zi chiqadi. Tashqaridan hech kim korxona tarmog'iga kirmaydi: port ochilmaydi, oq IP sotib olinmaydi, terminal internetga ochilmaydi.</p>
+      </article>
+      <article class="node-card" data-k="cloud">
+        <span class="where">O'zbekistondagi server</span>
+        <h3>Bulut</h3>
+        <p>Har bir o'tish xodimga bog'lanadi va smenasiga qarab kunlik tabelga aylanadi. Terminallar kuzatiladi, har kuni zaxira nusxa olinadi va nusxa ochib tekshiriladi.</p>
+      </article>
+      <article class="node-card" data-k="telegram">
+        <span class="where">Telefoningizda</span>
+        <h3>Telegram</h3>
+        <p>Direktorga har kuni ertalab qisqa xulosa: kim keldi, kim kechikdi, kim yo'q. HR ga signal: terminal jim qolsa, 2 daqiqa ichida xabar keladi.</p>
+      </article>
+      <article class="node-card" data-k="panel">
+        <span class="where">Brauzeringizda</span>
+        <h3>Panel va Excel</h3>
+        <p>Xodimlar, smenalar, kunlik va oylik tabel bitta ekranda. Oy oxirida tabel bitta tugma bilan Excel faylga chiqadi va buxgalterga beriladi.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== BIR KUN ===================== -->
+  <section id="kun">
+    <div class="sec-head">
+      <span class="eyebrow">Bir kun, boshidan oxirigacha</span>
+      <h2>Bir kun sexda tizim ko'zi bilan</h2>
+      <p>Namuna: 1-smena 07:00–15:00, 3-smena (tungi) 23:00–07:00. Kechikish chegarasi 10 daqiqa, tanaffus 30 daqiqa. CNC operatori Sherzod 1-smenada.</p>
+    </div>
+    <ol class="timeline">
+      <li><span class="time">06:52</span><span class="rail"><span class="dot acc"></span></span><div class="body"><span class="tag acc">Terminal</span><h3>Sherzod nazorat punktida yuzini ko'rsatadi</h3><p>Terminal uni taniydi va o'tishni vaqti bilan yozadi. Bu kundagi birinchi o'tish, demak kelish vaqti.</p></div></li>
+      <li><span class="time">06:52</span><span class="rail"><span class="dot"></span></span><div class="body"><span class="tag">Agent → bulut</span><h3>O'tish bir necha soniyada bulutga yetadi</h3><p>Terminal xabarni agentga yuboradi, agent bulutga uzatadi. Internet bo'lmasa, agent uni o'zida saqlab turadi va internet qaytganda yuboradi.</p></div></li>
+      <li><span class="time">07:04</span><span class="rail"><span class="dot acc"></span></span><div class="body"><span class="tag acc">Tungi smena</span><h3>3-smena ishchilari chiqib ketadi</h3><p>Ular kecha 23:00 atrofida kelgan. Tungi smena ikki kalendar kunga bo'linmaydi: kelish va ketish bitta ish kuniga yoziladi.</p></div></li>
+      <li><span class="time">07:14</span><span class="rail"><span class="dot warn"></span></span><div class="body"><span class="tag warn">Kechikish</span><h3>Payvandchi Ulug'bek keladi</h3><p>Chegara 07:10 edi. Tizim kunni kechikkan deb belgilaydi.</p></div></li>
+      <li><span class="time">07:30</span><span class="rail"><span class="dot warn"></span></span><div class="body"><span class="tag warn">Ommaviy kechikish</span><h3>Xizmat avtobusi kechikdi</h3><p>1-smenaning katta qismi chegaradan keyin keldi. HR guruhiga bitta xabar keladi. Unda hech kimning ismi yo'q, chunki bu bir odamning emas, transportning muammosi.</p></div></li>
+      <li><span class="time">08:00</span><span class="rail"><span class="dot"></span></span><div class="body"><span class="tag tg">Telegram</span><h3>Direktor kunlik xulosani oladi</h3><p>Kim keldi, kim kechikdi, kim yo'q. Smena boshliqlari ham obuna bo'lishi mumkin.</p></div></li>
+      <li><span class="time">11:40</span><span class="rail"><span class="dot bad"></span></span><div class="body"><span class="tag bad">Signal</span><h3>Ombor darvozasidagi terminal o'chib qoldi</h3><p>Ombor darvozasi terminali javob bermay qoldi. 2 daqiqa ichida HR guruhiga Telegram xabar keladi: qaysi terminal, qachondan beri. Muammo oy oxirida emas, o'sha kuni bilinadi.</p></div></li>
+      <li><span class="time">har 10 daq</span><span class="rail"><span class="dot"></span></span><div class="body"><span class="tag">Qayta tekshirish</span><h3>Agent terminaldagi oxirgi 30 daqiqani qayta o'qiydi</h3><p>Biror xabar yo'lda yo'qolgan bo'lsa, shu yerda topiladi va tabelga qo'shiladi. Kech kelgan o'tish kunni qayta hisoblaydi.</p></div></li>
+      <li><span class="time">15:03</span><span class="rail"><span class="dot acc"></span></span><div class="body"><span class="tag acc">Terminal</span><h3>Sherzod smenadan chiqadi</h3><p>Kun: 06:52 dan 15:03 gacha, ya'ni 8 soat 11 daqiqa, 30 daqiqa tanaffus ayiriladi. Tabelga <span class="mono">7:41</span> tushadi.</p></div></li>
+      <li><span class="time">kechasi</span><span class="rail"><span class="dot"></span></span><div class="body"><span class="tag">Tungi tekshiruv</span><h3>Tizim o'zini tekshiradi</h3><p>Oxirgi 24 soatdagi o'tishlar soni terminal bilan solishtiriladi. Terminaldagi xodimlar ro'yxati bulutdagi ro'yxat bilan tekshiriladi. Zaxira nusxa olinadi.</p></div></li>
+      <li><span class="time">oy oxiri</span><span class="rail"><span class="dot ok"></span></span><div class="body"><span class="tag ok">Excel</span><h3>Buxgalter tabelni bitta tugma bilan oladi</h3><p>Hech kim o'tirib Excel yig'maydi. Qo'lda tuzatilgan kunlar faylda alohida belgi bilan ko'rinadi.</p></div></li></ol>
+  </section>
+
+  <!-- ===================== XODIM QO'SHISH ===================== -->
+  <section id="xodim">
+    <div class="sec-head">
+      <span class="eyebrow">Yangi xodim</span>
+      <h2>Yangi ishchi keldi: uni terminallarga qanday qo'shasiz</h2>
+      <p>HR faqat panelda ma'lumotni kiritadi. Terminalga yozish ishini agent o'zi bajaradi, hech kim terminal menyusiga kirmaydi.</p>
+    </div>
+
+    <div class="flow">
+      <div><span class="where">Panel</span><h3>HR xodimni kiritadi</h3><p>F.I.Sh., lavozim, smena, karta raqami va yuz rasmi. Ko'p xodimni Excel'dan birdaniga import qilish mumkin.</p></div>
+      <div><span class="where">Bulut</span><h3>Doimiy raqam beriladi</h3><p>Xodim raqami hech qachon boshqa odamga berilmaydi. Barcha terminallarda bir xil bo'ladi.</p></div>
+      <div><span class="where">Agent</span><h3>Agent vazifani oladi</h3><p>Agent bulutdan "yangi ish bormi?" deb o'zi so'raydi va vazifani qabul qiladi.</p></div>
+      <div><span class="where">Terminal</span><h3>Terminalga yoziladi</h3><p>Tartib qat'iy: avval xodim, keyin karta, keyin yuz. Har bir terminalga alohida.</p></div>
+      <div><span class="where">Bulut</span><h3>Yuz rasmi o'chiriladi</h3><p>Rasm terminalga yetishi bilan bulutdan o'chadi. Bulutda faqat "yuz yuklangan" sanasi qoladi.</p></div>
+    </div>
+
+    <div class="two">
+      <div class="panel">
+        <div class="panel-title"><h3>Sinxronizatsiya holati</h3><small>panel ekrani, namuna</small></div>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Xodim</th><th>Terminal</th><th>Holat</th></tr></thead>
+            <tbody>
+              <tr><td>Sherzod A.<br><span class="muted" style="font-size:.82rem">CNC operatori</span></td><td>Nazorat punkti</td><td><span class="tag ok">Yozildi</span></td></tr>
+              <tr><td>Akmal Y.<br><span class="muted" style="font-size:.82rem">yuklovchi, yangi</span></td><td>Nazorat punkti</td><td><span class="tag">Kutilmoqda</span></td></tr>
+              <tr><td>Akmal Y.<br><span class="muted" style="font-size:.82rem">yuklovchi, yangi</span></td><td>Ombor darvozasi</td><td><span class="tag bad">Xato</span><div class="err">Terminal parolni qabul qilmadi. Qurilma parolini tekshiring.</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted" style="font-size:.88rem;margin-top:12px">Xato texnik kod bilan emas, tushunarli tilda chiqadi. Sabab tuzatilgach, bitta tugma bilan qayta urinib ko'riladi.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><h3>Boshqa holatlar</h3></div>
+        <ul class="list-plain">
+          <li><b>Xodim ishdan ketsa</b><span>U bloklanadi va terminal uni o'tkazmaydi. Raqami boshqa odamga berilmaydi. Tarixi bor xodimni o'chirib bo'lmaydi, ya'ni eski tabellar yo'qolmaydi.</span></li>
+          <li><b>Terminal to'lib qolsa</b><span>Har bir terminalning sig'imi bor (odam, karta, yuz). 90 foizga yetganda HR ogohlantiriladi.</span></li>
+          <li><b>Terminal yuzni qo'llamasa</b><span>Tizim buni ulanishda o'zi aniqlaydi va unga yuz yubormaydi, faqat karta.</span></li>
+          <li><b>Terminal zavod sozlamasiga qaytarilsa</b><span>Tungi tekshiruv terminalda xodimlar yo'qolganini ko'radi va ularni qayta yozadi.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TABEL ===================== -->
+  <section id="tabel">
+    <div class="sec-head">
+      <span class="eyebrow">Tabel</span>
+      <h2>Oylik tabel buxgalter stolidagi shaklda</h2>
+      <p>Chapda xodimlar, tepada kunlar, kataklarda ishlangan soat. Kunlik tabel ham bor: u HR ga tushlikkacha kim kelmaganini ko'rsatadi.</p>
+    </div>
+
+    <div class="ts-rules">
+      <div class="rule"><b>Kelish va ketish</b><span>Kundagi birinchi o'tish kelish, oxirgisi ketish hisoblanadi.</span></div>
+      <div class="rule"><b>Kechikish</b><span>Smena boshlanishi + chegara. Chegaradan keyin kelgan kun sariq bo'ladi.</span></div>
+      <div class="rule"><b>Tanaffus</b><span>Smenada belgilangan tanaffus har kuni ish vaqtidan ayiriladi.</span></div>
+      <div class="rule"><b>Smenalar</b><span>Bir, ikki yoki uch smena. Tungi smena (23:00–07:00) bitta kun hisoblanadi, ikkiga bo'linmaydi.</span></div>
+    </div>
+
+    <div class="panel ts">
+      <div class="panel-title"><h3>Sentabr, 7–18 · “Temir Metall” zavodi</h3><small>namuna ma'lumot</small></div>
+      <div class="table-scroll"><table id="tsTable" aria-label="Oylik tabel namunasi"></table></div>
+      <div class="legend">
+        <span><i class="mono" style="background:var(--surface-2)">8:12</i>ishlangan soat:daqiqa</span>
+        <span><i style="background:var(--warn-soft)"></i>kechikkan kun</span>
+        <span><i class="mono" style="background:var(--bad-soft);color:var(--bad)">K</i>kelmadi</span>
+        <span><i class="mono" style="background:var(--surface-2);color:var(--ink-3)">D</i>dam olish kuni</span>
+        <span><i style="box-shadow:inset 0 0 0 2px var(--accent)"></i>tuzatilgan kun (*)</span>
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="panel fixcard">
+        <div class="panel-title"><h3>Tuzatish: iz qoldiradi</h3><small>panel ekrani, namuna</small></div>
+        <p class="muted">Ulug'bek 10-sentabr kuni buyurtmachining obyektida payvand ishida bo'lgan va zavodga kirmagan. Tabelda “kelmadi” chiqqan. HR kunni tuzatadi:</p>
+        <div class="fixrow"><span class="from">K</span><span aria-hidden="true">→</span><span class="to">7:30*</span></div>
+        <dl class="kv">
+          <dt>Sabab</dt><dd>Obyektda ish, sex boshlig'i tasdiqladi (majburiy maydon)</dd>
+          <dt>Kim tuzatdi</dt><dd>HR, Gulnora X.</dd>
+          <dt>Qachon</dt><dd class="mono">10.09.2026 09:14</dd>
+          <dt>Asl yozuv</dt><dd>O'tish yo'q. Terminal yozgani o'chirilmaydi.</dd>
+        </dl>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><h3>Nega "tahrirlash" tugmasi yo'q</h3></div>
+        <p class="muted">Ustidan yozib bo'ladigan tabel nizo chiqqanda dalil bo'la olmaydi. Shuning uchun faqat sababli tuzatish bor. Buxgalter Excel faylda qaysi raqam terminaldan, qaysi biri odamdan kelganini <span class="mono">*</span> belgisidan ko'radi.</p>
+        <p class="muted" style="margin-top:10px">Nol va "kelmadi" alohida ko'rsatiladi: <span class="mono">K</span> kelmadi, <span class="mono">D</span> dam olish. Oylik hisobda bular qarama-qarshi ma'noga ega.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TELEGRAM ===================== -->
+  <section id="telegram">
+    <div class="sec-head">
+      <span class="eyebrow">Telegram</span>
+      <h2>Kim nimani oladi</h2>
+      <p>Har kim o'ziga keraklisini oladi. Direktor kuniga bitta xabar, HR esa nosozlik haqida darhol. Chat bir martalik kod bilan ulanadi.</p>
+    </div>
+
+    <div class="chats">
+      <div class="chat">
+        <div class="chat-head">
+          <span class="avatar" aria-hidden="true">D</span>
+          <div><b>Davomat bot → Direktor</b><small>kunlik xulosa</small></div>
+        </div>
+        <div class="chat-body">
+          <div class="msg">
+            <span class="mt">Kunlik xulosa · 25-sentabr</span>
+            <div class="row"><span>Keldi</span><span>241 / 256</span></div>
+            <div class="row"><span>Kechikdi</span><span>2</span></div>
+            <ul><li>Ulug'bek T., payvandchi (07:14)</li><li>yana 36 kishi, xizmat avtobusi</li></ul>
+            <div class="row"><span>Kelmadi</span><span>1</span></div>
+            <ul><li>Farrux N., omborchi</li><li>yana 14 kishi</li></ul>
+            <span class="meta">08:00</span>
+          </div>
+        </div>
+        <div class="chat-note">Kuniga bitta xabar. Terminal uzilishlari direktorni bezovta qilmaydi.</div>
+      </div>
+
+      <div class="chat">
+        <div class="chat-head">
+          <span class="avatar" aria-hidden="true" style="background:var(--teal)">H</span>
+          <div><b>Davomat bot → HR guruhi</b><small>signallar</small></div>
+        </div>
+        <div class="chat-body">
+          <div class="msg">
+            <span class="mt" style="color:var(--bad)">Terminal javob bermayapti</span>
+            <span>Ombor darvozasi · 10:12 dan beri</span>
+            <span class="meta">10:14</span>
+          </div>
+          <div class="msg">
+            <span class="mt" style="color:var(--bad)">Terminalga yozib bo'lmadi</span>
+            <span>Akmal Y. → Ombor darvozasi. Terminal parolni qabul qilmadi.</span>
+            <span class="meta">11:40</span>
+          </div>
+          <div class="msg">
+            <span class="mt" style="color:var(--warn)">Ommaviy kechikish</span>
+            <span>Bugun xodimlarning katta qismi kechikdi. Transport yoki terminal bilan bog'liq bo'lishi mumkin.</span>
+            <span class="meta">07:30</span>
+          </div>
+        </div>
+        <div class="chat-note">Ommaviy kechikish xabari hech kimni nomlamaydi va kichik jamoada bir-ikki kishi uchun chiqmaydi.</div>
+      </div>
+    </div>
+    <p class="fine" style="margin-top:12px">Xabarlar matni namuna. Ismlar to'qilgan.</p>
+  </section>
+
+  <!-- ===================== ISHONCHLILIK ===================== -->
+  <section id="ishonch">
+    <div class="sec-head">
+      <span class="eyebrow">Ishonchlilik</span>
+      <h2>Bitta o'tish ham yo'qolmasligi uchun uch qatlam</h2>
+      <p>Tabelning to'g'riligi o'tishlarning to'liqligiga bog'liq. Shuning uchun har bir o'tish uch xil yo'l bilan tekshiriladi.</p>
+    </div>
+
+    <div class="layers">
+      <div class="layer"><div class="when">Darhol<small>bir necha soniya</small></div><div><h3>Terminal o'tishni shu zahoti agentga yuboradi</h3><p>Tez yo'l. Ko'pincha shu yetarli, lekin tarmoqdagi bir lahzalik uzilish xabarni yo'qotishi mumkin.</p></div></div>
+      <div class="layer"><div class="when">Har 10 daqiqada<small>oxirgi 30 daqiqa</small></div><div><h3>Agent terminal xotirasini qayta o'qiydi</h3><p>Yo'lda yo'qolgan xabar terminal xotirasida baribir bor. Agent uni shu yerdan olib bulutga yuboradi, kun qayta hisoblanadi.</p></div></div>
+      <div class="layer"><div class="when">Har kecha<small>oxirgi 24 soat</small></div><div><h3>O'tishlar soni terminal bilan solishtiriladi</h3><p>Farq chiqsa, signal bizga keladi, sizga emas. Bu tizim nosozligi, uni biz tuzatamiz.</p></div></div>
+    </div>
+
+    <div class="callout">
+      <span class="big">1×</span>
+      <p>Bitta o'tish uch yo'ldan kelsa ham tabelga bir marta yoziladi. Har bir o'tishning o'z "barmoq izi" bor, takrorlari tashlab yuboriladi.</p>
+    </div>
+
+    <div class="facts">
+      <div class="fact"><h3>Internet uzilsa</h3><p>Terminal ishlashda davom etadi, eshik ochiladi. Agent o'tishlarni o'zida saqlaydi va internet qaytganda hammasini yuboradi.</p></div>
+      <div class="fact"><h3>Agent jim qolsa</h3><p>90 soniya xabar kelmasa, bulut agentni "offline" deb belgilaydi va HR ga signal yuboradi.</p></div>
+      <div class="fact"><h3>Yangilanishlar</h3><p>Agent o'zini o'zi yangilaydi. Har bir yangilanish imzo bilan tekshiriladi. Yangi versiya ishlamasa, agent eski ishlaydigan versiyaga qaytadi.</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== XAVFSIZLIK ===================== -->
+  <section id="xavfsizlik">
+    <div class="sec-head">
+      <span class="eyebrow">Xavfsizlik va shaxsiy ma'lumot</span>
+      <h2>Yuz, parol va xodim ma'lumoti qayerda turadi</h2>
+      <p>Yuzlab ishchining yuz ma'lumoti bitta tizimda turadi, bunga talab yuqori. Shuning uchun asosiy qarorlar sozlama emas, tizimning tuzilishiga kiritilgan.</p>
+    </div>
+
+    <div class="sec-grid">
+      <div class="sec-item">
+        <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="var(--teal-soft)"/><circle cx="22" cy="19" r="6" fill="none" stroke="var(--teal)" stroke-width="2.2"/><path d="M12 33 q10 -10 20 0" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round"/></svg>
+        <div><h3>Yuz rasmlari bulutda qolmaydi</h3><p>Rasm terminalga yetkazilishi bilan o'chiriladi. Xato bo'lsa ham, olib ketilmasa ham, muddati bilan o'chadi. Bulutda faqat "yuz yuklangan" sanasi.</p></div>
+      </div>
+      <div class="sec-item">
+        <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="var(--teal-soft)"/><rect x="14" y="20" width="16" height="12" rx="2" fill="none" stroke="var(--teal)" stroke-width="2.2"/><path d="M17 20 v-4 a5 5 0 0 1 10 0 v4" fill="none" stroke="var(--teal)" stroke-width="2.2"/></svg>
+        <div><h3>Terminal paroli korxonadan chiqmaydi</h3><p>Parol faqat korxonada turgan agentda, shifrlangan holda saqlanadi. Bulutda terminal paroli yo'q.</p></div>
+      </div>
+      <div class="sec-item">
+        <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="var(--teal-soft)"/><path d="M13 22 h14 M23 17 l5 5 l-5 5" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M31 13 v18" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round"/></svg>
+        <div><h3>Tarmoqqa tashqaridan kirish yo'q</h3><p>Agent faqat tashqariga ulanadi, har bir so'rov imzolanadi. Router'da hech narsa ochilmaydi, terminal internetdan ko'rinmaydi.</p></div>
+      </div>
+      <div class="sec-item">
+        <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="var(--teal-soft)"/><path d="M15 13 h11 l5 5 v14 h-16z" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linejoin="round"/><path d="M18 25 l3 3 l6 -6" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div><h3>Xodim roziligi yoziladi</h3><p>Kim, qachon, qaysi hujjat versiyasiga rozi bo'lgani saqlanadi. Rozilik qaytarib olinsa, yozuv o'chmaydi, belgilanadi.</p></div>
+      </div>
+      <div class="sec-item">
+        <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="var(--teal-soft)"/><circle cx="22" cy="22" r="9" fill="none" stroke="var(--teal)" stroke-width="2.2"/><path d="M22 17 v5 l3 3" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round"/></svg>
+        <div><h3>Saqlash muddati</h3><p>Xom o'tishlar belgilangan muddatdan keyin (odatda 24 oy) avtomatik o'chiriladi. Tayyor tabel saqlanib qoladi.</p></div>
+      </div>
+      <div class="sec-item">
+        <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="var(--teal-soft)"/><path d="M14 15 h16 M14 22 h16 M14 29 h10" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round"/></svg>
+        <div><h3>Har bir muhim amal jurnalga yoziladi</h3><p>Xodimni bloklash, tabelni tuzatish, eksport: kim va qachon qilgani saqlanadi. Yuz ma'lumoti hech qachon logga tushmaydi.</p></div>
+      </div>
+    </div>
+
+    <div class="panel roles">
+      <div class="panel-title"><h3>Kim nimani ko'radi</h3><small>har bir foydalanuvchiga bitta rol</small></div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Rol</th><th>Kim uchun</th><th>Tabelni ko'radi</th><th>Xodim va tabelni o'zgartiradi</th><th>Sozlamalar</th></tr></thead>
+          <tbody>
+            <tr><td>Egasi</td><td>Korxona egasi yoki direktor</td><td class="yes">Ha</td><td class="yes">Ha</td><td class="yes">Ha</td></tr>
+            <tr><td>HR</td><td>Kadrlar bo'limi xodimi</td><td class="yes">Ha</td><td class="yes">Ha</td><td class="no">Yo'q</td></tr>
+            <tr><td>Kuzatuvchi</td><td>Sex boshlig'i, tashqi buxgalter</td><td class="yes">Ha</td><td class="no">Yo'q</td><td class="no">Yo'q</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CHEKLOVLAR ===================== -->
+  <section id="cheklov">
+    <div class="sec-head">
+      <span class="eyebrow">Ochiq aytamiz</span>
+      <h2>Tizim nima qilmaydi</h2>
+      <p>Bu ro'yxat birinchi haftada kerak bo'ladi. Shuning uchun uni oldindan aytamiz.</p>
+    </div>
+    <div class="limits">
+      <div class="limit first"><h3>Ishlab chiqarish hajmini hisoblamaydi</h3><p>Tizim faqat vaqtni hisoblaydi. Kim qancha mahsulot qilgani va ishbay haq unda yo'q.</p></div>
+      <div class="limit"><h3>Kelish va ketishni terminal ajratmaydi</h3><p>Birinchi o'tish kelish, oxirgisi ketish. Tushlikka chiqib kelgan xodimning butun kuni hisoblanadi.</p></div>
+      <div class="limit"><h3>1C ga eksport hozircha yo'q</h3><p>Excel bor. Buxgalteringiz ishlatadigan 1C faylini ko'rsatsa, shu formatni qilamiz. Lekin bugun va'da qilmaymiz.</p></div>
+      <div class="limit"><h3>Ish haqi hisoblanmaydi</h3><p>Tizim tabel beradi. Oylikni buxgalteriya hisoblaydi.</p></div>
+      <div class="limit"><h3>Ta'til va kasallik varaqasi hali yo'q</h3><p>Bunday kunlar tabelda "kelmadi" bo'lib chiqadi. Ularni sababli tuzatish bilan belgilaysiz.</p></div>
+      <div class="limit"><h3>Aylanma grafik hali yo'q</h3><p>Smena hafta kunlari bilan belgilanadi (masalan: dushanba, chorshanba, juma). “2 kun ish, 2 kun dam” kabi aylanma grafik hozircha yo'q.</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== O'RNATISH ===================== -->
+  <section id="ornatish">
+    <div class="sec-head">
+      <span class="eyebrow">O'rnatish</span>
+      <h2>Ishga tushirish qanday bo'ladi</h2>
+      <p>Hammasini biz yoki hamkor integrator bajaradi. Sizdan uchta narsa kerak.</p>
+    </div>
+
+    <div class="needs">
+      <div class="need"><b>Hikvision terminal</b><span>Bor bo'lsa, o'sha ishlatiladi. Bir nechta bo'lsa ham, soniga cheklov yo'q.</span></div>
+      <div class="need"><b>Kichik kompyuter</b><span>Har bir alohida hudud uchun bittadan: mini-PC (taxminan 2 mln so'm) yoki doim yoniq kompyuter.</span></div>
+      <div class="need"><b>Internet</b><span>Oddiy internet yetarli. Oq IP va router sozlamasi kerak emas.</span></div>
+    </div>
+
+    <ol class="steps">
+      <li><div><b>Korxona va hududlar tizimda ochiladi</b><span>Agentni ulash uchun bir martalik kod beriladi, u 24 soat amal qiladi.</span></div></li>
+      <li><div><b>Agent o'rnatiladi</b><span>Kichik kompyuterda bitta buyruq bilan ishga tushadi va bulutga o'zi ulanadi.</span></div></li>
+      <li><div><b>Terminallar ulanadi</b><span>Terminal paroli bir marta kiritiladi va faqat agentda qoladi. Tizim terminal imkoniyatlarini o'zi aniqlaydi.</span></div></li>
+      <li><div><b>Xodimlar kiritiladi</b><span>Ro'yxat Excel yoki CSV fayldan import qilinadi.</span></div></li>
+      <li><div><b>Yuz va kartalar yoziladi</b><span>Xodimlar roziligi qayd etiladi, yuz rasmlari terminallarga yuklanadi.</span></div></li>
+      <li><div><b>Smenalar belgilanadi</b><span>Har bir smenaning vaqti va ish kunlari, kechikish chegarasi, tanaffus.</span></div></li>
+      <li><div><b>Telegram ulanadi</b><span>Direktor xulosaga, HR signallarga obuna bo'ladi.</span></div></li>
+      <li><div><b>HR o'qitiladi</b><span>Xodim qo'shish, tabelni ko'rish va tuzatish, Excel olish.</span></div></li>
+    </ol>
+  </section>
+
+  <!-- ===================== NARX ===================== -->
+  <section id="narx">
+    <div class="sec-head">
+      <span class="eyebrow">Korxonalar uchun narx</span>
+      <h2>Jamoa katta bo'lsa, xodim boshiga arzonroq</h2>
+      <p>Ishchilar soni ko'p, shuning uchun xodim boshiga narx ofisnikidan past. Terminallar va foydalanuvchilar soni narxga ta'sir qilmaydi.</p>
+    </div>
+
+    <div class="tariffs">
+      <div class="tariff"><span class="t-name">Start</span><span class="t-for">50 xodimgacha</span><span class="t-price mono">690 000</span><span class="t-unit">so'm / oy</span></div>
+      <div class="tariff hl"><span class="t-name">Sanoat</span><span class="t-for">51–300 xodim</span><span class="t-price mono">7 000 × xodim</span><span class="t-unit">so'm / oy, kamida 690 000</span></div>
+      <div class="tariff"><span class="t-name">Yirik korxona</span><span class="t-for">300 xodimdan ko'p</span><span class="t-price mono">5 000 × xodim</span><span class="t-unit">so'm, 300 dan oshgan har biriga</span></div></div>
+
+    <div class="price-grid">
+      <div class="panel calc">
+        <div class="panel-title"><h3>O'zingiz uchun hisoblang</h3><small>xodimlar: barcha smenalardagi faol ishchilar</small></div>
+        <label for="staffRange" class="calc-label">Xodimlar soni: <b class="mono" id="staffOut"></b></label>
+        <input type="range" id="staffRange" min="5" max="400" step="1" value="180">
+        <dl class="kv calc-out">
+          <dt>Tarif</dt><dd id="cTariff"></dd>
+          <dt>Oyiga</dt><dd class="mono" id="cMonth"></dd>
+          <dt>Bir xodimga</dt><dd class="mono" id="cPer"></dd>
+          <dt>Yiliga oldindan</dt><dd class="mono" id="cYear"></dd>
+        </dl>
+        <p class="muted" style="font-size:.88rem">Yiliga oldindan to'lasangiz, 12 oy narxiga 14 oy ishlatasiz.</p>
+      </div>
+
+      <div class="panel price">
+        <div class="panel-title"><h3>Bir martalik o'rnatish</h3></div>
+        <div class="table-scroll">
+          <table>
+            <tbody>
+              <tr><td>1 terminal</td><td>1 000 000 so'm</td></tr>
+              <tr><td>2–3 terminal</td><td>1 500 000 so'm</td></tr>
+              <tr><td>4+ terminal yoki bir nechta filial</td><td>3 000 000 so'm dan</td></tr>
+              <tr><td>Har bir qo'shimcha filial</td><td>+1 000 000 so'm</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted" style="font-size:.9rem;margin-top:14px">O'rnatishga kiradi: agentni o'rnatish, terminallarni ulash, xodimlarni import qilish, smenalarni sozlash, rahbar va HR ni o'qitish.</p>
+        <p class="muted" style="font-size:.9rem;margin-top:8px">Oylik narxga kiradi: cheksiz terminal, cheksiz foydalanuvchi, Telegram xabarlar, Excel tabel, kunlik zaxira nusxa, yangilanishlar.</p>
+        <p class="muted" style="font-size:.9rem;margin-top:8px">Sizniki: terminal, internet va agent uchun kompyuter.</p>
+      </div>
+    </div>
+
+    <div class="honest" style="margin-top:18px">
+      <h3>Ochiq gapiramiz</h3>
+      <p>Bu mahsulot yangi. <b>Bugun uning to'lovchi mijozi yo'q</b>, siz birinchilardan bo'lasiz. Shuning uchun birinchi uchta mijoz uchun shart boshqacha:</p>
+      <ul>
+        <li><b>3 oy abonent to'lovi 0.</b> O'rnatish to'lanadi: bepul o'rnatilgan tizim ishlatilmay qoladi.</li>
+        <li>Evaziga: oyiga 30 daqiqa suhbat va biror narsa buzilsa darhol xabar.</li>
+        <li>Uch oydan keyin yoqmasa, to'xtatasiz va ma'lumotingizni Excel'da olib ketasiz.</li>
+      </ul>
+      <p>Nimani va'da qilmaymiz: uzluksiz ishlash kafolati va muddat. Bajarib bo'lmaydigan narsani yozma va'da qilmaymiz.</p>
+    </div>
+  </section>
+
+  <!-- ===================== SAVOLLAR ===================== -->
+  <section id="savollar">
+    <div class="sec-head">
+      <span class="eyebrow">Savol-javob</span>
+      <h2>Korxona rahbarlari ko'p beradigan savollar</h2>
+    </div>
+    <div class="faq">
+      <div class="qa"><h3>Qurilish obyektida internet uzilib tursa?</h3><p>Agent o'tishlarni o'zida saqlab turadi va internet paydo bo'lganda yuboradi. Terminal va agent uchun elektr kerak, UPS tavsiya qilamiz.</p></div><div class="qa"><h3>Ishchi smena orasida bir necha marta chiqib-kirsa?</h3><p>Kundagi birinchi o'tish kelish, oxirgisi ketish. Oradagi chiqishlar ish vaqtidan ayirilmaydi.</p></div>
+      <div class="qa"><h3>Elektr o'chsa nima bo'ladi?</h3><p>Terminal o'chsa, o'tish yozilmaydi va HR 2 daqiqada xabar oladi. Terminal yoniq, internet yo'q bo'lsa, o'tishlar saqlanadi va keyin yetib keladi. Terminal va agent uchun UPS tavsiya qilamiz.</p></div>
+      <div class="qa"><h3>Ma'lumotlarimiz qayerda?</h3><p>O'zbekistondagi serverda. Ularni siz va biz ko'ra olamiz. Yuz rasmlari va terminal parollari serverda saqlanmaydi.</p></div>
+      <div class="qa"><h3>Xodim kartasini uyda unutsa?</h3><p>Yuzi terminalga yozilgan bo'lsa, yuz bilan o'tadi. Aks holda kun "kelmadi" bo'ladi va HR uni sabab ko'rsatib tuzatadi.</p></div>
+      <div class="qa"><h3>Bizning terminal modeli mos keladimi?</h3><p>Tizim Hikvision yuz va karta terminallari bilan ishlaydi. Har bir model birinchi ulanishda maxsus dastur bilan tekshiriladi: sig'imi, yuzni qo'llashi. Sinalgan modellar ro'yxati hali shakllanmoqda.</p></div>
+      <div class="qa"><h3>Tashqi buxgalter tabelni ko'ra oladimi?</h3><p>Ha, "Kuzatuvchi" roli bilan. U tabelni ko'radi va Excel oladi, lekin hech narsani o'zgartira olmaydi.</p></div>
+      <div class="qa"><h3>Xodim o'z tabelini ko'ra oladimi?</h3><p>Hozircha yo'q. Xodimga shaxsiy Telegram tabel keyingi versiyalardan biriga rejalashtirilgan.</p></div>
+      <div class="qa"><h3>Keyin boshqa tizimga o'tmoqchi bo'lsak?</h3><p>Barcha tabellarni Excel'da olib ketasiz. Ma'lumot sizniki.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="contact">
+      <span class="muted">Bir soatlik demo uchun:</span>
+      <code id="mail">shaykhnazar@gmail.com</code>
+      <button class="copy" id="copyBtn" type="button">Nusxa olish</button>
+    </div>
+    <p class="fine">Sahifadagi ismlar, vaqtlar va ekranlar namuna. Demo tayyor namunada ko'rsatiladi, sizning terminalingiz shart emas.</p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var nodes = document.querySelectorAll('svg .node');
+  var cards = document.querySelectorAll('.node-card');
+  function activate(k) {
+    if (k === 'excel') k = 'panel';
+    nodes.forEach(function (n) {
+      var nk = n.getAttribute('data-k'); if (nk === 'excel') nk = 'panel';
+      n.classList.toggle('is-active', nk === k);
+    });
+    cards.forEach(function (c) { c.classList.toggle('is-active', c.getAttribute('data-k') === k); });
+  }
+  nodes.forEach(function (n) {
+    n.addEventListener('click', function () { activate(n.getAttribute('data-k')); });
+    n.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(n.getAttribute('data-k')); }
+    });
+  });
+  cards.forEach(function (c) { c.addEventListener('mouseenter', function () { activate(c.getAttribute('data-k')); }); });
+  activate('terminal');
+
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var p = document.getElementById('pulse'); if (p) p.remove();
+  }
+
+  /* timesheet: "h:mm" worked, "!" late, "*" corrected, "K" absent, "D" day off */
+  var days = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+  var wd = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya', 'Du', 'Se', 'Ch', 'Pa', 'Ju'];
+  var staff = [["Sherzod A.", "CNC operatori, 1-smena", ["7:41", "7:35", "7:44", "7:38", "7:40", "7:36", "D", "7:42", "7:39", "7:33", "7:41", "7:37"]], ["Ulug'bek T.", "payvandchi, 1-smena", ["7:22!", "7:38", "7:40", "7:30*", "7:25!", "7:39", "D", "7:41", "7:36", "7:20!", "7:38", "7:40"]], ["Botir S.", "usta, 3-smena", ["7:32", "7:28", "7:35", "7:30", "7:31", "D", "D", "7:34", "7:29", "7:33", "7:30", "7:28"]], ["Farrux N.", "omborchi", ["8:10", "8:04", "8:12", "K", "8:05", "4:02", "D", "8:09", "8:11", "8:03", "8:08", "8:06"]], ["Dilnoza K.", "sifat nazorati", ["8:00", "8:03", "7:55", "8:02", "8:01", "D", "D", "8:01", "8:04", "7:59", "8:02", "8:06"]], ["Ravshan H.", "haydovchi", ["9:05", "8:58", "9:10", "9:02", "8:55", "4:30", "D", "9:04", "9:01", "8:57", "9:06", "9:00"]]];
+  function toMin(s) { var p = s.split(':'); return (+p[0]) * 60 + (+p[1]); }
+  function hm(m) { return Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0'); }
+  var t = document.getElementById('tsTable');
+  var head = '<thead><tr><th>Xodim</th>';
+  days.forEach(function (d, i) {
+    var we = wd[i] === 'Sh' || wd[i] === 'Ya';
+    head += '<th' + (we ? ' class="we"' : '') + '>' + d + '<br><span style="font-weight:500">' + wd[i] + '</span></th>';
+  });
+  head += '<th>Kun</th><th>Soat</th><th>Kech.</th><th>K</th></tr></thead>';
+  var body = '<tbody>';
+  staff.forEach(function (s) {
+    var worked = 0, mins = 0, late = 0, abs = 0;
+    body += '<tr><td>' + s[0] + '<span class="role">' + s[1] + '</span></td>';
+    s[2].forEach(function (v) {
+      if (v === 'D') { body += '<td class="c off">D</td>'; return; }
+      if (v === 'K') { abs++; body += '<td class="c abs">K</td>'; return; }
+      var cls = 'c', txt = v;
+      if (v.slice(-1) === '!') { cls += ' late'; txt = v.slice(0, -1); late++; }
+      if (v.slice(-1) === '*') { cls += ' fix'; }
+      worked++; mins += toMin(txt.replace('*', ''));
+      body += '<td class="' + cls + '">' + txt + '</td>';
+    });
+    body += '<td class="tot">' + worked + '</td><td class="tot">' + hm(mins) + '</td><td class="tot">' + late + '</td><td class="tot">' + abs + '</td></tr>';
+  });
+  t.innerHTML = head + body + '</tbody>';
+
+  /* price calculator */
+  var tiers = [{"n": "Start", "to": 50, "price": 690000}, {"n": "Sanoat", "to": 300, "rate": 7000, "min": 690000}, {"n": "Yirik korxona", "rate": 5000}];
+  var range = document.getElementById('staffRange');
+  function money(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + " so'm"; }
+  function price(n) {
+    for (var i = 0; i < tiers.length; i++) {
+      var x = tiers[i];
+      if (x.to === undefined || n <= x.to) {
+        if (x.price) return [x.n, x.price];
+        if (x.min !== undefined) return [x.n, Math.max(x.min, x.rate * n)];
+        var prev = tiers[i - 1];
+        return [x.n, prev.rate * prev.to + x.rate * (n - prev.to)];
+      }
+    }
+  }
+  function calc() {
+    var n = +range.value, r = price(n);
+    document.getElementById('staffOut').textContent = n;
+    document.getElementById('cTariff').textContent = r[0];
+    document.getElementById('cMonth').textContent = money(r[1]);
+    document.getElementById('cPer').textContent = '≈ ' + money(Math.round(r[1] / n / 100) * 100);
+    document.getElementById('cYear').textContent = money(r[1] * 12) + ', 14 oyga';
+  }
+  range.addEventListener('input', calc);
+  calc();
+
+  var btn = document.getElementById('copyBtn');
+  btn.addEventListener('click', function () {
+    var text = document.getElementById('mail').textContent;
+    function selectIt() {
+      var r = document.createRange(); r.selectNodeContents(document.getElementById('mail'));
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () {
+        btn.textContent = 'Nusxa olindi';
+        setTimeout(function () { btn.textContent = 'Nusxa olish'; }, 1800);
+      }, selectIt);
+    } catch (e) { selectIt(); }
+  });
+})();
+</script>
