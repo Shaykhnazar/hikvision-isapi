@@ -10,4 +10,4 @@
 .phpunit.result.cache
 .DS_Store
 Thumbs.db
-/doc_files/
+/doc_files/__pycache__/
