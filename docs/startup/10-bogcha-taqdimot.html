@@ -338,6 +338,18 @@
 
   /* price */
   .price-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 18px; align-items: start; }
+  .tariffs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
+  .tariff { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px; display: grid; gap: 2px; align-content: start; }
+  .tariff.hl { border: 2px solid var(--accent); background: var(--accent-soft); }
+  .t-name { font-family: var(--display); font-weight: 600; font-size: 1.2rem; }
+  .t-for { color: var(--ink-2); font-size: .92rem; margin-bottom: 10px; }
+  .t-price { font-size: 1.6rem; font-weight: 500; color: var(--ink); line-height: 1.2; }
+  .tariff.hl .t-price { color: var(--accent-ink); }
+  .t-unit { color: var(--ink-3); font-size: .85rem; }
+  .calc { display: grid; gap: 12px; }
+  .calc-label { font-weight: 500; }
+  .calc input[type=range] { width: 100%; accent-color: var(--accent); }
+  .calc-out dd { font-weight: 600; }
   .price td:last-child { font-family: var(--mono); text-align: right; white-space: nowrap; }
   .price tr.hl td { background: var(--accent-soft); }
   .price tr.hl td:first-child { border-radius: 8px 0 0 8px; }
@@ -368,7 +380,7 @@
     .two, .price-grid, .chats { grid-template-columns: 1fr; }
   }
   @media (max-width: 640px) {
-    .node-cards, .facts, .flow, .ts-rules, .sec-grid, .limits, .needs, .steps, .faq { grid-template-columns: 1fr; }
+    .node-cards, .facts, .flow, .ts-rules, .tariffs, .sec-grid, .limits, .needs, .steps, .faq { grid-template-columns: 1fr; }
     .timeline li { grid-template-columns: 58px 24px 1fr; gap: 0 10px; }
     .timeline .time { font-size: .88rem; }
     .timeline .rail::before { left: 11px; }
@@ -971,37 +983,72 @@
   <!-- ===================== NARX ===================== -->
   <section id="narx">
     <div class="sec-head">
-      <span class="eyebrow">Narx</span>
-      <h2>Oylik to'lov xodimlar soniga qarab</h2>
-      <p>Terminallar soni narxga ta'sir qilmaydi. Ko'pchilik bog'chalar birinchi tarifga tushadi.</p>
+      <span class="eyebrow">Bog'chalar uchun narx</span>
+      <h2>Bog'cha hajmiga qarab uchta tarif</h2>
+      <p>Bog'chalar ofis va zavodlardan kichikroq, shuning uchun ular uchun alohida, arzonroq tariflar bor. Terminallar va foydalanuvchilar soni narxga ta'sir qilmaydi.</p>
+    </div>
+
+    <div class="tariffs">
+      <div class="tariff">
+        <span class="t-name">Kichik bog'cha</span>
+        <span class="t-for">25 xodimgacha</span>
+        <span class="t-price mono">390 000</span>
+        <span class="t-unit">so'm / oy</span>
+      </div>
+      <div class="tariff hl">
+        <span class="t-name">Bog'cha</span>
+        <span class="t-for">26–50 xodim</span>
+        <span class="t-price mono">590 000</span>
+        <span class="t-unit">so'm / oy</span>
+      </div>
+      <div class="tariff">
+        <span class="t-name">Katta bog'cha</span>
+        <span class="t-for">51 xodimdan ko'p</span>
+        <span class="t-price mono">8 000 × xodim</span>
+        <span class="t-unit">so'm / oy, kamida 590 000</span>
+      </div>
     </div>
 
     <div class="price-grid">
+      <div class="panel calc">
+        <div class="panel-title"><h3>O'z bog'changiz uchun hisoblang</h3><small>xodimlar: tarbiyachi, enaga, oshpaz, qorovul va boshqalar</small></div>
+        <label for="staffRange" class="calc-label">Xodimlar soni: <b class="mono" id="staffOut">22</b></label>
+        <input type="range" id="staffRange" min="5" max="120" step="1" value="22">
+        <dl class="kv calc-out">
+          <dt>Tarif</dt><dd id="cTariff">Kichik bog'cha</dd>
+          <dt>Oyiga</dt><dd class="mono" id="cMonth">390 000 so'm</dd>
+          <dt>Bir xodimga</dt><dd class="mono" id="cPer">≈ 17 700 so'm</dd>
+          <dt>Yiliga oldindan</dt><dd class="mono" id="cYear">4 680 000 so'm, 14 oyga</dd>
+        </dl>
+        <p class="muted" style="font-size:.88rem">Yiliga oldindan to'lasangiz, 12 oy narxiga 14 oy ishlatasiz.</p>
+      </div>
+
       <div class="panel price">
+        <div class="panel-title"><h3>Bir martalik o'rnatish</h3></div>
         <div class="table-scroll">
           <table>
-            <thead><tr><th>Xodimlar soni</th><th style="text-align:right">Oyiga</th></tr></thead>
             <tbody>
-              <tr class="hl"><td>50 gacha</td><td>690 000 so'm</td></tr>
-              <tr><td>51–200</td><td>8 000 so'm × xodim</td></tr>
-              <tr><td>200 dan ko'p</td><td>shartnoma bo'yicha</td></tr>
-              <tr><td>Bir martalik o'rnatish va sozlash</td><td>1,5–3 mln so'm</td></tr>
+              <tr><td>1 terminal</td><td>1 000 000 so'm</td></tr>
+              <tr><td>2–3 terminal</td><td>1 500 000 so'm</td></tr>
+              <tr><td>4+ terminal yoki bir nechta bog'cha</td><td>3 000 000 so'm dan</td></tr>
             </tbody>
           </table>
         </div>
-        <p class="muted" style="font-size:.9rem;margin-top:14px">Narxga kiradi: cheksiz terminal, cheksiz foydalanuvchi, Telegram xabarlar, Excel tabel, kunlik zaxira nusxa, yangilanishlar. Terminal, kichik kompyuter va internet sizniki.</p>
+        <p class="muted" style="font-size:.9rem;margin-top:14px">O'rnatishga kiradi: agentni o'rnatish, terminallarni ulash, xodimlarni import qilish, smenalarni sozlash, mudira va HR ni o'qitish.</p>
+        <p class="muted" style="font-size:.9rem;margin-top:8px">Oylik narxga kiradi: cheksiz terminal, cheksiz foydalanuvchi, Telegram xabarlar, Excel tabel, kunlik zaxira nusxa, yangilanishlar.</p>
+        <p class="muted" style="font-size:.9rem;margin-top:8px">Sizniki: terminal, internet va agent uchun kompyuter. Bog'chadagi doim yoniq kompyuter bo'lsa, mini-PC sotib olish shart emas.</p>
       </div>
+    </div>
 
-      <div class="honest">
-        <h3>Ochiq gapiramiz</h3>
-        <p>Bu mahsulot yangi. <b>Bugun uning to'lovchi mijozi yo'q</b>, siz birinchilardan bo'lasiz. Shuning uchun birinchi uch mijoz uchun shart boshqacha:</p>
-        <ul>
-          <li><b>3 oy abonent to'lovi 0.</b> O'rnatish to'lanadi: bepul o'rnatilgan tizim ishlatilmay qoladi.</li>
-          <li>Evaziga: oyiga 30 daqiqa suhbat va biror narsa buzilsa darhol xabar.</li>
-          <li>Uch oydan keyin yoqmasa, to'xtatasiz va ma'lumotingizni Excel'da olib ketasiz.</li>
-        </ul>
-        <p>Nimani va'da qilmaymiz: uzluksiz ishlash kafolati va muddat. Bajarib bo'lmaydigan narsani yozma va'da qilmaymiz.</p>
-      </div>
+    <div class="honest" style="margin-top:18px">
+      <h3>Ochiq gapiramiz</h3>
+      <p>Bu mahsulot yangi. <b>Bugun uning to'lovchi mijozi yo'q</b>, siz birinchilardan bo'lasiz. Shuning uchun birinchi uchta bog'cha uchun shart boshqacha:</p>
+      <ul>
+        <li><b>3 oy abonent to'lovi 0.</b> O'rnatish to'lanadi: bepul o'rnatilgan tizim ishlatilmay qoladi.</li>
+        <li>Evaziga: oyiga 30 daqiqa suhbat va biror narsa buzilsa darhol xabar.</li>
+        <li>Uch oydan keyin yoqmasa, to'xtatasiz va ma'lumotingizni Excel'da olib ketasiz.</li>
+      </ul>
+      <p>Nimani va'da qilmaymiz: uzluksiz ishlash kafolati va muddat. Bajarib bo'lmaydigan narsani yozma va'da qilmaymiz.</p>
     </div>
   </section>
 
@@ -1096,6 +1143,25 @@
     body += '<td class="tot">' + worked + '</td><td class="tot">' + fmt(mins) + '</td><td class="tot">' + late + '</td><td class="tot">' + abs + '</td></tr>';
   });
   t.innerHTML = head + body + '</tbody>';
+
+  /* price calculator */
+  var range = document.getElementById('staffRange');
+  function money(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + " so'm"; }
+  function price(n) {
+    if (n <= 25) return ["Kichik bog'cha", 390000];
+    if (n <= 50) return ["Bog'cha", 590000];
+    return ["Katta bog'cha", Math.max(590000, 8000 * n)];
+  }
+  function calc() {
+    var n = +range.value, r = price(n);
+    document.getElementById('staffOut').textContent = n;
+    document.getElementById('cTariff').textContent = r[0];
+    document.getElementById('cMonth').textContent = money(r[1]);
+    document.getElementById('cPer').textContent = '≈ ' + money(Math.round(r[1] / n / 100) * 100);
+    document.getElementById('cYear').textContent = money(r[1] * 12) + ', 14 oyga';
+  }
+  range.addEventListener('input', calc);
+  calc();
 
   /* copy */
   var btn = document.getElementById('copyBtn');
