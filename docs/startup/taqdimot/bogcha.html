@@ -1,5 +1,5 @@
 <title>Bog'cha Davomati</title>
-<meta name="description" content="Bog'cha xodimlari davomati: Hikvision terminali, agent, bulut, tabel va Telegram qanday ishlashi — bosqichma-bosqich.">
+<meta name="description" content="Bog'cha xodimlari davomati: Hikvision terminali, agent, bulut, tabel va Telegram qanday ishlashi, bosqichma-bosqich.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Onest:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -391,6 +391,9 @@
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
   }
+  :root { --accent: #E39B12; --accent-ink: #8F5B00; --accent-soft: #FCEFD2; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #F2B23A; --accent-ink: #F2B23A; --accent-soft: #3A2E14; } }
+  :root[data-theme="dark"] { --accent: #F2B23A; --accent-ink: #F2B23A; --accent-soft: #3A2E14; }
 </style>
 
 <nav class="topnav" aria-label="Bo'limlar">
@@ -417,21 +420,14 @@
       <h1>Kirish eshigidagi terminal endi <em>tayyor tabel</em> beradi</h1>
       <p class="lead">Tarbiyachi, enaga, oshpaz yoki hamshira ertalab terminalga yuzini ko'rsatadi. Qolganini tizim o'zi qiladi: o'tishni yozadi, smenaga qarab kunni hisoblaydi, mudiraga Telegram'da xulosa yuboradi, oy oxirida esa buxgalterga Excel tabel tayyorlab beradi.</p>
     </div>
-    <div class="chain" aria-label="Qisqa zanjir">
-      <div class="step"><b>07:54</b> Yuz ko'rsatildi</div>
+    <div class="chain" aria-label="Qisqa zanjir"><div class="step"><b>07:54</b> Yuz ko'rsatildi</div>
       <span class="arrow" aria-hidden="true">→</span>
       <div class="step"><b>07:54</b> Bulutga tushdi</div>
       <span class="arrow" aria-hidden="true">→</span>
       <div class="step"><b>09:00</b> Mudira Telegram'da ko'rdi</div>
       <span class="arrow" aria-hidden="true">→</span>
-      <div class="step"><b>oy oxiri</b> Excel tabel tayyor</div>
-    </div>
-    <div class="who" aria-label="Kimlar foydalanadi">
-      <span>Mudira: kunlik xulosa</span>
-      <span>Kadrlar / HR: xodimlar va tabel</span>
-      <span>Buxgalter: oylik Excel</span>
-      <span>Xodimlar: faqat yuz yoki karta</span>
-    </div>
+      <div class="step"><b>oy oxiri</b> Excel tabel tayyor</div></div>
+    <div class="who" aria-label="Kimlar foydalanadi"><span>Mudira: kunlik xulosa</span><span>Kadrlar / HR: xodimlar va tabel</span><span>Buxgalter: oylik Excel</span><span>Xodimlar: faqat yuz yoki karta</span></div>
   </header>
 
   <!-- ===================== SXEMA ===================== -->
@@ -446,41 +442,35 @@
       <div class="diagram-scroll">
         <svg viewBox="0 0 1000 470" role="img" aria-labelledby="dg-t dg-d">
           <title id="dg-t">Davomat tizimi sxemasi</title>
-          <desc id="dg-d">Terminal o'tishni bog'chadagi agentga yuboradi, agent uni internet orqali bulutga uzatadi, bulut tabelni hisoblaydi va Telegram, panel hamda Excel orqali natijani beradi.</desc>
+          <desc id="dg-d">Terminal o'tishni bog'chada turgan agentga yuboradi, agent uni internet orqali bulutga uzatadi, bulut tabelni hisoblaydi va Telegram, panel hamda Excel orqali natijani beradi.</desc>
           <defs>
             <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 z" class="arrowhead"/>
             </marker>
           </defs>
 
-          <!-- zones -->
           <rect class="zone" x="10" y="24" width="400" height="430" rx="20"/>
           <text class="t-zone" x="32" y="54">BOG'CHA BINOSI · ICHKI TARMOQ</text>
           <text class="t-zone" x="505" y="54" text-anchor="middle">INTERNET</text>
           <text class="t-zone" x="705" y="54" text-anchor="middle">BULUT</text>
           <text class="t-zone" x="915" y="54" text-anchor="middle">SIZ KO'RASIZ</text>
 
-          <!-- terminal <-> agent edges -->
           <path class="edge" d="M95 212 V292" marker-end="url(#ah)"/>
           <path class="edge" d="M160 292 V212" marker-end="url(#ah)"/>
           <text class="t-edge" x="176" y="250">o'tishlar ↓</text>
           <text class="t-edge" x="176" y="268">yangi xodim, yuz ↑</text>
 
-          <!-- agent -> router -->
           <path class="edge" d="M240 370 H280" marker-end="url(#ah)"/>
 
-          <!-- router -> cloud -->
           <path class="edge" d="M398 370 C480 370 520 300 602 300" marker-end="url(#ah)"/>
           <text class="t-edge" x="500" y="382" text-anchor="middle">faqat chiquvchi</text>
           <text class="t-edge" x="500" y="400" text-anchor="middle">shifrlangan ulanish</text>
           <path class="edge-dash" d="M410 88 V440"/>
 
-          <!-- cloud -> outputs -->
           <path class="edge" d="M800 180 H836" marker-end="url(#ah)"/>
           <path class="edge" d="M800 280 H836" marker-end="url(#ah)"/>
           <path class="edge" d="M800 380 H836" marker-end="url(#ah)"/>
 
-          <!-- terminal -->
           <g class="node" data-k="terminal" tabindex="0" role="button" aria-label="Terminal">
             <rect class="box" x="36" y="84" width="204" height="126" rx="16"/>
             <rect class="ico" x="54" y="104" width="44" height="74" rx="7"/>
@@ -491,7 +481,6 @@
             <text class="t-sub" x="112" y="168">yuz yoki karta</text>
           </g>
 
-          <!-- agent -->
           <g class="node" data-k="agent" tabindex="0" role="button" aria-label="Agent">
             <rect class="box" x="36" y="294" width="204" height="140" rx="16"/>
             <rect class="ico" x="54" y="322" width="46" height="32" rx="5"/>
@@ -502,7 +491,6 @@
             <text class="t-sub" x="54" y="414">parollar shu yerda</text>
           </g>
 
-          <!-- router -->
           <g class="node" data-k="router" tabindex="0" role="button" aria-label="Router">
             <rect class="box" x="282" y="330" width="116" height="82" rx="14"/>
             <path class="ico" d="M300 362 h36 M308 362 v-12 M328 362 v-12"/>
@@ -510,7 +498,6 @@
             <text class="t-sub" x="298" y="405" style="font-size:11.5px">port ochilmaydi</text>
           </g>
 
-          <!-- cloud -->
           <g class="node" data-k="cloud" tabindex="0" role="button" aria-label="Bulut">
             <rect class="box" x="604" y="96" width="196" height="330" rx="18"/>
             <path class="ico" d="M630 140 a14 14 0 0 1 14 -16 a20 20 0 0 1 36 4 a12 12 0 0 1 4 24 h-44 a12 12 0 0 1 -10 -12z"/>
@@ -526,7 +513,6 @@
             </g>
           </g>
 
-          <!-- outputs -->
           <g class="node" data-k="telegram" tabindex="0" role="button" aria-label="Telegram">
             <rect class="box" x="838" y="136" width="152" height="88" rx="14"/>
             <path class="ico" d="M856 172 l30 -12 l-6 30 l-9 -8 l-6 6 v-10z"/>
@@ -548,13 +534,12 @@
             <text class="t-sub" x="896" y="392" style="font-size:12px">oylik tabel</text>
           </g>
 
-          <!-- travelling pulse -->
           <circle class="pulse" id="pulse" r="7" aria-hidden="true">
             <animateMotion dur="6s" repeatCount="indefinite" path="M95 212 L95 370 L282 370 L398 370 C480 370 520 300 602 300 L700 300 L700 180 L836 180"/>
           </circle>
         </svg>
       </div>
-      <p class="diagram-hint">Sariq nuqta bitta o'tishning yo'lini ko'rsatadi: terminal → agent → router → bulut → Telegram.</p>
+      <p class="diagram-hint">Rangli nuqta bitta o'tishning yo'lini ko'rsatadi: terminal → agent → router → bulut → Telegram.</p>
     </div>
 
     <div class="node-cards" id="nodeCards">
@@ -598,81 +583,16 @@
       <h2>Tarbiyachi Dilnozaning bir kuni tizim ko'zi bilan</h2>
       <p>Namuna: Dilnoza va Malikaning smenasi 08:00–17:00, kechikish chegarasi 10 daqiqa, tushlik tanaffusi 1 soat. Bu qiymatlarni har bir bog'cha o'zi belgilaydi.</p>
     </div>
-
     <ol class="timeline">
-      <li>
-        <span class="time">07:54</span><span class="rail"><span class="dot acc"></span></span>
-        <div class="body">
-          <span class="tag acc">Terminal</span>
-          <h3>Dilnoza terminalga yuzini ko'rsatadi</h3>
-          <p>Terminal uni taniydi va o'tishni vaqti bilan yozadi. Bu kundagi birinchi o'tish, demak kelish vaqti.</p>
-        </div>
-      </li>
-      <li>
-        <span class="time">07:54</span><span class="rail"><span class="dot"></span></span>
-        <div class="body">
-          <span class="tag">Agent → bulut</span>
-          <h3>O'tish bir necha soniyada bulutga yetadi</h3>
-          <p>Terminal xabarni bog'chadagi agentga yuboradi, agent bulutga uzatadi. Internet bo'lmasa, agent uni o'zida saqlab turadi va internet qaytganda yuboradi.</p>
-        </div>
-      </li>
-      <li>
-        <span class="time">08:17</span><span class="rail"><span class="dot warn"></span></span>
-        <div class="body">
-          <span class="tag warn">Kechikish</span>
-          <h3>Enaga Malika keladi</h3>
-          <p>Chegara 08:10 edi. Tizim kunni avtomatik ravishda kechikkan deb belgilaydi, buni hech kim qo'lda yozmaydi.</p>
-        </div>
-      </li>
-      <li>
-        <span class="time">09:00</span><span class="rail"><span class="dot"></span></span>
-        <div class="body">
-          <span class="tag tg">Telegram</span>
-          <h3>Mudira kunlik xulosani oladi</h3>
-          <p>Kim keldi, kim kechikdi, kim yo'q. Mudira HR ga qo'ng'iroq qilmasdan, telefonidan bir qarashda biladi. Xabar vaqti sozlanadi.</p>
-        </div>
-      </li>
-      <li>
-        <span class="time">10:12</span><span class="rail"><span class="dot bad"></span></span>
-        <div class="body">
-          <span class="tag bad">Signal</span>
-          <h3>Kimdir terminal rozetkasini sug'urib qo'ydi</h3>
-          <p>Terminal javob bermay qoldi. 2 daqiqa ichida HR guruhiga Telegram xabar keladi: qaysi terminal, qachondan beri. Muammo oy oxirida emas, o'sha kuni bilinadi.</p>
-        </div>
-      </li>
-      <li>
-        <span class="time">har 10 daq</span><span class="rail"><span class="dot"></span></span>
-        <div class="body">
-          <span class="tag">Qayta tekshirish</span>
-          <h3>Agent terminaldagi oxirgi 30 daqiqani qayta o'qiydi</h3>
-          <p>Biror xabar yo'lda yo'qolgan bo'lsa, shu yerda topiladi va tabelga qo'shiladi. Kech kelgan o'tish kunni qayta hisoblaydi.</p>
-        </div>
-      </li>
-      <li>
-        <span class="time">17:06</span><span class="rail"><span class="dot acc"></span></span>
-        <div class="body">
-          <span class="tag acc">Terminal</span>
-          <h3>Dilnoza uyga ketadi</h3>
-          <p>Kundagi oxirgi o'tish ketish vaqti hisoblanadi. Kun: 07:54 dan 17:06 gacha, ya'ni 9 soat 12 daqiqa, tanaffus ayiriladi. Tabelga <span class="mono">8:12</span> tushadi.</p>
-        </div>
-      </li>
-      <li>
-        <span class="time">kechasi</span><span class="rail"><span class="dot"></span></span>
-        <div class="body">
-          <span class="tag">Tungi tekshiruv</span>
-          <h3>Tizim o'zini tekshiradi</h3>
-          <p>Oxirgi 24 soatdagi o'tishlar soni terminal bilan solishtiriladi. Terminaldagi xodimlar ro'yxati bulutdagi ro'yxat bilan tekshiriladi. Zaxira nusxa olinadi.</p>
-        </div>
-      </li>
-      <li>
-        <span class="time">oy oxiri</span><span class="rail"><span class="dot ok"></span></span>
-        <div class="body">
-          <span class="tag ok">Excel</span>
-          <h3>Buxgalter tabelni bitta tugma bilan oladi</h3>
-          <p>Hech kim o'tirib Excel yig'maydi. Qo'lda tuzatilgan kunlar faylda alohida belgi bilan ko'rinadi.</p>
-        </div>
-      </li>
-    </ol>
+      <li><span class="time">07:54</span><span class="rail"><span class="dot acc"></span></span><div class="body"><span class="tag acc">Terminal</span><h3>Dilnoza terminalga yuzini ko'rsatadi</h3><p>Terminal uni taniydi va o'tishni vaqti bilan yozadi. Bu kundagi birinchi o'tish, demak kelish vaqti.</p></div></li>
+      <li><span class="time">07:54</span><span class="rail"><span class="dot"></span></span><div class="body"><span class="tag">Agent → bulut</span><h3>O'tish bir necha soniyada bulutga yetadi</h3><p>Terminal xabarni agentga yuboradi, agent bulutga uzatadi. Internet bo'lmasa, agent uni o'zida saqlab turadi va internet qaytganda yuboradi.</p></div></li>
+      <li><span class="time">08:17</span><span class="rail"><span class="dot warn"></span></span><div class="body"><span class="tag warn">Kechikish</span><h3>Enaga Malika keladi</h3><p>Chegara 08:10 edi. Tizim kunni avtomatik ravishda kechikkan deb belgilaydi, buni hech kim qo'lda yozmaydi.</p></div></li>
+      <li><span class="time">09:00</span><span class="rail"><span class="dot"></span></span><div class="body"><span class="tag tg">Telegram</span><h3>Mudira kunlik xulosani oladi</h3><p>Kim keldi, kim kechikdi, kim yo'q. Mudira HR ga qo'ng'iroq qilmasdan, telefonidan bir qarashda biladi.</p></div></li>
+      <li><span class="time">10:12</span><span class="rail"><span class="dot bad"></span></span><div class="body"><span class="tag bad">Signal</span><h3>Kimdir terminal rozetkasini sug'urib qo'ydi</h3><p>Oshxona eshigi terminali javob bermay qoldi. 2 daqiqa ichida HR guruhiga Telegram xabar keladi: qaysi terminal, qachondan beri. Muammo oy oxirida emas, o'sha kuni bilinadi.</p></div></li>
+      <li><span class="time">har 10 daq</span><span class="rail"><span class="dot"></span></span><div class="body"><span class="tag">Qayta tekshirish</span><h3>Agent terminaldagi oxirgi 30 daqiqani qayta o'qiydi</h3><p>Biror xabar yo'lda yo'qolgan bo'lsa, shu yerda topiladi va tabelga qo'shiladi. Kech kelgan o'tish kunni qayta hisoblaydi.</p></div></li>
+      <li><span class="time">17:06</span><span class="rail"><span class="dot acc"></span></span><div class="body"><span class="tag acc">Terminal</span><h3>Dilnoza uyga ketadi</h3><p>Kundagi oxirgi o'tish ketish vaqti hisoblanadi. Kun: 07:54 dan 17:06 gacha, ya'ni 9 soat 12 daqiqa, tanaffus ayiriladi. Tabelga <span class="mono">8:12</span> tushadi.</p></div></li>
+      <li><span class="time">kechasi</span><span class="rail"><span class="dot"></span></span><div class="body"><span class="tag">Tungi tekshiruv</span><h3>Tizim o'zini tekshiradi</h3><p>Oxirgi 24 soatdagi o'tishlar soni terminal bilan solishtiriladi. Terminaldagi xodimlar ro'yxati bulutdagi ro'yxat bilan tekshiriladi. Zaxira nusxa olinadi.</p></div></li>
+      <li><span class="time">oy oxiri</span><span class="rail"><span class="dot ok"></span></span><div class="body"><span class="tag ok">Excel</span><h3>Buxgalter tabelni bitta tugma bilan oladi</h3><p>Hech kim o'tirib Excel yig'maydi. Qo'lda tuzatilgan kunlar faylda alohida belgi bilan ko'rinadi.</p></div></li></ol>
   </section>
 
   <!-- ===================== XODIM QO'SHISH ===================== -->
@@ -680,43 +600,20 @@
     <div class="sec-head">
       <span class="eyebrow">Yangi xodim</span>
       <h2>Yangi tarbiyachi ishga keldi: uni terminalga qanday qo'shasiz</h2>
-      <p>HR faqat panelda ma'lumotni kiritadi. Terminalga yozish ishini agent o'zi bajaradi, bog'chada hech kim terminal menyusiga kirmaydi.</p>
+      <p>HR faqat panelda ma'lumotni kiritadi. Terminalga yozish ishini agent o'zi bajaradi, hech kim terminal menyusiga kirmaydi.</p>
     </div>
 
     <div class="flow">
-      <div>
-        <span class="where">Panel</span>
-        <h3>HR xodimni kiritadi</h3>
-        <p>F.I.Sh., lavozim, smena, karta raqami va yuz rasmi. Ko'p xodimni Excel'dan birdaniga import qilish mumkin.</p>
-      </div>
-      <div>
-        <span class="where">Bulut</span>
-        <h3>Doimiy raqam beriladi</h3>
-        <p>Xodim raqami hech qachon boshqa odamga berilmaydi. Barcha terminallarda bir xil bo'ladi.</p>
-      </div>
-      <div>
-        <span class="where">Agent</span>
-        <h3>Agent vazifani oladi</h3>
-        <p>Agent bulutdan "yangi ish bormi?" deb o'zi so'raydi va vazifani qabul qiladi.</p>
-      </div>
-      <div>
-        <span class="where">Terminal</span>
-        <h3>Terminalga yoziladi</h3>
-        <p>Tartib qat'iy: avval xodim, keyin karta, keyin yuz. Har bir terminalga alohida.</p>
-      </div>
-      <div>
-        <span class="where">Bulut</span>
-        <h3>Yuz rasmi o'chiriladi</h3>
-        <p>Rasm terminalga yetishi bilan bulutdan o'chadi. Bulutda faqat "yuz yuklangan" sanasi qoladi.</p>
-      </div>
+      <div><span class="where">Panel</span><h3>HR xodimni kiritadi</h3><p>F.I.Sh., lavozim, smena, karta raqami va yuz rasmi. Ko'p xodimni Excel'dan birdaniga import qilish mumkin.</p></div>
+      <div><span class="where">Bulut</span><h3>Doimiy raqam beriladi</h3><p>Xodim raqami hech qachon boshqa odamga berilmaydi. Barcha terminallarda bir xil bo'ladi.</p></div>
+      <div><span class="where">Agent</span><h3>Agent vazifani oladi</h3><p>Agent bulutdan "yangi ish bormi?" deb o'zi so'raydi va vazifani qabul qiladi.</p></div>
+      <div><span class="where">Terminal</span><h3>Terminalga yoziladi</h3><p>Tartib qat'iy: avval xodim, keyin karta, keyin yuz. Har bir terminalga alohida.</p></div>
+      <div><span class="where">Bulut</span><h3>Yuz rasmi o'chiriladi</h3><p>Rasm terminalga yetishi bilan bulutdan o'chadi. Bulutda faqat "yuz yuklangan" sanasi qoladi.</p></div>
     </div>
 
     <div class="two">
       <div class="panel">
-        <div class="panel-title">
-          <h3>Sinxronizatsiya holati</h3>
-          <small>panel ekrani, namuna</small>
-        </div>
+        <div class="panel-title"><h3>Sinxronizatsiya holati</h3><small>panel ekrani, namuna</small></div>
         <div class="table-scroll">
           <table>
             <thead><tr><th>Xodim</th><th>Terminal</th><th>Holat</th></tr></thead>
@@ -753,17 +650,12 @@
       <div class="rule"><b>Kelish va ketish</b><span>Kundagi birinchi o'tish kelish, oxirgisi ketish hisoblanadi.</span></div>
       <div class="rule"><b>Kechikish</b><span>Smena boshlanishi + chegara. Chegaradan keyin kelgan kun sariq bo'ladi.</span></div>
       <div class="rule"><b>Tanaffus</b><span>Smenada belgilangan tanaffus har kuni ish vaqtidan ayiriladi.</span></div>
-      <div class="rule"><b>Smenalar</b><span>5/2, 6/1 yoki istalgan ish kunlari. Kechki smena ham bitta kun hisoblanadi.</span></div>
+      <div class="rule"><b>Smenalar</b><span>5/2, 6/1 yoki istalgan ish kunlari. Har xodimga o'z smenasi.</span></div>
     </div>
 
     <div class="panel ts">
-      <div class="panel-title">
-        <h3>Sentabr, 7–18 · "Quyoshcha" bog'chasi</h3>
-        <small>namuna ma'lumot</small>
-      </div>
-      <div class="table-scroll">
-        <table id="tsTable" aria-label="Oylik tabel namunasi"></table>
-      </div>
+      <div class="panel-title"><h3>Sentabr, 7–18 · “Quyoshcha” bog'chasi</h3><small>namuna ma'lumot</small></div>
+      <div class="table-scroll"><table id="tsTable" aria-label="Oylik tabel namunasi"></table></div>
       <div class="legend">
         <span><i class="mono" style="background:var(--surface-2)">8:12</i>ishlangan soat:daqiqa</span>
         <span><i style="background:var(--warn-soft)"></i>kechikkan kun</span>
@@ -775,11 +667,8 @@
 
     <div class="two">
       <div class="panel fixcard">
-        <div class="panel-title">
-          <h3>Tuzatish: iz qoldiradi</h3>
-          <small>panel ekrani, namuna</small>
-        </div>
-        <p class="muted">Malika 9-sentabr kuni kartasini uyda unutgan. Terminal o'tishni yozmagan, tabelda "kelmadi" chiqqan. HR kunni tuzatadi:</p>
+        <div class="panel-title"><h3>Tuzatish: iz qoldiradi</h3><small>panel ekrani, namuna</small></div>
+        <p class="muted">Malika 9-sentabr kuni kartasini uyda unutgan. Terminal o'tishni yozmagan, tabelda “kelmadi” chiqqan. HR kunni tuzatadi:</p>
         <div class="fixrow"><span class="from">K</span><span aria-hidden="true">→</span><span class="to">8:00*</span></div>
         <dl class="kv">
           <dt>Sabab</dt><dd>Kartasini unutgan, mudira tasdiqladi (majburiy maydon)</dd>
@@ -837,7 +726,7 @@
           </div>
           <div class="msg">
             <span class="mt" style="color:var(--bad)">Terminalga yozib bo'lmadi</span>
-            <span>Kamola Y. → Kirish eshigi. Terminal parolni qabul qilmadi.</span>
+            <span>Kamola Y. → Oshxona eshigi. Terminal parolni qabul qilmadi.</span>
             <span class="meta">11:40</span>
           </div>
           <div class="msg">
@@ -861,18 +750,9 @@
     </div>
 
     <div class="layers">
-      <div class="layer">
-        <div class="when">Darhol<small>bir necha soniya</small></div>
-        <div><h3>Terminal o'tishni shu zahoti agentga yuboradi</h3><p>Tez yo'l. Ko'pincha shu yetarli, lekin tarmoqdagi bir lahzalik uzilish xabarni yo'qotishi mumkin.</p></div>
-      </div>
-      <div class="layer">
-        <div class="when">Har 10 daqiqada<small>oxirgi 30 daqiqa</small></div>
-        <div><h3>Agent terminal xotirasini qayta o'qiydi</h3><p>Yo'lda yo'qolgan xabar terminal xotirasida baribir bor. Agent uni shu yerdan olib bulutga yuboradi, kun qayta hisoblanadi.</p></div>
-      </div>
-      <div class="layer">
-        <div class="when">Har kecha<small>oxirgi 24 soat</small></div>
-        <div><h3>O'tishlar soni terminal bilan solishtiriladi</h3><p>Farq chiqsa, signal bizga keladi, sizga emas. Bu tizim nosozligi, uni biz tuzatamiz.</p></div>
-      </div>
+      <div class="layer"><div class="when">Darhol<small>bir necha soniya</small></div><div><h3>Terminal o'tishni shu zahoti agentga yuboradi</h3><p>Tez yo'l. Ko'pincha shu yetarli, lekin tarmoqdagi bir lahzalik uzilish xabarni yo'qotishi mumkin.</p></div></div>
+      <div class="layer"><div class="when">Har 10 daqiqada<small>oxirgi 30 daqiqa</small></div><div><h3>Agent terminal xotirasini qayta o'qiydi</h3><p>Yo'lda yo'qolgan xabar terminal xotirasida baribir bor. Agent uni shu yerdan olib bulutga yuboradi, kun qayta hisoblanadi.</p></div></div>
+      <div class="layer"><div class="when">Har kecha<small>oxirgi 24 soat</small></div><div><h3>O'tishlar soni terminal bilan solishtiriladi</h3><p>Farq chiqsa, signal bizga keladi, sizga emas. Bu tizim nosozligi, uni biz tuzatamiz.</p></div></div>
     </div>
 
     <div class="callout">
@@ -902,7 +782,7 @@
       </div>
       <div class="sec-item">
         <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="var(--teal-soft)"/><rect x="14" y="20" width="16" height="12" rx="2" fill="none" stroke="var(--teal)" stroke-width="2.2"/><path d="M17 20 v-4 a5 5 0 0 1 10 0 v4" fill="none" stroke="var(--teal)" stroke-width="2.2"/></svg>
-        <div><h3>Terminal paroli bog'chadan chiqmaydi</h3><p>Parol faqat bog'chadagi agentda, shifrlangan holda saqlanadi. Bulutda terminal paroli yo'q.</p></div>
+        <div><h3>Terminal paroli bog'chadan chiqmaydi</h3><p>Parol faqat bog'chada turgan agentda, shifrlangan holda saqlanadi. Bulutda terminal paroli yo'q.</p></div>
       </div>
       <div class="sec-item">
         <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" fill="var(--teal-soft)"/><path d="M13 22 h14 M23 17 l5 5 l-5 5" fill="none" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M31 13 v18" stroke="var(--teal)" stroke-width="2.2" stroke-linecap="round"/></svg>
@@ -989,36 +869,20 @@
     </div>
 
     <div class="tariffs">
-      <div class="tariff">
-        <span class="t-name">Kichik bog'cha</span>
-        <span class="t-for">25 xodimgacha</span>
-        <span class="t-price mono">390 000</span>
-        <span class="t-unit">so'm / oy</span>
-      </div>
-      <div class="tariff hl">
-        <span class="t-name">Bog'cha</span>
-        <span class="t-for">26–50 xodim</span>
-        <span class="t-price mono">590 000</span>
-        <span class="t-unit">so'm / oy</span>
-      </div>
-      <div class="tariff">
-        <span class="t-name">Katta bog'cha</span>
-        <span class="t-for">51 xodimdan ko'p</span>
-        <span class="t-price mono">8 000 × xodim</span>
-        <span class="t-unit">so'm / oy, kamida 590 000</span>
-      </div>
-    </div>
+      <div class="tariff"><span class="t-name">Kichik bog'cha</span><span class="t-for">25 xodimgacha</span><span class="t-price mono">390 000</span><span class="t-unit">so'm / oy</span></div>
+      <div class="tariff hl"><span class="t-name">Bog'cha</span><span class="t-for">26–50 xodim</span><span class="t-price mono">590 000</span><span class="t-unit">so'm / oy</span></div>
+      <div class="tariff"><span class="t-name">Katta bog'cha</span><span class="t-for">50 xodimdan ko'p</span><span class="t-price mono">8 000 × xodim</span><span class="t-unit">so'm / oy, kamida 590 000</span></div></div>
 
     <div class="price-grid">
       <div class="panel calc">
-        <div class="panel-title"><h3>O'z bog'changiz uchun hisoblang</h3><small>xodimlar: tarbiyachi, enaga, oshpaz, qorovul va boshqalar</small></div>
-        <label for="staffRange" class="calc-label">Xodimlar soni: <b class="mono" id="staffOut">22</b></label>
-        <input type="range" id="staffRange" min="5" max="120" step="1" value="22">
+        <div class="panel-title"><h3>O'zingiz uchun hisoblang</h3><small>xodimlar: tarbiyachi, enaga, oshpaz, qorovul va boshqalar</small></div>
+        <label for="staffRange" class="calc-label">Xodimlar soni: <b class="mono" id="staffOut"></b></label>
+        <input type="range" id="staffRange" min="5" max="150" step="1" value="22">
         <dl class="kv calc-out">
-          <dt>Tarif</dt><dd id="cTariff">Kichik bog'cha</dd>
-          <dt>Oyiga</dt><dd class="mono" id="cMonth">390 000 so'm</dd>
-          <dt>Bir xodimga</dt><dd class="mono" id="cPer">≈ 17 700 so'm</dd>
-          <dt>Yiliga oldindan</dt><dd class="mono" id="cYear">4 680 000 so'm, 14 oyga</dd>
+          <dt>Tarif</dt><dd id="cTariff"></dd>
+          <dt>Oyiga</dt><dd class="mono" id="cMonth"></dd>
+          <dt>Bir xodimga</dt><dd class="mono" id="cPer"></dd>
+          <dt>Yiliga oldindan</dt><dd class="mono" id="cYear"></dd>
         </dl>
         <p class="muted" style="font-size:.88rem">Yiliga oldindan to'lasangiz, 12 oy narxiga 14 oy ishlatasiz.</p>
       </div>
@@ -1030,19 +894,20 @@
             <tbody>
               <tr><td>1 terminal</td><td>1 000 000 so'm</td></tr>
               <tr><td>2–3 terminal</td><td>1 500 000 so'm</td></tr>
-              <tr><td>4+ terminal yoki bir nechta bog'cha</td><td>3 000 000 so'm dan</td></tr>
+              <tr><td>4+ terminal yoki bir nechta filial</td><td>3 000 000 so'm dan</td></tr>
+              <tr><td>Har bir qo'shimcha filial</td><td>+1 000 000 so'm</td></tr>
             </tbody>
           </table>
         </div>
-        <p class="muted" style="font-size:.9rem;margin-top:14px">O'rnatishga kiradi: agentni o'rnatish, terminallarni ulash, xodimlarni import qilish, smenalarni sozlash, mudira va HR ni o'qitish.</p>
+        <p class="muted" style="font-size:.9rem;margin-top:14px">O'rnatishga kiradi: agentni o'rnatish, terminallarni ulash, xodimlarni import qilish, smenalarni sozlash, rahbar va HR ni o'qitish.</p>
         <p class="muted" style="font-size:.9rem;margin-top:8px">Oylik narxga kiradi: cheksiz terminal, cheksiz foydalanuvchi, Telegram xabarlar, Excel tabel, kunlik zaxira nusxa, yangilanishlar.</p>
-        <p class="muted" style="font-size:.9rem;margin-top:8px">Sizniki: terminal, internet va agent uchun kompyuter. Bog'chadagi doim yoniq kompyuter bo'lsa, mini-PC sotib olish shart emas.</p>
+        <p class="muted" style="font-size:.9rem;margin-top:8px">Sizniki: terminal, internet va agent uchun kompyuter.</p>
       </div>
     </div>
 
     <div class="honest" style="margin-top:18px">
       <h3>Ochiq gapiramiz</h3>
-      <p>Bu mahsulot yangi. <b>Bugun uning to'lovchi mijozi yo'q</b>, siz birinchilardan bo'lasiz. Shuning uchun birinchi uchta bog'cha uchun shart boshqacha:</p>
+      <p>Bu mahsulot yangi. <b>Bugun uning to'lovchi mijozi yo'q</b>, siz birinchilardan bo'lasiz. Shuning uchun birinchi uchta mijoz uchun shart boshqacha:</p>
       <ul>
         <li><b>3 oy abonent to'lovi 0.</b> O'rnatish to'lanadi: bepul o'rnatilgan tizim ishlatilmay qoladi.</li>
         <li>Evaziga: oyiga 30 daqiqa suhbat va biror narsa buzilsa darhol xabar.</li>
@@ -1059,10 +924,10 @@
       <h2>Mudiralar ko'p beradigan savollar</h2>
     </div>
     <div class="faq">
+      <div class="qa"><h3>Ikkinchi bog'cha (filial) ochsak?</h3><p>U yerga ham agent o'rnatiladi. Ikkala bog'cha bitta panelda, tabel bitta faylda bo'ladi.</p></div>
       <div class="qa"><h3>Elektr o'chsa nima bo'ladi?</h3><p>Terminal o'chsa, o'tish yozilmaydi va HR 2 daqiqada xabar oladi. Terminal yoniq, internet yo'q bo'lsa, o'tishlar saqlanadi va keyin yetib keladi. Terminal va agent uchun UPS tavsiya qilamiz.</p></div>
       <div class="qa"><h3>Ma'lumotlarimiz qayerda?</h3><p>O'zbekistondagi serverda. Ularni siz va biz ko'ra olamiz. Yuz rasmlari va terminal parollari serverda saqlanmaydi.</p></div>
       <div class="qa"><h3>Xodim kartasini uyda unutsa?</h3><p>Yuzi terminalga yozilgan bo'lsa, yuz bilan o'tadi. Aks holda kun "kelmadi" bo'ladi va HR uni sabab ko'rsatib tuzatadi.</p></div>
-      <div class="qa"><h3>Ikkinchi bog'cha (filial) ochsak?</h3><p>U yerga ham agent o'rnatiladi. Ikkala bog'cha bitta panelda, tabel bitta faylda bo'ladi.</p></div>
       <div class="qa"><h3>Bizning terminal modeli mos keladimi?</h3><p>Tizim Hikvision yuz va karta terminallari bilan ishlaydi. Har bir model birinchi ulanishda maxsus dastur bilan tekshiriladi: sig'imi, yuzni qo'llashi. Sinalgan modellar ro'yxati hali shakllanmoqda.</p></div>
       <div class="qa"><h3>Tashqi buxgalter tabelni ko'ra oladimi?</h3><p>Ha, "Kuzatuvchi" roli bilan. U tabelni ko'radi va Excel oladi, lekin hech narsani o'zgartira olmaydi.</p></div>
       <div class="qa"><h3>Xodim o'z tabelini ko'ra oladimi?</h3><p>Hozircha yo'q. Xodimga shaxsiy Telegram tabel keyingi versiyalardan biriga rejalashtirilgan.</p></div>
@@ -1082,7 +947,6 @@
 
 <script>
 (function () {
-  /* diagram <-> cards */
   var nodes = document.querySelectorAll('svg .node');
   var cards = document.querySelectorAll('.node-card');
   function activate(k) {
@@ -1106,20 +970,12 @@
     var p = document.getElementById('pulse'); if (p) p.remove();
   }
 
-  /* timesheet */
+  /* timesheet: "h:mm" worked, "!" late, "*" corrected, "K" absent, "D" day off */
   var days = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
   var wd = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya', 'Du', 'Se', 'Ch', 'Pa', 'Ju'];
-  // value: "h:mm", "h:mm!" late, "h:mm*" corrected, "K" absent, "D" day off
-  var staff = [
-    ['Dilnoza A.', 'tarbiyachi', ['8:12', '8:05', '8:20', '8:02', '8:10', 'D', 'D', '8:07', '8:15', '7:58', '8:11', '8:04']],
-    ['Malika R.', 'enaga', ['7:43!', '8:01', '8:00*', '8:09', '7:52!', 'D', 'D', '8:03', '8:06', '8:00', '7:39!', '8:02']],
-    ['Sardor Q.', 'oshpaz', ['8:30', '8:25', '8:31', '8:28', '8:12!', 'D', 'D', '8:33', '8:29', '8:27', '8:35', '8:30']],
-    ['Nodira T.', 'tarbiyachi', ['8:00', '8:03', '7:55', 'K', 'K', 'D', 'D', '8:01', '8:04', '7:59', '8:02', '8:06']],
-    ['Zarina M.', 'hamshira', ['8:04', '7:58', '8:02', '8:05', '8:00', 'D', 'D', '7:47!', '8:03', '8:01', '8:08', '7:57']],
-    ['Feruza K.', 'logoped, yarim stavka', ['4:02', 'D', '4:05', 'D', '3:58', 'D', 'D', '4:01', 'D', '4:03', 'D', '4:00']]
-  ];
+  var staff = [["Dilnoza A.", "tarbiyachi", ["8:12", "8:05", "8:20", "8:02", "8:10", "D", "D", "8:07", "8:15", "7:58", "8:11", "8:04"]], ["Malika R.", "enaga", ["7:43!", "8:01", "8:00*", "8:09", "7:52!", "D", "D", "8:03", "8:06", "8:00", "7:39!", "8:02"]], ["Sardor Q.", "oshpaz", ["8:30", "8:25", "8:31", "8:28", "8:12!", "D", "D", "8:33", "8:29", "8:27", "8:35", "8:30"]], ["Nodira T.", "tarbiyachi", ["8:00", "8:03", "7:55", "K", "K", "D", "D", "8:01", "8:04", "7:59", "8:02", "8:06"]], ["Zarina M.", "hamshira", ["8:04", "7:58", "8:02", "8:05", "8:00", "D", "D", "7:47!", "8:03", "8:01", "8:08", "7:57"]], ["Feruza K.", "logoped, yarim stavka", ["4:02", "D", "4:05", "D", "3:58", "D", "D", "4:01", "D", "4:03", "D", "4:00"]]];
   function toMin(s) { var p = s.split(':'); return (+p[0]) * 60 + (+p[1]); }
-  function fmt(m) { return Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0'); }
+  function hm(m) { return Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0'); }
   var t = document.getElementById('tsTable');
   var head = '<thead><tr><th>Xodim</th>';
   days.forEach(function (d, i) {
@@ -1140,17 +996,24 @@
       worked++; mins += toMin(txt.replace('*', ''));
       body += '<td class="' + cls + '">' + txt + '</td>';
     });
-    body += '<td class="tot">' + worked + '</td><td class="tot">' + fmt(mins) + '</td><td class="tot">' + late + '</td><td class="tot">' + abs + '</td></tr>';
+    body += '<td class="tot">' + worked + '</td><td class="tot">' + hm(mins) + '</td><td class="tot">' + late + '</td><td class="tot">' + abs + '</td></tr>';
   });
   t.innerHTML = head + body + '</tbody>';
 
   /* price calculator */
+  var tiers = [{"n": "Kichik bog'cha", "to": 25, "price": 390000}, {"n": "Bog'cha", "to": 50, "price": 590000}, {"n": "Katta bog'cha", "rate": 8000, "min": 590000}];
   var range = document.getElementById('staffRange');
   function money(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + " so'm"; }
   function price(n) {
-    if (n <= 25) return ["Kichik bog'cha", 390000];
-    if (n <= 50) return ["Bog'cha", 590000];
-    return ["Katta bog'cha", Math.max(590000, 8000 * n)];
+    for (var i = 0; i < tiers.length; i++) {
+      var x = tiers[i];
+      if (x.to === undefined || n <= x.to) {
+        if (x.price) return [x.n, x.price];
+        if (x.min !== undefined) return [x.n, Math.max(x.min, x.rate * n)];
+        var prev = tiers[i - 1];
+        return [x.n, prev.rate * prev.to + x.rate * (n - prev.to)];
+      }
+    }
   }
   function calc() {
     var n = +range.value, r = price(n);
@@ -1163,7 +1026,6 @@
   range.addEventListener('input', calc);
   calc();
 
-  /* copy */
   var btn = document.getElementById('copyBtn');
   btn.addEventListener('click', function () {
     var text = document.getElementById('mail').textContent;

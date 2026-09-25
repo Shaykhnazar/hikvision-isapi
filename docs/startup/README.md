@@ -14,7 +14,7 @@ Ushbu katalog `hikvision-isapi` paketini to'laqonli mahsulotga aylantirish rejas
 | [`07-narx-varaqasi.md`](07-narx-varaqasi.md) | **Ichki.** Narx, chegirma chegarasi, va suhbatda beriladigan savollarga tayyor javoblar |
 | [`08-integrator-taklifi.md`](08-integrator-taklifi.md) | Integratorga beriladigan bir varaq: 25% komissiya, o'rnatish ishi ularniki |
 | [`09-mijoz-varaqasi.md`](09-mijoz-varaqasi.md) | Mijozga beriladigan bir varaq — **suhbatdan keyin**, oldin emas |
-| [`10-bogcha-taqdimot.html`](10-bogcha-taqdimot.html) | Bog'chalar uchun vizual taqdimot: sxema, xodimning bir kuni, tabel, Telegram, xavfsizlik, cheklovlar, narx. Brauzerda ochiladi |
+| [`taqdimot/`](taqdimot/) | Har bir muassasa uchun vizual taqdimot: bog'cha, maktab, o'quv markazi, klinika, ofis, ishlab chiqarish, savdo tarmog'i. Sxema, bir kun, tabel, Telegram, xavfsizlik, cheklovlar, narx. `python3 taqdimot/build.py` bilan yig'iladi — `.html` larni qo'lda tahrirlamang |
 | [`11-narxlar.html`](11-narxlar.html) | Muassasa turlari bo'yicha narxlar (bog'cha, maktab, o'quv markazi, klinika, ofis, ishlab chiqarish, savdo) va kalkulyator. Brauzerda ochiladi |
 
 ## Repolar
