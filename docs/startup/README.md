@@ -14,6 +14,7 @@ Ushbu katalog `hikvision-isapi` paketini to'laqonli mahsulotga aylantirish rejas
 | [`07-narx-varaqasi.md`](07-narx-varaqasi.md) | **Ichki.** Narx, chegirma chegarasi, va suhbatda beriladigan savollarga tayyor javoblar |
 | [`08-integrator-taklifi.md`](08-integrator-taklifi.md) | Integratorga beriladigan bir varaq: 25% komissiya, o'rnatish ishi ularniki |
 | [`09-mijoz-varaqasi.md`](09-mijoz-varaqasi.md) | Mijozga beriladigan bir varaq — **suhbatdan keyin**, oldin emas |
+| [`10-bogcha-taqdimot.html`](10-bogcha-taqdimot.html) | Bog'chalar uchun vizual taqdimot: sxema, xodimning bir kuni, tabel, Telegram, xavfsizlik, cheklovlar, narx. Brauzerda ochiladi |
 
 ## Repolar
 
