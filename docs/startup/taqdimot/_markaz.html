@@ -1,0 +1,125 @@
+<style>
+  .hub-hero { padding-block: 64px 8px; display: grid; gap: 18px; max-width: 780px; }
+  .hub-hero .lead { font-size: 1.15rem; color: var(--ink-2); max-width: 62ch; }
+  .hub-hero h1 em { font-style: normal; color: var(--teal); }
+
+  .how { list-style: none; margin: 28px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; counter-reset: hw; }
+  .how li { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
+  .how li::before {
+    counter-increment: hw; content: counter(hw);
+    width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+    font-family: var(--display); font-weight: 600; font-size: .95rem; background: var(--teal); color: var(--surface);
+  }
+  .how b { font-family: var(--display); font-weight: 600; font-size: 1.05rem; }
+  .how span { color: var(--ink-2); font-size: .92rem; }
+
+  .seg-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .seg-card {
+    display: grid; gap: 8px; align-content: start; text-decoration: none; color: var(--ink);
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px;
+    transition: border-color .2s, transform .2s, box-shadow .2s;
+  }
+  .seg-card:hover { border-color: var(--c, var(--teal)); box-shadow: var(--shadow); transform: translateY(-2px); }
+  .seg-top { display: flex; align-items: center; gap: 10px; }
+  .seg-top b { font-family: var(--display); font-weight: 600; font-size: 1.2rem; line-height: 1.2; }
+  .seg-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--c); flex: none; }
+  .seg-who { font-size: .84rem; color: var(--ink-3); }
+  .seg-hook { font-size: .95rem; color: var(--ink-2); }
+  .seg-price { font-size: .9rem; color: var(--ink-2); padding-top: 8px; border-top: 1px solid var(--line); }
+  .seg-price .mono { color: var(--ink); font-weight: 500; }
+  .seg-price small { display: block; color: var(--ink-3); }
+  .seg-go { font-weight: 600; font-size: .92rem; color: var(--c, var(--teal)); }
+  .seg-all { background: var(--surface-2); border-style: dashed; }
+  .seg-all .seg-go { color: var(--teal); }
+
+  @media (max-width: 960px) {
+    .seg-grid, .how { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .seg-grid, .how { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .seg-card:hover { transform: none; }
+  }
+</style>
+
+<main class="wrap">
+
+  <header class="hub-hero">
+    <span class="eyebrow">Davomat · Hikvision terminallari uchun</span>
+    <h1>Terminal bor. Endi <em>tabel o'zi yig'iladi.</em></h1>
+    <p class="lead">Devoringizdagi Hikvision terminali xodimlar kelib-ketganini allaqachon yozadi. Biz shu yozuvlardan har kuni tayyor tabel, rahbarga Telegram xulosa va oy oxirida buxgalter uchun Excel fayl chiqaramiz. Har bir muassasa turi uchun alohida taqdimot va narx tayyorlangan.</p>
+
+    <ol class="how" aria-label="Qanday ishlaydi">
+      <li><b>Terminal</b><span>Xodim yuzini ko'rsatadi yoki kartasini tutadi.</span></li>
+      <li><b>Agent</b><span>Binodagi kichik kompyuter o'tishni bulutga uzatadi. Port ochilmaydi.</span></li>
+      <li><b>Bulut</b><span>O'zbekistondagi server smenaga qarab kunlik tabelni hisoblaydi.</span></li>
+      <li><b>Siz</b><span>Rahbar Telegram'da xulosa oladi, buxgalter Excel yuklab oladi.</span></li>
+    </ol>
+  </header>
+
+  <section id="muassasalar">
+    <div class="sec-head">
+      <span class="eyebrow">Taqdimotlar</span>
+      <h2>Muassasangizni tanlang</h2>
+      <p>Har bir taqdimotda o'sha muassasadagi bir kun, tabel namunasi, Telegram xabarlari, tizim nimani qilmasligi va narx bor.</p>
+    </div>
+    <div class="seg-grid">{{CARDS}}
+    </div>
+  </section>
+
+  <section id="umumiy">
+    <div class="sec-head">
+      <span class="eyebrow">Hamma muassasada bir xil</span>
+      <h2>Qaysi muassasa bo'lmasin, bu qoidalar o'zgarmaydi</h2>
+    </div>
+    <div class="facts">
+      <div class="fact"><h3>Faqat xodimlar</h3><p>Tizim xodimlar davomatini yuritadi. Bolalar, o'quvchilar, bemorlar va xaridorlar unda yo'q.</p></div>
+      <div class="fact"><h3>Yuz rasmlari bulutda qolmaydi</h3><p>Rasm terminalga yetkazilishi bilan o'chiriladi. Terminal paroli faqat binodagi agentda turadi.</p></div>
+      <div class="fact"><h3>Tarmoqqa tashqaridan kirish yo'q</h3><p>Agent o'zi tashqariga ulanadi. Router'da port ochilmaydi, oq IP kerak emas.</p></div>
+      <div class="fact"><h3>Bitta o'tish ham yo'qolmaydi</h3><p>Darhol yuborish, har 10 daqiqada qayta o'qish va tungi solishtirish. Internet uzilsa, agent saqlab turadi.</p></div>
+      <div class="fact"><h3>Tuzatish iz qoldiradi</h3><p>Tabelni faqat sabab ko'rsatib tuzatish mumkin. Terminal yozgan asl qiymat o'chirilmaydi.</p></div>
+      <div class="fact"><h3>Terminal jim qolsa, o'sha kuni bilasiz</h3><p>2 daqiqa ichida HR ga Telegram signal. Muammo oy oxirida emas, o'sha kuni bilinadi.</p></div>
+    </div>
+  </section>
+
+  <section id="ochiq">
+    <div class="honest">
+      <h3>Ochiq gapiramiz</h3>
+      <p>Bu mahsulot yangi. <b>Bugun uning to'lovchi mijozi yo'q</b>, siz birinchilardan bo'lasiz. Shuning uchun birinchi uchta mijoz uchun, muassasa turidan qat'i nazar, shart boshqacha:</p>
+      <ul>
+        <li><b>3 oy abonent to'lovi 0.</b> O'rnatish to'lanadi: bepul o'rnatilgan tizim ishlatilmay qoladi.</li>
+        <li>Evaziga: oyiga 30 daqiqa suhbat va biror narsa buzilsa darhol xabar.</li>
+        <li>Uch oydan keyin yoqmasa, to'xtatasiz va ma'lumotingizni Excel'da olib ketasiz.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <div class="contact">
+      <span class="muted">Bir soatlik demo uchun:</span>
+      <code id="mail">shaykhnazar@gmail.com</code>
+      <button class="copy" id="copyBtn" type="button">Nusxa olish</button>
+    </div>
+    <p class="fine">Demo tayyor namunada ko'rsatiladi, sizning terminalingiz shart emas.</p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var btn = document.getElementById('copyBtn');
+  btn.addEventListener('click', function () {
+    var text = document.getElementById('mail').textContent;
+    function selectIt() {
+      var r = document.createRange(); r.selectNodeContents(document.getElementById('mail'));
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () {
+        btn.textContent = 'Nusxa olindi';
+        setTimeout(function () { btn.textContent = 'Nusxa olish'; }, 1800);
+      }, selectIt);
+    } catch (e) { selectIt(); }
+  });
+})();
+</script>
