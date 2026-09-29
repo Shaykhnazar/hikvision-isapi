@@ -2,10 +2,12 @@
 """Har bir muassasa turi uchun taqdimot sahifasini yig'adi.
 
     python3 docs/startup/taqdimot/build.py
+    python3 docs/startup/taqdimot/build.py --artifact PAPKA   # claude.ai uchun nusxa
 
 _bosh.html (uslublar) + _tana.html (tuzilish) + pastdagi SEGMENTLAR ->
-<segment>.html. Matnni o'zgartirish kerak bo'lsa, shu faylni tahrirlang va
-qayta ishga tushiring; tayyor .html fayllarni qo'lda tahrirlamang.
+<segment>.html; _bosh.html + _markaz.html -> index.html (bosh sahifa).
+Matnni o'zgartirish kerak bo'lsa, shu faylni tahrirlang va qayta ishga
+tushiring; tayyor .html fayllarni qo'lda tahrirlamang.
 
 Tariflar 11-narxlar.html va 07-narx-varaqasi.md bilan bir xil bo'lishi shart.
 """
@@ -546,25 +548,126 @@ SEGMENTLAR = {
 }
 
 
-def build():
+# Bosh sahifadagi kartochka uchun: nomi, kimlar, asosiy farqi.
+HUB = {
+    "bogcha": ("Bog'cha", "tarbiyachi, enaga, oshpaz, hamshira",
+               "Mudira har kuni ertalab Telegram'da kim kelganini ko'radi."),
+    "maktab": ("Xususiy maktab", "o'qituvchi, o'rinbosar, texnik xodim",
+               "Har o'qituvchiga o'z ish kunlari: haftada ikki kun kelsa ham tabel to'g'ri."),
+    "oquv-markazi": ("O'quv markazi", "o'qituvchi, administrator, menejer",
+                     "Tushdan keyingi smena va yarim stavkadagi o'qituvchilar soatlari."),
+    "klinika": ("Klinika", "shifokor, hamshira, registrator, laborant",
+                "20:00–08:00 tungi smena bitta ish kuni bo'lib hisoblanadi."),
+    "ofis": ("Ofis va IT", "menejer, operator, dasturchi, buxgalter",
+             "Bir nechta filial bitta ekranda va bitta Excel faylda."),
+    "ishlab-chiqarish": ("Ishlab chiqarish", "ishchi, usta, omborchi, haydovchi",
+                         "Uch smena, tungi smena va xizmat avtobusi kechikkanda signal."),
+    "savdo-tarmogi": ("Savdo tarmog'i", "sotuvchi, kassir, omborchi, mudir",
+                      "Barcha do'konlar bitta tabelda, filiallar soni narxga ta'sir qilmaydi."),
+}
+
+# claude.ai da e'lon qilingan nusxalar. Faqat `--artifact` rejimida ishlatiladi:
+# u yerda sahifalar bir-biriga fayl nomi bilan emas, shu havolalar bilan bog'lanadi.
+ARTIFACT_URLS = {
+    "index": "https://claude.ai/artifact/SozFQEZ7fWxyW8nAdNW52i",
+    "bogcha": "https://claude.ai/artifact/KBKH6dvwVZteZ1mQC6obHq",
+    "maktab": "https://claude.ai/artifact/KgjbgyGyixxEjBPS2KEBF4",
+    "oquv-markazi": "https://claude.ai/artifact/47vpSYfdFnQDDHbpc2BCm2",
+    "klinika": "https://claude.ai/artifact/Ufp5vfsRsJGztciER9FLmm",
+    "ofis": "https://claude.ai/artifact/V8YKetbLsPM522jotMfyPT",
+    "ishlab-chiqarish": "https://claude.ai/artifact/9wVRNkbTDWR1Qsg1Csvum6",
+    "savdo-tarmogi": "https://claude.ai/artifact/ANYMyUJCEVQ15xGKUVmCsQ",
+    "narxlar": "https://claude.ai/artifact/8QpWafegU8oNRbzZB5fLxk",
+}
+
+
+def fill(template, values, name):
+    out = template
+    for k, v in values.items():
+        out = out.replace("{{" + k + "}}", str(v))
+    left = sorted(set(re.findall(r"\{\{([A-Z_0-9]+)\}\}", out)))
+    if left:
+        raise SystemExit(f"{name}: to'ldirilmagan joylar: {', '.join(left)}")
+    return out
+
+
+def hub_css():
+    light, dark = [], []
+    for slug, seg in SEGMENTLAR.items():
+        c = seg["accent"]
+        light.append(f"--c-{slug}: {c[0]};")
+        dark.append(f"--c-{slug}: {c[3]};")
+    light, dark = " ".join(light), " ".join(dark)
+    return (f"  :root {{ {light} }}\n"
+            f"  @media (prefers-color-scheme: dark) {{ :root:not([data-theme=\"light\"]) {{ {dark} }} }}\n"
+            f"  :root[data-theme=\"dark\"] {{ {dark} }}\n")
+
+
+def hub_cards(href):
+    out = []
+    for slug, seg in SEGMENTLAR.items():
+        name, who, hook = HUB[slug]
+        first = seg["tiers"][0]
+        out.append(
+            f'\n      <a class="seg-card" href="{href(slug)}" style="--c: var(--c-{slug})">'
+            f'<span class="seg-top"><span class="seg-dot" aria-hidden="true"></span><b>{name}</b></span>'
+            f'<span class="seg-who">{who}</span>'
+            f'<span class="seg-hook">{hook}</span>'
+            f'<span class="seg-price"><span class="mono">{fmt(first["price"])}</span> so\'m/oy dan'
+            f' <small>({first["to"]} xodimgacha)</small></span>'
+            f'<span class="seg-go">Taqdimotni ochish →</span></a>')
+    out.append(
+        f'\n      <a class="seg-card seg-all" href="{href("narxlar")}">'
+        f'<span class="seg-top"><b>Narxlarni solishtirish</b></span>'
+        f'<span class="seg-who">barcha muassasalar bitta jadvalda</span>'
+        f'<span class="seg-hook">Muassasa turini tanlab, xodimlar soni bo\'yicha oylik to\'lovni hisoblang.</span>'
+        f'<span class="seg-go">Narxlar sahifasi →</span></a>')
+    return "".join(out)
+
+
+def build(artifact_dir=None):
     head = (HERE / "_bosh.html").read_text()
     body = (HERE / "_tana.html").read_text()
-    template = head + body
+    out_dir = pathlib.Path(artifact_dir) if artifact_dir else HERE
+
+    if artifact_dir:
+        def href(slug):
+            return ARTIFACT_URLS[slug]
+    else:
+        def href(slug):
+            return "../11-narxlar.html" if slug == "narxlar" else f"{slug}.html"
+
+    hub_values = {
+        "TITLE": "Davomat Taqdimotlari",
+        "DESCRIPTION": "Hikvision terminalidan tayyor tabel: har bir muassasa turi uchun alohida taqdimot va narx.",
+        "ACCENT_CSS": hub_css(),
+        "CARDS": hub_cards(href),
+    }
+    hub = fill(head + (HERE / "_markaz.html").read_text(), hub_values, "index")
+    (out_dir / "index.html").write_text(hub)
+    print(out_dir / "index.html")
+
+    hub_href = href("index") if artifact_dir else "index.html"
+    if artifact_dir and not hub_href:
+        print("ARTIFACT_URLS['index'] bo'sh: taqdimotlar bosh sahifaga bog'lanmadi, faqat index.html yig'ildi.")
+        return
+
     for slug, seg in SEGMENTLAR.items():
         values = {k: v for k, v in seg.items() if k.isupper()}
         values["ACCENT_CSS"] = accent_css(*seg["accent"])
         values["TS_STAFF"] = json.dumps(seg["TS_STAFF"], ensure_ascii=False)
         values["TIERS_JS"] = json.dumps(seg["tiers"], ensure_ascii=False)
         values["TARIFF_CARDS"] = tariff_cards(seg["tiers"], seg["highlight"])
-        out = template
-        for k, v in values.items():
-            out = out.replace("{{" + k + "}}", str(v))
-        left = sorted(set(re.findall(r"\{\{([A-Z_0-9]+)\}\}", out)))
-        if left:
-            raise SystemExit(f"{slug}: to'ldirilmagan joylar: {', '.join(left)}")
-        (HERE / f"{slug}.html").write_text(out)
-        print(f"{slug}.html")
+        values["HUB_HREF"] = hub_href
+        (out_dir / f"{slug}.html").write_text(fill(head + body, values, slug))
+        print(out_dir / f"{slug}.html")
 
 
 if __name__ == "__main__":
-    build()
+    import sys
+    if len(sys.argv) == 3 and sys.argv[1] == "--artifact":
+        build(sys.argv[2])
+    elif len(sys.argv) == 1:
+        build()
+    else:
+        raise SystemExit("ishlatish: build.py [--artifact CHIQISH_PAPKASI]")
