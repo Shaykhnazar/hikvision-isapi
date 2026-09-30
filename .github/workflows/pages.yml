@@ -1,0 +1,63 @@
+name: Davomat sayti
+
+# docs/startup/taqdimot/ dagi sahifalarni GitHub Pages ga chiqaradi:
+# https://shaykhnazar.github.io/hikvision-isapi/
+#
+# Bir martalik sozlama: Settings → Pages → Source: "GitHub Actions".
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'docs/startup/taqdimot/**'
+      - '.github/workflows/pages.yml'
+  pull_request:
+    paths:
+      - 'docs/startup/taqdimot/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Sahifalarni yig'ish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Repodagi .html lar build.py natijasi bilan bir xil bo'lishi shart:
+      # kimdir .html ni qo'lda tahrirlasa yoki build.py ni ishga tushirmasa, shu yerda to'xtaydi.
+      - name: Repodagi sahifalar generator bilan mos
+        run: |
+          python3 docs/startup/taqdimot/build.py
+          git status --porcelain docs/startup/taqdimot
+          test -z "$(git status --porcelain docs/startup/taqdimot)"
+
+      - name: Saytni yig'ish
+        run: python3 docs/startup/taqdimot/build.py --site _site
+
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name != 'pull_request'
+        with:
+          path: _site
+
+  deploy:
+    name: GitHub Pages
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
