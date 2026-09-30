@@ -49,7 +49,7 @@ xodim keyingi oydan hisobdan chiqadi.
 
 ## Muassasa turlari bo'yicha tariflar
 
-Mijozga ko'rsatiladigan sahifa: [`11-narxlar.html`](11-narxlar.html). Yuqoridagi
+Mijozga ko'rsatiladigan sahifa: [`taqdimot/narxlar.html`](taqdimot/narxlar.html). Yuqoridagi
 Start/Biznes/Korporativ jadvali endi **"Ofis va IT"** qatori. Qolgan qatorlar ham
 **gipoteza**, ofis tarifidan quyidagi mantiq bilan chiqarilgan:
 

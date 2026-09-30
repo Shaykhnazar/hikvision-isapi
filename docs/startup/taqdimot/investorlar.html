@@ -2,8 +2,8 @@
 <html lang="uz">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Davomat Taqdimotlari</title>
-<meta name="description" content="Hikvision terminalidan tayyor tabel: har bir muassasa turi uchun alohida taqdimot va narx.">
+<title>Davomat Investorlarga</title>
+<meta name="description" content="Davomat haqida investorlar uchun: muammo, mahsulot holati, biznes model, sotuv kanallari, maqsadlar va risklar.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Onest:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
@@ -396,147 +396,324 @@
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
   }
-  :root { --c-bogcha: #E39B12; --c-maktab: #3A6FD8; --c-oquv-markazi: #8A5CD6; --c-klinika: #D2485E; --c-ofis: #2F8FB0; --c-ishlab-chiqarish: #C8641E; --c-savdo-tarmogi: #3E9B4F; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --c-bogcha: #F2B23A; --c-maktab: #86AAF2; --c-oquv-markazi: #B69AEE; --c-klinika: #F28A9C; --c-ofis: #6CC0DE; --c-ishlab-chiqarish: #EE9A5C; --c-savdo-tarmogi: #78CC87; } }
-  :root[data-theme="dark"] { --c-bogcha: #F2B23A; --c-maktab: #86AAF2; --c-oquv-markazi: #B69AEE; --c-klinika: #F28A9C; --c-ofis: #6CC0DE; --c-ishlab-chiqarish: #EE9A5C; --c-savdo-tarmogi: #78CC87; }
 </style>
 <style>
-  .hub-hero { padding-block: 64px 8px; display: grid; gap: 18px; max-width: 780px; }
-  .hub-hero .lead { font-size: 1.15rem; color: var(--ink-2); max-width: 62ch; }
-  .hub-hero h1 em { font-style: normal; color: var(--teal); }
+  .inv-hero { padding-block: 56px 8px; display: grid; gap: 18px; max-width: 800px; }
+  .inv-hero .lead { font-size: 1.15rem; color: var(--ink-2); max-width: 64ch; }
+  .inv-hero h1 em { font-style: normal; color: var(--teal); }
 
-  .how { list-style: none; margin: 28px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; counter-reset: hw; }
-  .how li { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
-  .how li::before {
-    counter-increment: hw; content: counter(hw);
-    width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
-    font-family: var(--display); font-weight: 600; font-size: .95rem; background: var(--teal); color: var(--surface);
-  }
-  .how b { font-family: var(--display); font-weight: 600; font-size: 1.05rem; }
-  .how span { color: var(--ink-2); font-size: .92rem; }
+  .glance { display: grid; grid-template-columns: max-content 1fr; gap: 0; margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+  .glance dt, .glance dd { padding: 12px 16px; border-bottom: 1px solid var(--line); margin: 0; }
+  .glance dt { color: var(--ink-3); font-size: .9rem; background: var(--surface-2); }
+  .glance dd { font-size: .98rem; }
+  .glance dt:last-of-type, .glance dd:last-of-type { border-bottom: 0; }
 
-  .seg-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-  .seg-card {
-    display: grid; gap: 8px; align-content: start; text-decoration: none; color: var(--ink);
-    background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px;
-    transition: border-color .2s, transform .2s, box-shadow .2s;
-  }
-  .seg-card:hover { border-color: var(--c, var(--teal)); box-shadow: var(--shadow); transform: translateY(-2px); }
-  .seg-top { display: flex; align-items: center; gap: 10px; }
-  .seg-top b { font-family: var(--display); font-weight: 600; font-size: 1.2rem; line-height: 1.2; }
-  .seg-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--c); flex: none; }
-  .seg-who { font-size: .84rem; color: var(--ink-3); }
-  .seg-hook { font-size: .95rem; color: var(--ink-2); }
-  .seg-price { font-size: .9rem; color: var(--ink-2); padding-top: 8px; border-top: 1px solid var(--line); }
-  .seg-price .mono { color: var(--ink); font-weight: 500; }
-  .seg-price small { display: block; color: var(--ink-3); }
-  .seg-go { font-weight: 600; font-size: .92rem; color: var(--c, var(--teal)); }
-  .seg-all { background: var(--surface-2); border-style: dashed; }
-  .seg-all .seg-go { color: var(--teal); }
+  .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  ul.dots { margin: 0; padding-left: 20px; display: grid; gap: 8px; color: var(--ink-2); }
+  ul.dots b { color: var(--ink); }
+  .done li::marker { color: var(--ok); }
+  .todo li::marker { color: var(--warn); }
 
-  @media (max-width: 960px) {
-    .seg-grid, .how { grid-template-columns: repeat(2, 1fr); }
+  .gate { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .gate div { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: grid; gap: 2px; }
+  .gate b { font-family: var(--mono); font-weight: 500; font-size: 1.1rem; }
+  .gate span { font-size: .86rem; color: var(--ink-2); }
+  .gate small { font-size: .78rem; color: var(--warn); font-weight: 600; }
+
+  .miles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .mile { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: grid; gap: 6px; align-content: start; }
+  .mile .when { font-family: var(--display); font-weight: 600; font-size: 1.1rem; color: var(--teal); }
+  .mile p { color: var(--ink-2); font-size: .94rem; }
+
+  td.risk-h { color: var(--bad); font-weight: 600; }
+  td.risk-m { color: var(--warn); font-weight: 600; }
+  td.risk-l { color: var(--ok); font-weight: 600; }
+
+  @media (max-width: 860px) {
+    .cols2, .miles { grid-template-columns: 1fr; }
+    .gate { grid-template-columns: repeat(2, 1fr); }
   }
-  @media (max-width: 560px) {
-    .seg-grid, .how { grid-template-columns: 1fr; }
+  @media (max-width: 520px) {
+    .glance { grid-template-columns: 1fr; }
+    .glance dt { border-bottom: 0; padding-bottom: 2px; }
+    .gate { grid-template-columns: 1fr; }
   }
-  @media (prefers-reduced-motion: reduce) {
-    .seg-card:hover { transform: none; }
-  }
-  .inv-band { display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px 22px; }
-  .inv-band h3 { font-size: 1.2rem; margin-bottom: 4px; }
-  .inv-band p { color: var(--ink-2); font-size: .95rem; max-width: 64ch; }
-  .inv-band a.btn { text-decoration: none; font-weight: 600; padding: 10px 16px; border-radius: 10px; background: var(--ink); color: var(--bg); white-space: nowrap; }
-  @media (max-width: 640px) { .inv-band { grid-template-columns: 1fr; } }
 </style>
 
-<nav class="topnav" aria-label="Sayt">
+<nav class="topnav" aria-label="Bo'limlar">
   <ul>
-    <li><a href="#muassasalar">Taqdimotlar</a></li>
-    <li><a href="narxlar.html">Narxlar</a></li>
-    <li><a href="#umumiy">Hamma uchun bir xil</a></li>
-    <li><a href="investorlar.html" class="home">Investorlar uchun</a></li>
+    <li><a href="index.html" class="home">← Barcha taqdimotlar</a></li>
+    <li><a href="#muammo">Muammo</a></li>
+    <li><a href="#yechim">Yechim</a></li>
+    <li><a href="#raqobat">Raqobat</a></li>
+    <li><a href="#holat">Mahsulot holati</a></li>
+    <li><a href="#model">Biznes model</a></li>
+    <li><a href="#sotuv">Sotuv</a></li>
+    <li><a href="#maqsad">Maqsadlar</a></li>
+    <li><a href="#risk">Risklar</a></li>
+    <li><a href="#jamoa">Jamoa</a></li>
   </ul>
 </nav>
 
 <main class="wrap">
 
-  <header class="hub-hero">
-    <span class="eyebrow">Davomat · Hikvision terminallari uchun</span>
-    <h1>Terminal bor. Endi <em>tabel o'zi yig'iladi.</em></h1>
-    <p class="lead">Devoringizdagi Hikvision terminali xodimlar kelib-ketganini allaqachon yozadi. Biz shu yozuvlardan har kuni tayyor tabel, rahbarga Telegram xulosa va oy oxirida buxgalter uchun Excel fayl chiqaramiz. Har bir muassasa turi uchun alohida taqdimot va narx tayyorlangan.</p>
-
-    <ol class="how" aria-label="Qanday ishlaydi">
-      <li><b>Terminal</b><span>Xodim yuzini ko'rsatadi yoki kartasini tutadi.</span></li>
-      <li><b>Agent</b><span>Binodagi kichik kompyuter o'tishni bulutga uzatadi. Port ochilmaydi.</span></li>
-      <li><b>Bulut</b><span>O'zbekistondagi server smenaga qarab kunlik tabelni hisoblaydi.</span></li>
-      <li><b>Siz</b><span>Rahbar Telegram'da xulosa oladi, buxgalter Excel yuklab oladi.</span></li>
-    </ol>
+  <header class="inv-hero">
+    <span class="eyebrow">Investorlar uchun · 2026-yil sentabr</span>
+    <h1>Hikvision terminallari allaqachon devorda. <em>Biz ularni HR tizimiga aylantiramiz.</em></h1>
+    <p class="lead">Davomat — O'zbekistondagi kompaniya va muassasalar uchun bulutli davomat xizmati. U mavjud Hikvision yuz tanish terminallaridan kelib-ketishlarni oladi, smenaga qarab tabel hisoblaydi, rahbarga Telegram'da xulosa yuboradi va buxgalterga Excel beradi. Bu sahifada raqamlar qayerdan kelgani va qaysilari hali gipoteza ekani ochiq yozilgan.</p>
   </header>
 
-  <section id="muassasalar">
+  <section id="qisqa" style="padding-top:28px">
+    <dl class="glance">
+      <dt>Mahsulot</dt><dd>Bulut xizmati + mijoz binosidagi agent + ochiq SDK. Sotiladigan minimumdan o'tgan.</dd>
+      <dt>Kod</dt><dd>3 ta repo, 974 ta avtomatik test (SDK 139, agent 293, bulut 542).</dd>
+      <dt>Mijozlar</dt><dd><b>To'lovchi mijoz yo'q.</b> Birorta haqiqiy o'rnatish ham hali qilinmagan.</dd>
+      <dt>Narx</dt><dd>Xodim soniga qarab oylik obuna, 7 ta segment uchun alohida tarif. Hamma raqam gipoteza.</dd>
+      <dt>Sotuv kanali</dt><dd>Hikvision o'rnatadigan integratorlar, 12 oy davomida oylik to'lovning 25% komissiyasi.</dd>
+      <dt>Jamoa</dt><dd>1 asoschi, haftasiga taxminan 12 soat.</dd>
+    </dl>
+  </section>
+
+  <!-- ===================== MUAMMO ===================== -->
+  <section id="muammo">
     <div class="sec-head">
-      <span class="eyebrow">Taqdimotlar</span>
-      <h2>Muassasangizni tanlang</h2>
-      <p>Har bir taqdimotda o'sha muassasadagi bir kun, tabel namunasi, Telegram xabarlari, tizim nimani qilmasligi va narx bor.</p>
+      <span class="eyebrow">Muammo</span>
+      <h2>Qurilma bor, ma'lumot bor, mahsulot yo'q</h2>
+      <p>Kompaniya Hikvision terminalini sotib olgan, integrator o'rnatib bergan, terminal kirish-chiqishni yozadi. Keyin nima bo'ladi:</p>
     </div>
-    <div class="seg-grid">
-      <a class="seg-card" href="bogcha.html" style="--c: var(--c-bogcha)"><span class="seg-top"><span class="seg-dot" aria-hidden="true"></span><b>Bog'cha</b></span><span class="seg-who">tarbiyachi, enaga, oshpaz, hamshira</span><span class="seg-hook">Mudira har kuni ertalab Telegram'da kim kelganini ko'radi.</span><span class="seg-price"><span class="mono">390 000</span> so'm/oy dan <small>(25 xodimgacha)</small></span><span class="seg-go">Taqdimotni ochish →</span></a>
-      <a class="seg-card" href="maktab.html" style="--c: var(--c-maktab)"><span class="seg-top"><span class="seg-dot" aria-hidden="true"></span><b>Xususiy maktab</b></span><span class="seg-who">o'qituvchi, o'rinbosar, texnik xodim</span><span class="seg-hook">Har o'qituvchiga o'z ish kunlari: haftada ikki kun kelsa ham tabel to'g'ri.</span><span class="seg-price"><span class="mono">490 000</span> so'm/oy dan <small>(40 xodimgacha)</small></span><span class="seg-go">Taqdimotni ochish →</span></a>
-      <a class="seg-card" href="oquv-markazi.html" style="--c: var(--c-oquv-markazi)"><span class="seg-top"><span class="seg-dot" aria-hidden="true"></span><b>O'quv markazi</b></span><span class="seg-who">o'qituvchi, administrator, menejer</span><span class="seg-hook">Tushdan keyingi smena va yarim stavkadagi o'qituvchilar soatlari.</span><span class="seg-price"><span class="mono">290 000</span> so'm/oy dan <small>(20 xodimgacha)</small></span><span class="seg-go">Taqdimotni ochish →</span></a>
-      <a class="seg-card" href="klinika.html" style="--c: var(--c-klinika)"><span class="seg-top"><span class="seg-dot" aria-hidden="true"></span><b>Klinika</b></span><span class="seg-who">shifokor, hamshira, registrator, laborant</span><span class="seg-hook">20:00–08:00 tungi smena bitta ish kuni bo'lib hisoblanadi.</span><span class="seg-price"><span class="mono">590 000</span> so'm/oy dan <small>(30 xodimgacha)</small></span><span class="seg-go">Taqdimotni ochish →</span></a>
-      <a class="seg-card" href="ofis.html" style="--c: var(--c-ofis)"><span class="seg-top"><span class="seg-dot" aria-hidden="true"></span><b>Ofis va IT</b></span><span class="seg-who">menejer, operator, dasturchi, buxgalter</span><span class="seg-hook">Bir nechta filial bitta ekranda va bitta Excel faylda.</span><span class="seg-price"><span class="mono">690 000</span> so'm/oy dan <small>(50 xodimgacha)</small></span><span class="seg-go">Taqdimotni ochish →</span></a>
-      <a class="seg-card" href="ishlab-chiqarish.html" style="--c: var(--c-ishlab-chiqarish)"><span class="seg-top"><span class="seg-dot" aria-hidden="true"></span><b>Ishlab chiqarish</b></span><span class="seg-who">ishchi, usta, omborchi, haydovchi</span><span class="seg-hook">Uch smena, tungi smena va xizmat avtobusi kechikkanda signal.</span><span class="seg-price"><span class="mono">690 000</span> so'm/oy dan <small>(50 xodimgacha)</small></span><span class="seg-go">Taqdimotni ochish →</span></a>
-      <a class="seg-card" href="savdo-tarmogi.html" style="--c: var(--c-savdo-tarmogi)"><span class="seg-top"><span class="seg-dot" aria-hidden="true"></span><b>Savdo tarmog'i</b></span><span class="seg-who">sotuvchi, kassir, omborchi, mudir</span><span class="seg-hook">Barcha do'konlar bitta tabelda, filiallar soni narxga ta'sir qilmaydi.</span><span class="seg-price"><span class="mono">690 000</span> so'm/oy dan <small>(50 xodimgacha)</small></span><span class="seg-go">Taqdimotni ochish →</span></a>
-      <a class="seg-card seg-all" href="narxlar.html"><span class="seg-top"><b>Narxlarni solishtirish</b></span><span class="seg-who">barcha muassasalar bitta jadvalda</span><span class="seg-hook">Muassasa turini tanlab, xodimlar soni bo'yicha oylik to'lovni hisoblang.</span><span class="seg-go">Narxlar sahifasi →</span></a>
+    <ul class="dots">
+      <li>HR har oy oxirida terminaldan yoki iVMS-4200 dan Excel yuklab oladi va qo'lda tabel yig'adi.</li>
+      <li>Bir necha filial bo'lsa, har biridan alohida olinadi va qo'lda birlashtiriladi.</li>
+      <li>Smena, kechikish qoidasi, tanaffus Excel'da qo'lda hisoblanadi, buxgalteriyaga qo'lda kiritiladi.</li>
+      <li>Direktor "bugun kim kechikdi" ni bilish uchun HR ga qo'ng'iroq qiladi.</li>
+      <li>Terminal ikki kun ishlamay qolsa, buni oy oxirida biladilar. Yo'qolgan kunlarni tiklab bo'lmaydi.</li>
+    </ul>
+    <p class="muted" style="margin-top:14px;max-width:70ch">Gipoteza: HR har oy 6–15 soat qo'l mehnati sarflaydi va natija baribir ishonchsiz. Bu raqam mijoz suhbatlarida tekshirilishi kerak, hali tekshirilmagan.</p>
+  </section>
+
+  <!-- ===================== YECHIM ===================== -->
+  <section id="yechim">
+    <div class="sec-head">
+      <span class="eyebrow">Yechim</span>
+      <h2>Mavjud terminal, yangi dastur, portsiz ulanish</h2>
+      <p>Mijoz yangi qurilma sotib olmaydi. Bizning agent uning tarmog'ida turadi va bulutga o'zi ulanadi.</p>
+    </div>
+    <div class="cols2">
+      <div class="panel">
+        <h3 style="margin-bottom:10px">Qanday ishlaydi</h3>
+        <ul class="dots">
+          <li><b>Terminal</b> o'tishni binodagi agentga yuboradi. Terminalga internet kerak emas.</li>
+          <li><b>Agent</b> o'tishni bulutga uzatadi va yangi xodimlarni terminalga yozadi. Faqat chiquvchi ulanish: router'da port ochilmaydi.</li>
+          <li><b>Bulut</b> smenaga qarab kunlik va oylik tabel hisoblaydi, Telegram xulosa va signal yuboradi, Excel beradi.</li>
+        </ul>
+        <p class="muted" style="margin-top:12px;font-size:.92rem">Batafsil ko'rinishi har bir segment taqdimotida: <a href="ofis.html">ofis</a>, <a href="klinika.html">klinika</a>, <a href="ishlab-chiqarish.html">ishlab chiqarish</a>.</p>
+      </div>
+      <div class="panel">
+        <h3 style="margin-bottom:10px">Nega bu arxitektura himoya beradi</h3>
+        <ul class="dots">
+          <li><b>NAT muammosi yechilgan.</b> Bulut mijoz LAN'idagi terminalga ulana olmaydi; port ochish va VPN mijoz IT bo'limi tomonidan rad etiladi. Agent bu to'siqni olib tashlaydi.</li>
+          <li><b>Ishonchlilik uch qatlamli:</b> real vaqt, har 10 daqiqada qayta o'qish, tungi solishtirish. Tabelning to'g'riligi shunga bog'liq.</li>
+          <li><b>Maxfiylik tuzilishda:</b> yuz rasmlari va terminal parollari bulutda saqlanmaydi, server O'zbekistonda.</li>
+          <li><b>Ochiq SDK</b> (<span class="mono">hikvision-isapi</span>, MIT, Packagist) — ISAPI bilan ishlashning qiyin qismlari hal qilingan va dasturchilar orasida bepul reklama kanali.</li>
+        </ul>
+      </div>
     </div>
   </section>
 
-  <section id="umumiy">
+  <!-- ===================== RAQOBAT ===================== -->
+  <section id="raqobat">
     <div class="sec-head">
-      <span class="eyebrow">Hamma muassasada bir xil</span>
-      <h2>Qaysi muassasa bo'lmasin, bu qoidalar o'zgarmaydi</h2>
+      <span class="eyebrow">Raqobat</span>
+      <h2>Biz xavfsizlik bozorida emas, HR bozoridamiz</h2>
+      <p>Kirish nazorati bozorida HikCentral kuchli. Davomat va tabel bozorida esa haqiqiy raqobatchi Excel.</p>
+    </div>
+    <div class="panel">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Raqobatchi</th><th>Kuchli tomoni</th><th>Bizning kirish nuqtamiz</th></tr></thead>
+          <tbody>
+            <tr><td><b>HikCentral Professional</b></td><td>32 qurilmagacha bepul, Hikvision'ning o'zidan</td><td>Windows serverda lokal; filiallarni birlashtirish og'ir; tabel xom (smena siyosati, kechikish qoidalari yo'q); Telegram va 1C yo'q</td></tr>
+            <tr><td><b>iVMS-4200</b></td><td>Bepul, har integrator o'rnatadi</td><td>Monitoring dasturi, HR mahsuloti emas; bitta kompyuterga bog'langan</td></tr>
+            <tr><td><b>ZKTeco BioTime</b></td><td>Davomatga yo'naltirilgan</td><td>ZKTeco qurilmalariga bog'langan; interfeysi eski; lokalizatsiya zaif</td></tr>
+            <tr><td><b>1C modullari</b></td><td>Buxgalteriya bilan bitta tizimda</td><td>Terminal bilan integratsiya yo'q. Bu raqobat emas, bizning integratsiya nuqtamiz</td></tr>
+            <tr><td><b>Excel</b></td><td>Bepul, hamma biladi</td><td>Haqiqiy raqobatchi shu. Uni yenggan mahsulot g'olib</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HOLAT ===================== -->
+  <section id="holat">
+    <div class="sec-head">
+      <span class="eyebrow">Mahsulot holati</span>
+      <h2>Kod tayyor. Mijoz yo'q.</h2>
+      <p>Sakkiz sprint davomida kod bilan yopiladigan hamma band yopildi. Qolgan bandlar ta'rifi bo'yicha mijoz yoki buxgalter talab qiladi.</p>
+    </div>
+    <div class="cols2">
+      <div class="panel">
+        <h3 style="margin-bottom:10px">Tayyor</h3>
+        <ul class="dots done">
+          <li>Agent: ro'yxatdan o'tish, imzolangan protokol, oflayn bufer, har 10 daqiqada qayta o'qish, tungi audit, o'z-o'zini yangilash</li>
+          <li>Xodimlar va sinxronizatsiya: karta va yuz terminalga yoziladi, xatolar tushunarli tilda</li>
+          <li>Tabel: smenalar, tungi smena, kechikish, kunlik va oylik ekran, Excel eksport, sababli tuzatish</li>
+          <li>Telegram: rahbarga kunlik xulosa, HR ga signal (terminal jim qolsa 2 daqiqada)</li>
+          <li>Rozilik qaydi, saqlash muddati, kunlik tekshirilgan zaxira, monitoring</li>
+          <li>Qurilmani tekshiruvchi dastur (<span class="mono">hikvision-probe</span>): model imkoniyatlarini faqat o'qish bilan aniqlaydi</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3 style="margin-bottom:10px">Hali yo'q</h3>
+        <ul class="dots todo">
+          <li><b>Haqiqiy o'rnatish.</b> Birorta mijozda ishlatilmagan, pilot xatolari hali ma'lum emas</li>
+          <li><b>Tasdiqlangan terminal modeli yo'q.</b> Moslik jadvali bo'sh; birinchi qurilma probe natijasini kutmoqda</li>
+          <li><b>1C eksport.</b> Birorta haqiqiy buxgalteriya fayli ko'rilmagan, shuning uchun yozilmagan</li>
+          <li>Ta'til va kasallik varaqasi, aylanma grafik (2/2), xodimga shaxsiy Telegram tabel</li>
+          <li>Huquqiy tekshiruv: shaxsiy va biometrik ma'lumot bo'yicha yurist konsultatsiyasi rejalashtirilgan</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MODEL ===================== -->
+  <section id="model">
+    <div class="sec-head">
+      <span class="eyebrow">Biznes model</span>
+      <h2>Oylik obuna + bir martalik o'rnatish</h2>
+      <p>Narx xodimlar soniga bog'liq, terminallar soniga emas: qurilma qo'shish mijozga zarar keltirmasligi kerak. Barcha raqamlar gipoteza, birinchi uchta to'lovchi mijozdan keyin qayta yoziladi.</p>
+    </div>
+    <div class="cols2">
+      <div class="panel">
+        <div class="panel-title"><h3>Segmentlar bo'yicha boshlang'ich narx</h3><small>so'm / oy</small></div>
+        <div class="table-scroll">
+          <table class="price">
+            <tbody>
+              <tr><td><a href="bogcha.html">Bog'cha</a></td><td>25 xodimgacha 390 000</td></tr>
+              <tr><td><a href="maktab.html">Xususiy maktab</a></td><td>40 xodimgacha 490 000</td></tr>
+              <tr><td><a href="oquv-markazi.html">O'quv markazi</a></td><td>20 xodimgacha 290 000</td></tr>
+              <tr><td><a href="klinika.html">Klinika</a></td><td>30 xodimgacha 590 000</td></tr>
+              <tr><td><a href="ofis.html">Ofis va IT</a></td><td>50 xodimgacha 690 000</td></tr>
+              <tr><td><a href="ishlab-chiqarish.html">Ishlab chiqarish</a></td><td>50 xodimgacha 690 000</td></tr>
+              <tr><td><a href="savdo-tarmogi.html">Savdo tarmog'i</a></td><td>50 xodimgacha 690 000</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted" style="font-size:.9rem;margin-top:12px">O'rnatish: 1 000 000 – 3 000 000 so'm, ish hajmiga qarab. U chegirma qilinmaydi: birinchi oylarda naqd pul beradi va mijozning jiddiyligini tekshiradi. <a href="narxlar.html">To'liq narxlar va kalkulyator →</a></p>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><h3>Iqtisodiyot (gipoteza)</h3><small>10 ta mijozgacha</small></div>
+        <dl class="kv">
+          <dt>Daromad</dt><dd><span class="mono">10 × 120 × 8 000 = 9 600 000</span> so'm/oy</dd>
+          <dt>Hosting</dt><dd><span class="mono">≈ 1 200 000</span> so'm/oy (O'zbekistonda VPS, Postgres, zaxira)</dd>
+          <dt>Boshqa</dt><dd><span class="mono">≈ 200 000</span> so'm/oy (domen, Telegram bot, monitoring)</dd>
+          <dt>Yalpi marja</dt><dd><span class="mono">≈ 85%</span></dd>
+          <dt>Uskuna</dt><dd>Mijoz to'laydi (agent uchun mini-PC ≈ 2 mln so'm)</dd>
+        </dl>
+        <p class="muted" style="font-size:.9rem;margin-top:12px">Asosiy xarajat pul emas, asoschining vaqti. Har mijoz oyiga 2 soatdan ko'p qo'llab-quvvatlash talab qilsa, 10 mijozda o'sish to'xtaydi. Shuning uchun agent o'zini yangilaydi va xatodan o'zi tiklanadi.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SOTUV ===================== -->
+  <section id="sotuv">
+    <div class="sec-head">
+      <span class="eyebrow">Sotuv kanallari</span>
+      <h2>Tayyor sotuv jamoasi: integratorlar</h2>
     </div>
     <div class="facts">
-      <div class="fact"><h3>Faqat xodimlar</h3><p>Tizim xodimlar davomatini yuritadi. Bolalar, o'quvchilar, bemorlar va xaridorlar unda yo'q.</p></div>
-      <div class="fact"><h3>Yuz rasmlari bulutda qolmaydi</h3><p>Rasm terminalga yetkazilishi bilan o'chiriladi. Terminal paroli faqat binodagi agentda turadi.</p></div>
-      <div class="fact"><h3>Tarmoqqa tashqaridan kirish yo'q</h3><p>Agent o'zi tashqariga ulanadi. Router'da port ochilmaydi, oq IP kerak emas.</p></div>
-      <div class="fact"><h3>Bitta o'tish ham yo'qolmaydi</h3><p>Darhol yuborish, har 10 daqiqada qayta o'qish va tungi solishtirish. Internet uzilsa, agent saqlab turadi.</p></div>
-      <div class="fact"><h3>Tuzatish iz qoldiradi</h3><p>Tabelni faqat sabab ko'rsatib tuzatish mumkin. Terminal yozgan asl qiymat o'chirilmaydi.</p></div>
-      <div class="fact"><h3>Terminal jim qolsa, o'sha kuni bilasiz</h3><p>2 daqiqa ichida HR ga Telegram signal. Muammo oy oxirida emas, o'sha kuni bilinadi.</p></div>
+      <div class="fact"><h3>1. Integratorlar</h3><p>Toshkentda Hikvision terminal o'rnatadigan 10–20 ta kompaniya bor. Ular mijozimizni allaqachon taniydi. Taklif: har mijoz uchun 12 oy davomida oylik to'lovning 25%. O'rnatish ishi ularniki.</p></div>
+      <div class="fact"><h3>2. Ochiq SDK</h3><p><span class="mono">hikvision-isapi</span> Packagist'da. Uni yuklab olayotgan dasturchilar aynan shu muammoni kimdir uchun yechmoqda. Sekin, lekin bepul kanal.</p></div>
+      <div class="fact"><h3>3. To'g'ridan-to'g'ri</h3><p>HR hamjamiyatlari, Telegram guruhlari, "Hikvision terminalidan tabel qanday chiqariladi" mavzusidagi kontent. Har bir segment uchun tayyor taqdimot va narx sahifasi bor.</p></div>
     </div>
   </section>
 
-  <section id="investorlar">
-    <div class="inv-band">
-      <div>
-        <span class="eyebrow">Investorlar uchun</span>
-        <h3>Muammo, mahsulot holati, biznes model va risklar bir sahifada</h3>
-        <p>Qaysi raqam hujjatlardan olingani va qaysi biri hali gipoteza ekani ochiq ko'rsatilgan.</p>
+  <!-- ===================== MAQSADLAR ===================== -->
+  <section id="maqsad">
+    <div class="sec-head">
+      <span class="eyebrow">Maqsadlar</span>
+      <h2>Keyingi qadam kod emas, birinchi haqiqiy mijoz</h2>
+      <p>Reja bo'yicha birinchi darvoza sotuv bilan ochilishi kerak edi, kod bilan emas. Kod undan oldinga ketib qoldi: beshta shartning hammasi hozircha nolda.</p>
+    </div>
+    <div class="gate">
+      <div><b>0 / 15</b><span>HR va direktorlar bilan suhbat</span><small>hozircha</small></div>
+      <div><b>0 / 8</b><span>muammoni tan olgan va hozirgi yechimini tasvirlagan</span><small>hozircha</small></div>
+      <div><b>0 / 3</b><span>pilotga og'zaki rozilik</span><small>hozircha</small></div>
+      <div><b>0 / 1</b><span>o'rnatish haqini to'lashga rozi</span><small>hozircha</small></div>
+      <div><b>0 / 1</b><span>hamkorlikka qiziqqan integrator</span><small>hozircha</small></div>
+    </div>
+    <div class="miles" style="margin-top:18px">
+      <div class="mile"><span class="when">Birinchi pilot</span><p>Bitta haqiqiy o'rnatish, qurilma moslik jadvaliga birinchi qator, pilot xatolari tuzatiladi. Birinchi uchta mijozga 3 oy obuna bepul, o'rnatish pullik.</p></div>
+      <div class="mile"><span class="when">6 oy</span><p>3 ta to'lovchi mijoz, oylik takroriy daromad kamida 3 000 000 so'm, har mijozga oyiga 2 soatdan kam qo'llab-quvvatlash.</p></div>
+      <div class="mile"><span class="when">12 oy</span><p>10–15 mijoz, oylik takroriy daromad kamida 12 000 000 so'm, kamida 5 tasi integratorlar orqali.</p></div>
+    </div>
+  </section>
+
+  <!-- ===================== RISKLAR ===================== -->
+  <section id="risk">
+    <div class="sec-head">
+      <span class="eyebrow">Risklar</span>
+      <h2>Nima noto'g'ri ketishi mumkin</h2>
+    </div>
+    <div class="panel">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Risk</th><th>Ehtimol</th><th>Ta'sir</th><th>Yumshatish</th></tr></thead>
+          <tbody>
+            <tr><td>HR "Excel yetarli" deydi</td><td class="risk-m">O'rta</td><td class="risk-h">Yuqori</td><td>Mijoz suhbatlari; qo'l mehnati soatini raqamlashtirish</td></tr>
+            <tr><td>Integratorlar hamkorlik qilmaydi</td><td class="risk-m">O'rta</td><td class="risk-h">Yuqori</td><td>25% komissiya; tayyor demo va taqdimotlar</td></tr>
+            <tr><td>Terminal modellari va firmware farqi</td><td class="risk-h">Yuqori</td><td class="risk-m">O'rta</td><td>Har model uchun moslik jadvali; qurilmani tekshiruvchi dastur tayyor</td></tr>
+            <tr><td>IT bo'limi bulutga qarshi</td><td class="risk-m">O'rta</td><td class="risk-m">O'rta</td><td>Parollar va yuzlar bulutga chiqmaydi; o'z serverida o'rnatish varianti rejada, hali yo'q</td></tr>
+            <tr><td>Asoschi vaqti yetishmaydi</td><td class="risk-h">Yuqori</td><td class="risk-h">Yuqori</td><td>Scope qattiq qisqartirilgan; agent o'zini yangilaydi va tiklaydi</td></tr>
+            <tr><td>Qo'llab-quvvatlash yuki o'sishni bo'g'adi</td><td class="risk-h">Yuqori</td><td class="risk-h">Yuqori</td><td>Self-service o'rnatish; integrator o'rnatadi</td></tr>
+            <tr><td>Hikvision o'zi shunday mahsulot chiqaradi</td><td class="risk-l">Past</td><td class="risk-h">Yuqori</td><td>Lokalizatsiya, 1C, Telegram: global vendor bu yo'nalishga kirmaydi</td></tr>
+          </tbody>
+        </table>
       </div>
-      <a class="btn" href="investorlar.html">Investorlar sahifasi →</a>
     </div>
   </section>
 
-  <section id="ochiq">
+  <!-- ===================== JAMOA ===================== -->
+  <section id="jamoa">
+    <div class="sec-head">
+      <span class="eyebrow">Jamoa va texnologiya</span>
+      <h2>Bitta asoschi, bitta til, uchta repo</h2>
+    </div>
+    <div class="cols2">
+      <div class="panel">
+        <ul class="dots">
+          <li><b>1 asoschi</b>, haftasiga taxminan 12 soat. Shuning uchun har bir scope qarori "buni bir kishi qo'llab-quvvatlay oladimi?" savoli bilan qabul qilinadi.</li>
+          <li><b>Bitta til:</b> PHP. Agent ham, bulut ham, SDK ham. Ikkinchi tilni qo'llab-quvvatlashga vaqt yo'q.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Repo</th><th>Rol</th><th>Test</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">hikvision-isapi</td><td>Ochiq SDK (MIT)</td><td class="mono">139</td></tr>
+              <tr><td class="mono">attendance-agent</td><td>Mijoz binosidagi agent (yopiq)</td><td class="mono">293</td></tr>
+              <tr><td class="mono">attendance-cloud</td><td>Laravel + Filament bulut (yopiq)</td><td class="mono">542</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="investitsiya">
     <div class="honest">
-      <h3>Ochiq gapiramiz</h3>
-      <p>Bu mahsulot yangi. <b>Bugun uning to'lovchi mijozi yo'q</b>, siz birinchilardan bo'lasiz. Shuning uchun birinchi uchta mijoz uchun, muassasa turidan qat'i nazar, shart boshqacha:</p>
-      <ul>
-        <li><b>3 oy abonent to'lovi 0.</b> O'rnatish to'lanadi: bepul o'rnatilgan tizim ishlatilmay qoladi.</li>
-        <li>Evaziga: oyiga 30 daqiqa suhbat va biror narsa buzilsa darhol xabar.</li>
-        <li>Uch oydan keyin yoqmasa, to'xtatasiz va ma'lumotingizni Excel'da olib ketasiz.</li>
-      </ul>
+      <h3>Investitsiya haqida</h3>
+      <p>Miqdor va shartlar bevosita suhbatda muhokama qilinadi. Bu sahifadagi har bir raqam yo loyiha hujjatlaridan olingan, yo gipoteza deb belgilangan. Birinchi uchta to'lovchi mijozdan keyin narx va iqtisodiyot qayta hisoblanadi.</p>
     </div>
   </section>
 
   <footer>
     <div class="contact">
-      <span class="muted">Bir soatlik demo uchun:</span>
+      <span class="muted">Bog'lanish:</span>
       <code id="mail">shaykhnazar@gmail.com</code>
       <button class="copy" id="copyBtn" type="button">Nusxa olish</button>
     </div>
-    <p class="fine">Demo tayyor namunada ko'rsatiladi, sizning terminalingiz shart emas.</p>
+    <p class="fine">Manba: loyihaning biznes reja, arxitektura va yo'l xaritasi hujjatlari (2026-yil avgust–sentabr).</p>
   </footer>
 </main>
 

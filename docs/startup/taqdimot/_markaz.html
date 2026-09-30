@@ -41,7 +41,21 @@
   @media (prefers-reduced-motion: reduce) {
     .seg-card:hover { transform: none; }
   }
+  .inv-band { display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px 22px; }
+  .inv-band h3 { font-size: 1.2rem; margin-bottom: 4px; }
+  .inv-band p { color: var(--ink-2); font-size: .95rem; max-width: 64ch; }
+  .inv-band a.btn { text-decoration: none; font-weight: 600; padding: 10px 16px; border-radius: 10px; background: var(--ink); color: var(--bg); white-space: nowrap; }
+  @media (max-width: 640px) { .inv-band { grid-template-columns: 1fr; } }
 </style>
+
+<nav class="topnav" aria-label="Sayt">
+  <ul>
+    <li><a href="#muassasalar">Taqdimotlar</a></li>
+    <li><a href="{{NARXLAR_HREF}}">Narxlar</a></li>
+    <li><a href="#umumiy">Hamma uchun bir xil</a></li>
+    <li><a href="{{INVESTOR_HREF}}" class="home">Investorlar uchun</a></li>
+  </ul>
+</nav>
 
 <main class="wrap">
 
@@ -80,6 +94,17 @@
       <div class="fact"><h3>Bitta o'tish ham yo'qolmaydi</h3><p>Darhol yuborish, har 10 daqiqada qayta o'qish va tungi solishtirish. Internet uzilsa, agent saqlab turadi.</p></div>
       <div class="fact"><h3>Tuzatish iz qoldiradi</h3><p>Tabelni faqat sabab ko'rsatib tuzatish mumkin. Terminal yozgan asl qiymat o'chirilmaydi.</p></div>
       <div class="fact"><h3>Terminal jim qolsa, o'sha kuni bilasiz</h3><p>2 daqiqa ichida HR ga Telegram signal. Muammo oy oxirida emas, o'sha kuni bilinadi.</p></div>
+    </div>
+  </section>
+
+  <section id="investorlar">
+    <div class="inv-band">
+      <div>
+        <span class="eyebrow">Investorlar uchun</span>
+        <h3>Muammo, mahsulot holati, biznes model va risklar bir sahifada</h3>
+        <p>Qaysi raqam hujjatlardan olingani va qaysi biri hali gipoteza ekani ochiq ko'rsatilgan.</p>
+      </div>
+      <a class="btn" href="{{INVESTOR_HREF}}">Investorlar sahifasi →</a>
     </div>
   </section>
 

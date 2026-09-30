@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 """Har bir muassasa turi uchun taqdimot sahifasini yig'adi.
 
-    python3 docs/startup/taqdimot/build.py
+    python3 docs/startup/taqdimot/build.py                    # shu papkaga
+    python3 docs/startup/taqdimot/build.py --site PAPKA       # GitHub Pages sayti
     python3 docs/startup/taqdimot/build.py --artifact PAPKA   # claude.ai uchun nusxa
 
 _bosh.html (uslublar) + _tana.html (tuzilish) + pastdagi SEGMENTLAR ->
-<segment>.html; _bosh.html + _markaz.html -> index.html (bosh sahifa).
+<segment>.html. Qolganlari: _markaz.html -> index.html (bosh sahifa),
+_investor.html -> investorlar.html, _narxlar.html -> narxlar.html.
 Matnni o'zgartirish kerak bo'lsa, shu faylni tahrirlang va qayta ishga
 tushiring; tayyor .html fayllarni qo'lda tahrirlamang.
 
-Tariflar 11-narxlar.html va 07-narx-varaqasi.md bilan bir xil bo'lishi shart.
+Tariflar _narxlar.html va ../07-narx-varaqasi.md bilan bir xil bo'lishi shart.
 """
 import json
 import pathlib
@@ -578,6 +580,7 @@ ARTIFACT_URLS = {
     "ishlab-chiqarish": "https://claude.ai/artifact/9wVRNkbTDWR1Qsg1Csvum6",
     "savdo-tarmogi": "https://claude.ai/artifact/ANYMyUJCEVQ15xGKUVmCsQ",
     "narxlar": "https://claude.ai/artifact/8QpWafegU8oNRbzZB5fLxk",
+    "investorlar": "",
 }
 
 
@@ -625,32 +628,74 @@ def hub_cards(href):
     return "".join(out)
 
 
-def build(artifact_dir=None):
+def price_rows(href):
+    rows = []
+    for slug, seg in SEGMENTLAR.items():
+        first = seg["tiers"][0]
+        rows.append(f'\n              <tr><td><a href="{href(slug)}">{HUB[slug][0]}</a></td>'
+                    f'<td>{first["to"]} xodimgacha {fmt(first["price"])}</td></tr>')
+    return "".join(rows)
+
+
+def build(out_dir=None, artifact=False):
+    """Barcha sahifalarni out_dir ga yozadi (standart: shu papka).
+
+    artifact=False: sahifalar bir-biriga fayl nomi bilan bog'lanadi. Repo
+    nusxasi ham, GitHub Pages sayti ham shu rejimda yig'iladi.
+    artifact=True: claude.ai dagi nusxalar uchun, ARTIFACT_URLS bilan.
+    """
     head = (HERE / "_bosh.html").read_text()
     body = (HERE / "_tana.html").read_text()
-    out_dir = pathlib.Path(artifact_dir) if artifact_dir else HERE
+    out_dir = pathlib.Path(out_dir) if out_dir else HERE
+    out_dir.mkdir(parents=True, exist_ok=True)
 
-    if artifact_dir:
+    if artifact:
         def href(slug):
             return ARTIFACT_URLS[slug]
     else:
         def href(slug):
-            return "../11-narxlar.html" if slug == "narxlar" else f"{slug}.html"
+            return f"{slug}.html"
 
-    hub_values = {
+    common = {
+        "HUB_HREF": href("index"),
+        "NARXLAR_HREF": href("narxlar"),
+        "INVESTOR_HREF": href("investorlar"),
+    }
+    missing = [k for k, v in common.items() if not v]
+    if missing:
+        raise SystemExit(f"ARTIFACT_URLS da havola yo'q: {', '.join(missing)}")
+
+    # claude.ai o'z skeletini (doctype, charset, viewport) qo'shadi; oddiy
+    # hostingda (GitHub Pages, lokal fayl) ularni o'zimiz qo'yamiz, aks holda
+    # o'zbekcha matn buziladi va telefon sahifani kichraytirib ko'rsatadi.
+    prefix = "" if artifact else (
+        '<!doctype html>\n<html lang="uz">\n<meta charset="utf-8">\n'
+        '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n')
+
+    def write(name, text):
+        (out_dir / name).write_text(prefix + text)
+        print(out_dir / name)
+
+    write("index.html", fill(head + (HERE / "_markaz.html").read_text(), {
+        **common,
         "TITLE": "Davomat Taqdimotlari",
         "DESCRIPTION": "Hikvision terminalidan tayyor tabel: har bir muassasa turi uchun alohida taqdimot va narx.",
         "ACCENT_CSS": hub_css(),
         "CARDS": hub_cards(href),
-    }
-    hub = fill(head + (HERE / "_markaz.html").read_text(), hub_values, "index")
-    (out_dir / "index.html").write_text(hub)
-    print(out_dir / "index.html")
+    }, "index"))
 
-    hub_href = href("index") if artifact_dir else "index.html"
-    if artifact_dir and not hub_href:
-        print("ARTIFACT_URLS['index'] bo'sh: taqdimotlar bosh sahifaga bog'lanmadi, faqat index.html yig'ildi.")
-        return
+    write("investorlar.html", fill(head + (HERE / "_investor.html").read_text(), {
+        **common,
+        "TITLE": "Davomat Investorlarga",
+        "DESCRIPTION": "Davomat haqida investorlar uchun: muammo, mahsulot holati, biznes model, sotuv kanallari, maqsadlar va risklar.",
+        "ACCENT_CSS": "",
+        "PRICE_ROWS": price_rows(href),
+        "OFIS_HREF": href("ofis"),
+        "KLINIKA_HREF": href("klinika"),
+        "ZAVOD_HREF": href("ishlab-chiqarish"),
+    }, "investorlar"))
+
+    write("narxlar.html", fill((HERE / "_narxlar.html").read_text(), common, "narxlar"))
 
     for slug, seg in SEGMENTLAR.items():
         values = {k: v for k, v in seg.items() if k.isupper()}
@@ -658,16 +703,17 @@ def build(artifact_dir=None):
         values["TS_STAFF"] = json.dumps(seg["TS_STAFF"], ensure_ascii=False)
         values["TIERS_JS"] = json.dumps(seg["tiers"], ensure_ascii=False)
         values["TARIFF_CARDS"] = tariff_cards(seg["tiers"], seg["highlight"])
-        values["HUB_HREF"] = hub_href
-        (out_dir / f"{slug}.html").write_text(fill(head + body, values, slug))
-        print(out_dir / f"{slug}.html")
+        values["HUB_HREF"] = common["HUB_HREF"]
+        write(f"{slug}.html", fill(head + body, values, slug))
 
 
 if __name__ == "__main__":
     import sys
-    if len(sys.argv) == 3 and sys.argv[1] == "--artifact":
+    if len(sys.argv) == 3 and sys.argv[1] == "--site":
         build(sys.argv[2])
+    elif len(sys.argv) == 3 and sys.argv[1] == "--artifact":
+        build(sys.argv[2], artifact=True)
     elif len(sys.argv) == 1:
         build()
     else:
-        raise SystemExit("ishlatish: build.py [--artifact CHIQISH_PAPKASI]")
+        raise SystemExit("ishlatish: build.py [--site PAPKA | --artifact PAPKA]")
