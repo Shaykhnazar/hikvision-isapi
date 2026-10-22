@@ -570,6 +570,8 @@ HUB = {
 
 # claude.ai da e'lon qilingan nusxalar. Faqat `--artifact` rejimida ishlatiladi:
 # u yerda sahifalar bir-biriga fayl nomi bilan emas, shu havolalar bilan bog'lanadi.
+SITE_URL = "https://shaykhnazar.github.io/hikvision-isapi/"
+
 ARTIFACT_URLS = {
     "index": "https://claude.ai/artifact/SozFQEZ7fWxyW8nAdNW52i",
     "bogcha": "https://claude.ai/artifact/KBKH6dvwVZteZ1mQC6obHq",
@@ -682,6 +684,8 @@ def build(out_dir=None, artifact=False):
         "DESCRIPTION": "Hikvision terminalidan tayyor tabel: har bir muassasa turi uchun alohida taqdimot va narx.",
         "ACCENT_CSS": hub_css(),
         "CARDS": hub_cards(href),
+        # Videolar repoda yo'q: pages.yml ularni sayt bilan birga video/ ga yig'adi.
+        "VIDEO_BASE": SITE_URL + "video/" if artifact else "video/",
     }, "index"))
 
     write("investorlar.html", fill(head + (HERE / "_investor.html").read_text(), {

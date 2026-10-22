@@ -46,10 +46,18 @@
   .inv-band p { color: var(--ink-2); font-size: .95rem; max-width: 64ch; }
   .inv-band a.btn { text-decoration: none; font-weight: 600; padding: 10px 16px; border-radius: 10px; background: var(--ink); color: var(--bg); white-space: nowrap; }
   @media (max-width: 640px) { .inv-band { grid-template-columns: 1fr; } }
+  .vids { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .vid { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 12px; display: grid; gap: 10px; }
+  .vid video { width: 100%; aspect-ratio: 16 / 9; border-radius: 10px; background: var(--ink); display: block; }
+  .vid-cap { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; padding: 0 4px 4px; }
+  .vid-cap b { font-family: var(--display); font-weight: 600; font-size: 1.05rem; }
+  .vid-cap a { font-size: .88rem; color: var(--teal); }
+  @media (max-width: 760px) { .vids { grid-template-columns: 1fr; } }
 </style>
 
 <nav class="topnav" aria-label="Sayt">
   <ul>
+    <li><a href="#video">Video</a></li>
     <li><a href="#muassasalar">Taqdimotlar</a></li>
     <li><a href="{{NARXLAR_HREF}}">Narxlar</a></li>
     <li><a href="#umumiy">Hamma uchun bir xil</a></li>
@@ -71,6 +79,24 @@
       <li><b>Siz</b><span>Rahbar Telegram'da xulosa oladi, buxgalter Excel yuklab oladi.</span></li>
     </ol>
   </header>
+
+  <section id="video">
+    <div class="sec-head">
+      <span class="eyebrow">Video · 90 soniya</span>
+      <h2>Tizimni bir daqiqa yarimda ko'ring</h2>
+      <p>Muammo, ishlash tartibi, bir ish kuni, tabel, xavfsizlik va narxlar. Subtitr videoning o'zida.</p>
+    </div>
+    <div class="vids">
+      <figure class="vid" style="margin:0">
+        <video controls preload="none" playsinline poster="{{VIDEO_BASE}}davomat-uz.jpg" src="{{VIDEO_BASE}}davomat-uz.mp4"></video>
+        <figcaption class="vid-cap"><b>O'zbekcha</b><a href="{{VIDEO_BASE}}davomat-uz.mp4">MP4 yuklab olish</a></figcaption>
+      </figure>
+      <figure class="vid" style="margin:0">
+        <video controls preload="none" playsinline poster="{{VIDEO_BASE}}davomat-ru.jpg" src="{{VIDEO_BASE}}davomat-ru.mp4"></video>
+        <figcaption class="vid-cap"><b>Русский</b><a href="{{VIDEO_BASE}}davomat-ru.mp4">Скачать MP4</a></figcaption>
+      </figure>
+    </div>
+  </section>
 
   <section id="muassasalar">
     <div class="sec-head">
