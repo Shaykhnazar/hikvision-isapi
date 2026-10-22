@@ -15,6 +15,7 @@ Ushbu katalog `hikvision-isapi` paketini to'laqonli mahsulotga aylantirish rejas
 | [`08-integrator-taklifi.md`](08-integrator-taklifi.md) | Integratorga beriladigan bir varaq: 25% komissiya, o'rnatish ishi ularniki |
 | [`09-mijoz-varaqasi.md`](09-mijoz-varaqasi.md) | Mijozga beriladigan bir varaq — **suhbatdan keyin**, oldin emas |
 | [`taqdimot/`](taqdimot/) | **Davomat sayti** — https://shaykhnazar.github.io/hikvision-isapi/ . Bosh sahifa [`index.html`](taqdimot/index.html), [narxlar](taqdimot/narxlar.html), [investorlar uchun](taqdimot/investorlar.html) va har bir muassasa uchun vizual taqdimot: bog'cha, maktab, o'quv markazi, klinika, ofis, ishlab chiqarish, savdo tarmog'i. Sxema, bir kun, tabel, Telegram, xavfsizlik, cheklovlar, narx. `python3 taqdimot/build.py` bilan yig'iladi — `.html` larni qo'lda tahrirlamang |
+| [`video/`](video/) | 90 soniyalik tushuntirish videosi, o'zbekcha va ruscha, subtitr kadrga yozilgan va alohida `.srt`. Sahnalar va matn `sahna.html` da; `FFMPEG=… node video/render.js uz|ru chiqish.mp4` bilan yig'iladi |
 
 ## Repolar
 

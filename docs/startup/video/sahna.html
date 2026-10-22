@@ -1,0 +1,455 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Davomat video</title>
+<!--
+  Davomat tushuntirish videosining sahnalari. Bu sahifa brauzerda o'zi o'ynamaydi:
+  render.js uni kadrma-kadr window.render(t) bilan chizadi va MP4 ga yozadi.
+  Til: sahna.html?lang=uz yoki ?lang=ru. Matn ham, subtitr ham pastdagi TEXT va CUES da.
+-->
+<style>
+  :root {
+    --bg: #F3F7F5; --surface: #FFFFFF; --surface-2: #E6EFEB;
+    --ink: #14302E; --ink-2: #4B625F; --ink-3: #6F8581; --line: #CEDCD6;
+    --teal: #1F7A6D; --teal-soft: #D8EEE9;
+    --accent: #E39B12; --accent-ink: #8F5B00; --accent-soft: #FCEFD2;
+    --ok: #2C8753; --ok-soft: #DDF1E4; --warn: #B96E00; --warn-soft: #FBEBCB;
+    --bad: #C0402B; --bad-soft: #F8DEDA; --tg: #2F6DAA; --tg-soft: #DDEAF6;
+    --font: "DejaVu Sans", "Liberation Sans", Arial, sans-serif;
+    --mono: "DejaVu Sans Mono", "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); color: var(--ink); font-family: var(--font); }
+  .scene { position: absolute; inset: 0; padding: 110px 150px 230px; opacity: 0; display: flex; flex-direction: column; gap: 34px; }
+  .eyebrow { font-size: 26px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); }
+  h1 { margin: 0; font-size: 148px; line-height: 1; letter-spacing: -.02em; }
+  h2 { margin: 0; font-size: 70px; line-height: 1.08; letter-spacing: -.01em; max-width: 1500px; }
+  .mono { font-family: var(--mono); }
+  [data-in] { opacity: 0; }
+
+  /* subtitles */
+  #sub { position: absolute; left: 0; right: 0; bottom: 64px; display: flex; justify-content: center; pointer-events: none; }
+  #sub span { max-width: 1560px; text-align: center; font-size: 42px; line-height: 1.32; color: #fff; background: rgba(12, 28, 27, .86); padding: 14px 30px 16px; border-radius: 14px; }
+  #sub span:empty { display: none; }
+
+  /* progress bar */
+  #bar { position: absolute; left: 0; bottom: 0; height: 8px; background: var(--accent); }
+
+  /* S1 title */
+  .s1 { justify-content: center; }
+  .s1 .tagline { font-size: 54px; color: var(--ink-2); max-width: 1400px; line-height: 1.2; }
+  .s1 .logo { display: flex; align-items: center; gap: 40px; }
+  .s1 .term { width: 150px; height: 230px; border: 9px solid var(--teal); border-radius: 26px; position: relative; flex: none; }
+  .s1 .term::before { content: ""; position: absolute; left: 36px; top: 34px; width: 60px; height: 60px; border-radius: 50%; border: 9px solid var(--teal); }
+  .s1 .term::after { content: ""; position: absolute; left: 26px; top: 120px; width: 80px; height: 40px; border: 9px solid var(--teal); border-bottom: 0; border-radius: 60px 60px 0 0; }
+
+  /* cards */
+  .cards { display: grid; gap: 28px; }
+  .card { background: var(--surface); border: 2px solid var(--line); border-radius: 26px; padding: 34px 38px; font-size: 38px; line-height: 1.3; display: flex; gap: 26px; align-items: flex-start; }
+  .card .ico { width: 64px; height: 64px; border-radius: 50%; flex: none; display: grid; place-items: center; font-size: 34px; font-weight: 700; color: #fff; }
+  .p .card .ico { background: var(--bad); }
+  .sec .card .ico { background: var(--teal); }
+
+  /* diagram */
+  .diagram { flex: 1; position: relative; }
+  .diagram svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .node rect { fill: var(--surface); stroke: var(--line); stroke-width: 3; }
+  .node.on rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 5; }
+  .node .t { font: 700 40px var(--font); fill: var(--ink); }
+  .node .s { font: 26px var(--font); fill: var(--ink-2); }
+  .edge { fill: none; stroke: var(--teal); stroke-width: 5; }
+  .zone { fill: var(--surface-2); }
+  .zl { font: 700 22px var(--font); letter-spacing: .12em; fill: var(--ink-3); }
+  .note { font: 700 30px var(--font); fill: var(--teal); }
+
+  /* day */
+  .day { display: grid; grid-template-columns: 420px 1fr; gap: 60px; flex: 1; align-items: start; }
+  .clock { background: var(--ink); color: var(--bg); border-radius: 30px; padding: 40px 0; text-align: center; font: 700 120px var(--mono); }
+  .events { display: grid; gap: 14px; }
+  .ev { display: grid; grid-template-columns: 150px 220px 1fr; gap: 24px; align-items: center; background: var(--surface); border: 2px solid var(--line); border-radius: 20px; padding: 13px 26px; font-size: 30px; line-height: 1.25; }
+  .ev .tm { font: 700 36px var(--mono); }
+  .tag { display: inline-block; font-size: 26px; font-weight: 700; padding: 6px 18px; border-radius: 999px; text-align: center; }
+  .tag.ok { background: var(--ok-soft); color: var(--ok); }
+  .tag.warn { background: var(--warn-soft); color: var(--warn); }
+  .tag.tg { background: var(--tg-soft); color: var(--tg); }
+  .tag.bad { background: var(--bad-soft); color: var(--bad); }
+  .tag.acc { background: var(--accent-soft); color: var(--accent-ink); }
+
+  /* timesheet */
+  .tswrap { display: grid; grid-template-columns: 1fr 420px; gap: 40px; align-items: start; }
+  table.ts { border-collapse: separate; border-spacing: 6px; background: var(--surface); border: 2px solid var(--line); border-radius: 24px; padding: 14px; font-size: 26px; }
+  table.ts th { color: var(--ink-3); font-weight: 700; padding: 4px 6px; }
+  table.ts td { text-align: center; padding: 10px 8px; border-radius: 8px; font-family: var(--mono); min-width: 86px; }
+  table.ts td.nm { text-align: left; font-family: var(--font); font-weight: 700; min-width: 240px; }
+  td.c { background: var(--surface-2); }
+  td.late { background: var(--warn-soft); color: var(--warn); }
+  td.abs { background: var(--bad-soft); color: var(--bad); font-weight: 700; }
+  td.off { color: var(--ink-3); }
+  td.fix { box-shadow: inset 0 0 0 4px var(--accent); }
+  .legend { display: grid; gap: 18px; font-size: 30px; }
+  .xl { margin-top: 18px; background: var(--ok); color: #fff; font-weight: 700; font-size: 32px; border-radius: 18px; padding: 22px 26px; text-align: center; }
+
+  /* segments */
+  .segs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .seg { background: var(--surface); border: 2px solid var(--line); border-radius: 24px; padding: 28px; display: grid; gap: 14px; }
+  .seg b { font-size: 34px; }
+  .seg .dot { width: 26px; height: 26px; border-radius: 50%; }
+  .seg .pr { font-size: 28px; color: var(--ink-2); }
+  .seg .pr .mono { color: var(--ink); font-weight: 700; }
+
+  /* pilot / cta */
+  .pilot .cards { grid-template-columns: repeat(3, 1fr); }
+  .pilot .card { flex-direction: column; font-size: 36px; }
+  .pilot .card .big { font-size: 64px; font-weight: 700; color: var(--teal); }
+  .cta { justify-content: center; align-items: flex-start; }
+  .cta .line { font-size: 54px; display: flex; gap: 26px; align-items: center; }
+  .cta .line b { font-family: var(--mono); background: var(--surface); border: 3px solid var(--line); padding: 16px 28px; border-radius: 18px; }
+</style>
+</head>
+<body>
+
+<section class="scene s1" data-start="0" data-end="7">
+  <div class="logo" data-in="0.2">
+    <div class="term"></div>
+    <h1>Davomat</h1>
+  </div>
+  <div class="tagline" data-in="0.9" data-t="tag"></div>
+</section>
+
+<section class="scene p" data-start="7" data-end="16">
+  <span class="eyebrow" data-in="0.2" data-t="p_eyebrow"></span>
+  <h2 data-in="0.4" data-t="p_h"></h2>
+  <div class="cards">
+    <div class="card" data-in="1.4"><span class="ico">1</span><span data-t="p1"></span></div>
+    <div class="card" data-in="4.6"><span class="ico">2</span><span data-t="p2"></span></div>
+    <div class="card" data-in="6.0"><span class="ico">3</span><span data-t="p3"></span></div>
+  </div>
+</section>
+
+<section class="scene how" data-start="16" data-end="29">
+  <span class="eyebrow" data-in="0.2" data-t="how_eyebrow"></span>
+  <h2 data-in="0.4" data-t="how_h"></h2>
+  <div class="diagram" data-in="0.8">
+    <svg viewBox="0 0 1620 520">
+      <rect class="zone" x="0" y="0" width="610" height="520" rx="28"/>
+      <text class="zl" x="34" y="48" data-t="zone_b"></text>
+      <text class="zl" x="1010" y="48" text-anchor="middle" data-t="zone_c"></text>
+
+      <path class="edge" d="M300 175 V300"/>
+      <path class="edge" d="M560 380 C740 380 760 250 900 250"/>
+      <path class="edge" d="M1160 200 H1260"/>
+      <path class="edge" d="M1160 330 H1260"/>
+      <path id="route" d="M180 175 L180 370 L560 380 C740 380 760 250 900 250 L1030 250 L1030 175 L1260 175" fill="none" stroke="none"/>
+
+      <g class="node" id="n-term"><rect x="40" y="70" width="520" height="105" rx="20"/><text class="t" x="70" y="122" data-t="n_term"></text><text class="s" x="70" y="158" data-t="n_term_s"></text></g>
+      <g class="node" id="n-agent"><rect x="40" y="300" width="520" height="160" rx="20"/><text class="t" x="70" y="360" data-t="n_agent"></text><text class="s" x="70" y="398" data-t="n_agent_s"></text><text class="s" x="70" y="434" data-t="n_agent_s2"></text></g>
+      <g class="node" id="n-cloud"><rect x="900" y="110" width="260" height="280" rx="24"/><text class="t" x="930" y="180" data-t="n_cloud"></text><text class="s" x="930" y="225" data-t="n_cloud_s"></text><text class="s" x="930" y="262" data-t="n_cloud_s2"></text></g>
+      <g class="node" id="n-tg"><rect x="1260" y="130" width="340" height="110" rx="20"/><text class="t" x="1290" y="182" data-t="n_tg"></text><text class="s" x="1290" y="220" data-t="n_tg_s"></text></g>
+      <g class="node" id="n-xl"><rect x="1260" y="275" width="340" height="110" rx="20"/><text class="t" x="1290" y="327" data-t="n_xl"></text><text class="s" x="1290" y="365" data-t="n_xl_s"></text></g>
+
+      <text class="note" x="1030" y="470" text-anchor="middle" data-t="how_note"></text>
+      <circle id="pulse" r="18" fill="#E39B12"/>
+    </svg>
+  </div>
+</section>
+
+<section class="scene dayS" data-start="29" data-end="45">
+  <span class="eyebrow" data-in="0.2" data-t="day_eyebrow"></span>
+  <h2 data-in="0.3" data-t="day_h"></h2>
+  <div class="day">
+    <div class="clock mono" id="clock" data-in="0.4">07:30</div>
+    <div class="events">
+      <div class="ev" data-in="2.0"><span class="tm">07:54</span><span class="tag ok" data-t="e1t"></span><span data-t="e1"></span></div>
+      <div class="ev" data-in="5.5"><span class="tm">08:17</span><span class="tag warn" data-t="e2t"></span><span data-t="e2"></span></div>
+      <div class="ev" data-in="8.0"><span class="tm">09:00</span><span class="tag tg">Telegram</span><span data-t="e3"></span></div>
+      <div class="ev" data-in="10.5"><span class="tm">10:12</span><span class="tag bad" data-t="e4t"></span><span data-t="e4"></span></div>
+      <div class="ev" data-in="13.4"><span class="tm">17:06</span><span class="tag acc" data-t="e5t"></span><span data-t="e5"></span></div>
+    </div>
+  </div>
+</section>
+
+<section class="scene tsS" data-start="45" data-end="56">
+  <span class="eyebrow" data-in="0.2" data-t="ts_eyebrow"></span>
+  <h2 data-in="0.3" data-t="ts_h"></h2>
+  <div class="tswrap">
+    <table class="ts" id="ts" data-in="0.6"></table>
+    <div>
+      <div class="legend" data-in="3.0">
+        <span><span class="tag acc mono">8:12</span> <span data-t="lg1"></span></span>
+        <span><span class="tag bad mono">K</span> <span data-t="lg2"></span></span>
+        <span><span class="tag mono" style="background:var(--surface-2);color:var(--ink-3)">D</span> <span data-t="lg3"></span></span>
+        <span><span class="tag mono" style="box-shadow:inset 0 0 0 3px var(--accent)">*</span> <span data-t="lg4"></span></span>
+      </div>
+      <div class="xl" id="xl" data-in="5.0" data-t="ts_btn"></div>
+    </div>
+  </div>
+</section>
+
+<section class="scene sec" data-start="56" data-end="65">
+  <span class="eyebrow" data-in="0.2" data-t="sec_eyebrow"></span>
+  <h2 data-in="0.3" data-t="sec_h"></h2>
+  <div class="cards" style="grid-template-columns:1fr 1fr">
+    <div class="card" data-in="0.9"><span class="ico">✓</span><span data-t="s1"></span></div>
+    <div class="card" data-in="2.6"><span class="ico">✓</span><span data-t="s2"></span></div>
+    <div class="card" data-in="4.3"><span class="ico">✓</span><span data-t="s3"></span></div>
+    <div class="card" data-in="5.8"><span class="ico">✓</span><span data-t="s4"></span></div>
+  </div>
+</section>
+
+<section class="scene segS" data-start="65" data-end="73">
+  <span class="eyebrow" data-in="0.2" data-t="seg_eyebrow"></span>
+  <h2 data-in="0.3" data-t="seg_h"></h2>
+  <div class="segs" id="segs"></div>
+</section>
+
+<section class="scene pilot" data-start="73" data-end="82">
+  <span class="eyebrow" data-in="0.2" data-t="pilot_eyebrow"></span>
+  <h2 data-in="0.3" data-t="pilot_h"></h2>
+  <div class="cards">
+    <div class="card" data-in="1.2"><span class="big" data-t="pl1b"></span><span data-t="pl1"></span></div>
+    <div class="card" data-in="3.0"><span class="big" data-t="pl2b"></span><span data-t="pl2"></span></div>
+    <div class="card" data-in="4.8"><span class="big" data-t="pl3b"></span><span data-t="pl3"></span></div>
+  </div>
+</section>
+
+<section class="scene cta" data-start="82" data-end="90">
+  <span class="eyebrow" data-in="0.2">Davomat</span>
+  <h2 data-in="0.3" data-t="cta_h"></h2>
+  <div class="line" data-in="1.2"><span data-t="cta_site"></span><b>shaykhnazar.github.io/hikvision-isapi</b></div>
+  <div class="line" data-in="2.0"><span data-t="cta_mail"></span><b>shaykhnazar@gmail.com</b></div>
+</section>
+
+<div id="sub"><span></span></div>
+<div id="bar"></div>
+
+<script>
+var DURATION = 90;
+
+var TEXT = {
+  uz: {
+    tag: "Hikvision terminalingizdan tayyor tabel",
+    p_eyebrow: "Muammo", p_h: "Terminal yozadi. Tabelni esa odam yig'adi.",
+    p1: "Oy oxirida HR tabelni Excel'da qo'lda yig'adi",
+    p2: "Terminal o'chib qolsa, buni hech kim bilmaydi",
+    p3: "Har bir filial alohida ro'yxat, ularni qo'lda birlashtirish kerak",
+    how_eyebrow: "Qanday ishlaydi", how_h: "To'rt qism, bitta zanjir",
+    zone_b: "SIZNING BINONGIZ", zone_c: "BULUT",
+    n_term: "Terminal", n_term_s: "kirish eshigida, yuz yoki karta",
+    n_agent: "Agent", n_agent_s: "binodagi kichik kompyuter", n_agent_s2: "terminal paroli shu yerda",
+    n_cloud: "Bulut", n_cloud_s: "O'zbekistondagi", n_cloud_s2: "server",
+    n_tg: "Telegram", n_tg_s: "rahbar va HR", n_xl: "Excel", n_xl_s: "oylik tabel",
+    how_note: "Port ochilmaydi · oq IP kerak emas",
+    day_eyebrow: "Bir kun", day_h: "Ish kuni tizim ko'zi bilan",
+    e1t: "Keldi", e1: "Dilnoza yuzini ko'rsatdi",
+    e2t: "Kechikdi", e2: "Malika keldi, chegara 08:10 edi",
+    e3: "Rahbarga xulosa: 21 keldi · 2 kechikdi · 1 yo'q",
+    e4t: "Signal", e4: "Oshxona terminali o'chdi, 2 daqiqada HR ga xabar",
+    e5t: "Ketdi", e5: "Dilnoza ketdi, tabelga 8:12 tushdi",
+    ts_eyebrow: "Tabel", ts_h: "Oy oxirida tabel tayyor",
+    lg1: "ishlangan soat", lg2: "kelmadi", lg3: "dam olish kuni", lg4: "sababli tuzatish",
+    ts_btn: "Excel'ga yuklash",
+    sec_eyebrow: "Xavfsizlik", sec_h: "Ma'lumot himoyalangan",
+    s1: "Yuz rasmlari bulutda saqlanmaydi", s2: "Terminal paroli binodan chiqmaydi",
+    s3: "Server O'zbekistonda", s4: "Faqat xodimlar: bolalar, bemorlar va mijozlar tizimda yo'q",
+    seg_eyebrow: "Kimlar uchun", seg_h: "Har bir muassasa uchun o'z tarifi",
+    segs: ["Bog'cha", "Xususiy maktab", "O'quv markazi", "Klinika", "Ofis va IT", "Ishlab chiqarish", "Savdo tarmog'i"],
+    price: function (p) { return '<span class="mono">' + p + "</span> so'm/oy dan"; },
+    pilot_eyebrow: "Ochiq gapiramiz", pilot_h: "Mahsulot yangi. Birinchi uchta mijoz uchun alohida shart.",
+    pl1b: "3 oy", pl1: "obuna bepul",
+    pl2b: "O'rnatish", pl2: "to'lanadi: bepul o'rnatilgan tizim ishlatilmay qoladi",
+    pl3b: "Yoqmasa", pl3: "to'xtatasiz, ma'lumot Excel'da sizda qoladi",
+    cta_h: "Bir soatlik demo uchun yozing", cta_site: "Sayt:", cta_mail: "Email:",
+    names: ["Dilnoza A.", "Malika R.", "Sardor Q.", "Nodira T.", "Zarina M."],
+    wd: ["Du", "Se", "Ch", "Pa", "Ju", "Sh", "Ya", "Du", "Se", "Ch"]
+  },
+  ru: {
+    tag: "Готовый табель с вашего терминала Hikvision",
+    p_eyebrow: "Проблема", p_h: "Терминал записывает. А табель собирает человек.",
+    p1: "В конце месяца HR вручную собирает табель в Excel",
+    p2: "Терминал отключился, и никто об этом не знает",
+    p3: "У каждого филиала свой список, их сводят вручную",
+    how_eyebrow: "Как это работает", how_h: "Четыре части, одна цепочка",
+    zone_b: "ВАШЕ ЗДАНИЕ", zone_c: "ОБЛАКО",
+    n_term: "Терминал", n_term_s: "у входа, лицо или карта",
+    n_agent: "Агент", n_agent_s: "мини-ПК в здании", n_agent_s2: "пароль терминала здесь",
+    n_cloud: "Облако", n_cloud_s: "сервер", n_cloud_s2: "в Узбекистане",
+    n_tg: "Telegram", n_tg_s: "руководитель и HR", n_xl: "Excel", n_xl_s: "табель за месяц",
+    how_note: "Порты не открываются · белый IP не нужен",
+    day_eyebrow: "Один день", day_h: "Рабочий день глазами системы",
+    e1t: "Пришла", e1: "Дилноза показала лицо",
+    e2t: "Опоздание", e2: "Малика пришла, порог был 08:10",
+    e3: "Сводка руководителю: 21 пришли · 2 опоздали · 1 нет",
+    e4t: "Сигнал", e4: "Терминал на кухне отключился, через 2 минуты сигнал HR",
+    e5t: "Ушла", e5: "Дилноза ушла, в табель записано 8:12",
+    ts_eyebrow: "Табель", ts_h: "В конце месяца табель готов",
+    lg1: "отработано часов", lg2: "не пришёл", lg3: "выходной", lg4: "исправлено с причиной",
+    ts_btn: "Выгрузить в Excel",
+    sec_eyebrow: "Безопасность", sec_h: "Данные под защитой",
+    s1: "Фото лиц не хранятся в облаке", s2: "Пароль терминала не покидает здание",
+    s3: "Сервер в Узбекистане", s4: "Только сотрудники: детей, пациентов и клиентов в системе нет",
+    seg_eyebrow: "Для кого", seg_h: "Свой тариф для каждого типа организации",
+    segs: ["Детский сад", "Частная школа", "Учебный центр", "Клиника", "Офис и IT", "Производство", "Торговая сеть"],
+    price: function (p) { return 'от <span class="mono">' + p + "</span> сум/мес"; },
+    pilot_eyebrow: "Говорим честно", pilot_h: "Продукт новый. Для первых трёх клиентов особые условия.",
+    pl1b: "3 месяца", pl1: "подписка бесплатно",
+    pl2b: "Установка", pl2: "оплачивается: бесплатно установленной системой не пользуются",
+    pl3b: "Не подошло", pl3: "отключаете, данные остаются у вас в Excel",
+    cta_h: "Напишите нам, покажем демо за один час", cta_site: "Сайт:", cta_mail: "Email:",
+    names: ["Дилноза А.", "Малика Р.", "Сардор К.", "Нодира Т.", "Зарина М."],
+    wd: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс", "Пн", "Вт", "Ср"]
+  }
+};
+
+var CUES = {
+  uz: [
+    [0.6, 6.6, "Devoringizda Hikvision terminali bormi? U har kuni kim kelib-ketganini allaqachon yozadi."],
+    [7.4, 11.6, "Lekin oy oxirida HR tabelni baribir Excel'da qo'lda yig'adi."],
+    [11.6, 15.6, "Terminal o'chib qolsa, buni hech kim bilmaydi. Filiallar esa alohida-alohida."],
+    [16.4, 22.4, "Davomat buni avtomatlashtiradi. Terminal har bir o'tishni binodagi agentga yuboradi."],
+    [22.4, 28.6, "Agent uni bulutga uzatadi. Router'da port ochilmaydi, oq IP sotib olish shart emas."],
+    [29.4, 34.0, "Xodim yuzini ko'rsatadi. O'tish bir necha soniyada bulutga tushadi."],
+    [34.0, 39.4, "Kechikkanlar avtomatik belgilanadi. Rahbar ertalab Telegram'da xulosa oladi."],
+    [39.4, 44.6, "Terminal jim qolsa, HR 2 daqiqada xabar oladi. Oy oxirida emas, o'sha kuni."],
+    [45.4, 49.8, "Oy oxirida tabel tayyor: soatlar, kechikishlar, kelmagan kunlar."],
+    [49.8, 55.6, "Excel bitta tugma bilan chiqadi. Tuzatish faqat sabab bilan, asl yozuv o'chmaydi."],
+    [56.4, 64.6, "Yuz rasmlari bulutda saqlanmaydi, terminal paroli binodan chiqmaydi, server O'zbekistonda."],
+    [65.4, 72.6, "Bog'cha, maktab, klinika, ofis, zavod, savdo tarmog'i: har biri uchun alohida tarif."],
+    [73.4, 81.6, "Mahsulot yangi. Birinchi uchta mijozga 3 oy obuna bepul, faqat o'rnatish to'lanadi."],
+    [82.4, 89.6, "Batafsil ma'lumot saytimizda. Bir soatlik demo uchun bizga yozing."]
+  ],
+  ru: [
+    [0.6, 6.6, "На стене стоит терминал Hikvision? Он уже каждый день записывает, кто пришёл и ушёл."],
+    [7.4, 11.6, "Но в конце месяца HR всё равно собирает табель в Excel вручную."],
+    [11.6, 15.6, "Если терминал отключится, никто не узнает. А филиалы считаются отдельно."],
+    [16.4, 22.4, "Davomat это автоматизирует. Терминал отправляет каждый проход агенту в здании."],
+    [22.4, 28.6, "Агент передаёт его в облако. Порты на роутере не открываются, белый IP не нужен."],
+    [29.4, 34.0, "Сотрудник показывает лицо. Через несколько секунд проход уже в облаке."],
+    [34.0, 39.4, "Опоздания отмечаются сами. Утром руководитель получает сводку в Telegram."],
+    [39.4, 44.6, "Если терминал замолчит, HR узнает через 2 минуты. В тот же день, а не в конце месяца."],
+    [45.4, 49.8, "В конце месяца табель готов: часы, опоздания, пропуски."],
+    [49.8, 55.6, "Excel выгружается одной кнопкой. Исправления только с причиной, исходная запись остаётся."],
+    [56.4, 64.6, "Фото лиц не хранятся в облаке, пароль терминала не покидает здание, сервер в Узбекистане."],
+    [65.4, 72.6, "Детский сад, школа, клиника, офис, завод, торговая сеть: для каждого свой тариф."],
+    [73.4, 81.6, "Продукт новый. Первым трём клиентам 3 месяца подписки бесплатно, платится только установка."],
+    [82.4, 89.6, "Подробности на нашем сайте. Напишите нам, и мы покажем демо за один час."]
+  ]
+};
+
+var SEG = [
+  ["#E39B12", "390 000"], ["#3A6FD8", "490 000"], ["#8A5CD6", "290 000"], ["#D2485E", "590 000"],
+  ["#2F8FB0", "690 000"], ["#C8641E", "690 000"], ["#3E9B4F", "690 000"]
+];
+
+/* timesheet: 5 people x 10 working-or-not days. "!" late, "*" corrected */
+var TS = [
+  ["8:12", "8:05", "8:20", "8:02", "8:10", "D", "D", "8:07", "8:15", "7:58"],
+  ["7:43!", "8:01", "8:00*", "8:09", "7:52!", "D", "D", "8:03", "8:06", "8:00"],
+  ["8:30", "8:25", "8:31", "8:28", "8:12!", "D", "D", "8:33", "8:29", "8:27"],
+  ["8:00", "8:03", "7:55", "K", "K", "D", "D", "8:01", "8:04", "7:59"],
+  ["8:04", "7:58", "8:02", "8:05", "8:00", "D", "D", "7:47!", "8:03", "8:01"]
+];
+
+var lang = (new URLSearchParams(location.search).get("lang") || "uz");
+var L = TEXT[lang];
+
+document.querySelectorAll("[data-t]").forEach(function (el) { el.textContent = L[el.getAttribute("data-t")]; });
+
+(function buildTs() {
+  var h = "<tr><th></th>";
+  for (var d = 0; d < 10; d++) h += "<th>" + (7 + d) + "<br>" + L.wd[d] + "</th>";
+  h += "</tr>";
+  TS.forEach(function (row, r) {
+    h += '<tr><td class="nm">' + L.names[r] + "</td>";
+    row.forEach(function (v, c) {
+      var cls = "c", txt = v;
+      if (v === "D") cls = "off";
+      else if (v === "K") cls = "abs";
+      else if (v.slice(-1) === "!") { cls = "c late"; txt = v.slice(0, -1); }
+      else if (v.slice(-1) === "*") cls = "c fix";
+      h += '<td class="' + cls + '" data-cell="' + (r * 10 + c) + '">' + txt + "</td>";
+    });
+    h += "</tr>";
+  });
+  document.getElementById("ts").innerHTML = h;
+})();
+
+(function buildSegs() {
+  var h = "";
+  SEG.forEach(function (s, i) {
+    h += '<div class="seg" data-in="' + (0.9 + i * 0.55).toFixed(2) + '"><span class="dot" style="background:' + s[0] + '"></span><b>' + L.segs[i] + '</b><span class="pr">' + L.price(s[1]) + "</span></div>";
+  });
+  document.getElementById("segs").innerHTML = h;
+})();
+
+var scenes = Array.prototype.slice.call(document.querySelectorAll(".scene"));
+var route = document.getElementById("route");
+var routeLen = route.getTotalLength();
+var pulse = document.getElementById("pulse");
+var sub = document.querySelector("#sub span");
+
+function clamp(x) { return Math.max(0, Math.min(1, x)); }
+function ease(x) { x = clamp(x); return x * x * (3 - 2 * x); }
+
+/* clock keyframes for the day scene: [local seconds, minutes since midnight] */
+var CLOCK = [[0.5, 450], [2.0, 474], [5.5, 497], [8.0, 540], [10.5, 612], [13.4, 1026], [15.5, 1050]];
+function clockAt(lt) {
+  if (lt <= CLOCK[0][0]) return CLOCK[0][1];
+  for (var i = 1; i < CLOCK.length; i++) {
+    if (lt <= CLOCK[i][0]) {
+      var a = CLOCK[i - 1], b = CLOCK[i], k = ease((lt - a[0]) / (b[0] - a[0]));
+      return a[1] + (b[1] - a[1]) * k;
+    }
+  }
+  return CLOCK[CLOCK.length - 1][1];
+}
+function hhmm(m) { m = Math.round(m); var h = Math.floor(m / 60); return (h < 10 ? "0" : "") + h + ":" + String(m % 60).padStart(2, "0"); }
+
+window.render = function (t) {
+  scenes.forEach(function (s) {
+    var a = +s.dataset.start, b = +s.dataset.end, lt = t - a;
+    var o = Math.min(ease(lt / 0.5), ease((b - t) / 0.5));
+    s.style.opacity = (t >= a && t <= b) ? o : 0;
+    s.querySelectorAll("[data-in]").forEach(function (el) {
+      var k = ease((lt - +el.dataset.in) / 0.5);
+      el.style.opacity = k;
+      el.style.transform = "translateY(" + ((1 - k) * 28).toFixed(1) + "px)";
+    });
+    if (t < a || t > b) return;
+
+    if (s.classList.contains("how")) {
+      var k = ease((lt - 2.0) / 9.0), pt = route.getPointAtLength(routeLen * k);
+      pulse.setAttribute("cx", pt.x); pulse.setAttribute("cy", pt.y);
+      pulse.style.opacity = (lt > 1.6 && lt < 12) ? 1 : 0;
+      document.getElementById("n-term").classList.toggle("on", lt > 1.6 && lt < 4.2);
+      document.getElementById("n-agent").classList.toggle("on", k > 0.18 && k < 0.5);
+      document.getElementById("n-cloud").classList.toggle("on", k > 0.55 && k < 0.85);
+      document.getElementById("n-tg").classList.toggle("on", k > 0.95);
+      document.getElementById("n-xl").classList.toggle("on", k > 0.95);
+    }
+    if (s.classList.contains("dayS")) {
+      document.getElementById("clock").textContent = hhmm(clockAt(lt));
+    }
+    if (s.classList.contains("tsS")) {
+      document.querySelectorAll("[data-cell]").forEach(function (td) {
+        var i = +td.dataset.cell, at = 0.9 + (i % 10) * 0.12 + Math.floor(i / 10) * 0.18;
+        td.style.opacity = ease((lt - at) / 0.3);
+      });
+      var xl = document.getElementById("xl"), press = lt > 6.8 && lt < 7.3;
+      xl.style.transform += press ? " scale(0.94)" : "";
+      xl.style.filter = lt > 6.8 ? "brightness(1.12)" : "";
+    }
+  });
+
+  var text = "";
+  CUES[lang].forEach(function (c) { if (t >= c[0] && t < c[1]) text = c[2]; });
+  if (sub.textContent !== text) sub.textContent = text;
+  document.getElementById("bar").style.width = (100 * t / DURATION).toFixed(3) + "%";
+};
+
+window.DURATION = DURATION;
+window.CUES = CUES;
+render(0);
+</script>
+</body>
+</html>
