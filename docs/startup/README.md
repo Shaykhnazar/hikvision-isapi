@@ -15,7 +15,7 @@ Ushbu katalog `hikvision-isapi` paketini to'laqonli mahsulotga aylantirish rejas
 | [`08-integrator-taklifi.md`](08-integrator-taklifi.md) | Integratorga beriladigan bir varaq: 25% komissiya, o'rnatish ishi ularniki |
 | [`09-mijoz-varaqasi.md`](09-mijoz-varaqasi.md) | Mijozga beriladigan bir varaq — **suhbatdan keyin**, oldin emas |
 | [`taqdimot/`](taqdimot/) | **Davomat sayti** — https://shaykhnazar.github.io/hikvision-isapi/ . Bosh sahifa [`index.html`](taqdimot/index.html), [narxlar](taqdimot/narxlar.html), [investorlar uchun](taqdimot/investorlar.html) va har bir muassasa uchun vizual taqdimot: bog'cha, maktab, o'quv markazi, klinika, ofis, ishlab chiqarish, savdo tarmog'i. Sxema, bir kun, tabel, Telegram, xavfsizlik, cheklovlar, narx. `python3 taqdimot/build.py` bilan yig'iladi — `.html` larni qo'lda tahrirlamang |
-| [`video/`](video/) | 90 soniyalik tushuntirish videosi, o'zbekcha va ruscha, subtitr kadrga yozilgan va alohida `.srt`. Saytning bosh sahifasida ko'rinadi: videolar repoga commit qilinmaydi, `pages.yml` har deployda ularni qayta yig'adi. Sahnalar va matn `sahna.html` da; qo'lda: `FFMPEG=… node video/render.js uz|ru chiqish.mp4` |
+| [`video/`](video/) | 90 soniyalik tushuntirish videosi, o'zbekcha va ruscha, subtitr kadrga yozilgan va alohida `.srt`. Saytning bosh sahifasida ko'rinadi: videolar repoga commit qilinmaydi, `pages.yml` har deployda ularni qayta yig'adi. Sahnalar va matn `sahna.html` da; qo'lda: `FFMPEG=… node video/render.js uz|ru chiqish.mp4`. Ovoz: [`video/diktor-matni.md`](video/diktor-matni.md) bo'yicha yozilgan fayllar `video/ovoz/uz|ru/` ga qo'yilsa, videoga o'zi joylanadi |
 
 ## Repolar
 
