@@ -1,5 +1,5 @@
 // Davomat videosini yig'adi: sahna.html ni kadrma-kadr chizib, MP4 ga yozadi
-// va yoniga .srt subtitr faylini qo'yadi.
+// va yoniga .srt subtitr faylini hamda .jpg muqovani qo'yadi.
 //
 //   FFMPEG=/yo'l/ffmpeg node render.js uz davomat-uz.mp4
 //   FFMPEG=/yo'l/ffmpeg node render.js ru davomat-ru.mp4
@@ -61,6 +61,14 @@ function srtTime(s) {
   }
   ff.stdin.end();
   const code = await new Promise((r) => ff.on('close', r));
+
+  // Muqova (poster): sarlavha kadri, subtitr va chiziqsiz — pleer tugmalari ostida yarim matn qolmasin.
+  await page.evaluate(() => {
+    window.render(3);
+    document.getElementById('sub').style.display = 'none';
+    document.getElementById('bar').style.display = 'none';
+  });
+  await page.screenshot({ path: out.replace(/\.mp4$/, '') + '.jpg', type: 'jpeg', quality: 85 });
   await browser.close();
   if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
   if (code !== 0) process.exit(code);

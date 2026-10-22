@@ -3,6 +3,9 @@ name: Davomat sayti
 # docs/startup/taqdimot/ dagi sahifalarni GitHub Pages ga chiqaradi:
 # https://shaykhnazar.github.io/hikvision-isapi/
 #
+# Videolar (docs/startup/video/) repoga commit qilinmaydi: shu yerda har
+# safar sahnadan qayta yig'iladi va saytning video/ papkasiga qo'yiladi.
+#
 # Bir martalik sozlama: Settings → Pages → Source: "GitHub Actions".
 
 on:
@@ -10,10 +13,12 @@ on:
     branches: [master]
     paths:
       - 'docs/startup/taqdimot/**'
+      - 'docs/startup/video/**'
       - '.github/workflows/pages.yml'
   pull_request:
     paths:
       - 'docs/startup/taqdimot/**'
+      - 'docs/startup/video/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -41,6 +46,27 @@ jobs:
 
       - name: Saytni yig'ish
         run: python3 docs/startup/taqdimot/build.py --site _site
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Video vositalari
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q ffmpeg fonts-dejavu-core
+          npm install --no-save --no-audit --no-fund --prefix "$RUNNER_TEMP/video" playwright@1.63.0
+          "$RUNNER_TEMP/video/node_modules/.bin/playwright" install --with-deps chromium
+
+      - name: Videolarni yig'ish
+        env:
+          NODE_PATH: ${{ runner.temp }}/video/node_modules
+        run: |
+          mkdir -p _site/video
+          for lang in uz ru; do
+            node docs/startup/video/render.js "$lang" "_site/video/davomat-$lang.mp4"
+          done
+          ls -la _site/video
 
       - uses: actions/upload-pages-artifact@v3
         if: github.event_name != 'pull_request'
