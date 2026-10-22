@@ -420,7 +420,8 @@ window.render = function (t) {
     if (s.classList.contains("how")) {
       var k = ease((lt - 2.0) / 9.0), pt = route.getPointAtLength(routeLen * k);
       pulse.setAttribute("cx", pt.x); pulse.setAttribute("cy", pt.y);
-      pulse.style.opacity = (lt > 1.6 && lt < 12) ? 1 : 0;
+      /* inside the cloud box the dot would cover its text; the box lights up instead */
+      pulse.style.opacity = (lt > 1.6 && lt < 12 && !(pt.x > 905 && pt.x < 1155)) ? 1 : 0;
       document.getElementById("n-term").classList.toggle("on", lt > 1.6 && lt < 4.2);
       document.getElementById("n-agent").classList.toggle("on", k > 0.18 && k < 0.5);
       document.getElementById("n-cloud").classList.toggle("on", k > 0.55 && k < 0.85);
